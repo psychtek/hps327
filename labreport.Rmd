@@ -21,6 +21,7 @@ When you click the **Knit** button a document will be generated that includes bo
 library(psych)
 library(lm.beta)
 library(haven)
+<<<<<<< HEAD
 
 ```
 
@@ -30,7 +31,6 @@ library(haven)
 well_being_df <- read_sav("WellbeingFINAL.sav")
 View(well_being_df)
 ```
-
 
 # Take a look at the data
 ```{r}
