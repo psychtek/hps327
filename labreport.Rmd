@@ -32,7 +32,7 @@ View(well_being_df)
 ```
 
 # Take a look at the data
-```{r}
+```{r echo=TRUE}
 describe(well_being_df)
 ```
 
