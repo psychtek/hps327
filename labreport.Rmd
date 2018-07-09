@@ -22,11 +22,13 @@ library(psych)
 library(lm.beta)
 library(faraway)
 library(haven)
-```
 
-#import 
+#import SPSS file into a data frame using the haven package
 well_being_df <- read_sav("WellbeingFINAL.sav")
 View(well_being_df)
+```
+
+
 
 
 ```{r cars}
