@@ -22,8 +22,6 @@ library(psych)
 library(lm.beta)
 library(haven)
 library(papaja)
-<<<<<<< HEAD
-
 ```
 
 #import SPSS file into a data frame using the haven package
