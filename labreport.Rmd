@@ -20,26 +20,35 @@ When you click the **Knit** button a document will be generated that includes bo
 # Included librarys for functions
 library(psych)
 library(lm.beta)
-library(faraway)
 library(haven)
+
 ```
 
-#import 
+#import SPSS file into a data frame using the haven package
+```{r}
+
 well_being_df <- read_sav("WellbeingFINAL.sav")
 View(well_being_df)
-
-
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+# Take a look at the data
+```{r}
+describe(well_being_df)
 ```
+
+#check for missing or na data
+```{r}
+which(is.na(well_being_df))
+```
+
+
+# Look at the distribution 
+```{r}
+plot(well_being_df$Age)
+hist(well_being_df$Age)
+```
+
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
