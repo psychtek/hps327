@@ -25,6 +25,8 @@ library(papaja)
 ```
 
 #import SPSS file into a data frame using the haven package
+Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes. 
+
 ```{r}
 
 well_being_df <- read_sav("WellbeingFINAL.sav")
@@ -42,11 +44,42 @@ which(is.na(well_being_df))
 ```
 
 
+If number of observations with missing values are much lower than the total number of observations, then there’s not much loss of information by dropping them. 
+```{r}
+nrows <- nrow(well_being_df)
+ncomplete <- sum(complete.cases(well_being_df))
+ncomplete/nrows
+```
+
+
+#Subsetting each variable
+```{r}
+personality <- well_being_df[11:60]
+cognition <- well_being_df[64:70]
+affect <- well_being_df[61:63]
+pwi <- well_being_df[4:10]
+gender <- well_being_df[,2]
+employment <- well_being_df[,3]
+```
+
+
+```{r}
+library(ggplot2)
+#Plotting the dependent variable distribution
+pl1 <- ggplot(pwi, aes("well_being_df"))
+pl1 + geom_density(fill = "red", alpha = "0.7")
+```
+
+
 # Look at the distribution 
 ```{r}
 plot(well_being_df$Age)
 hist(well_being_df$Age)
 ```
+```{r}
+PWI_index <- c(well_being_df$PWI1, well_being_df$PWI2, well_being_df$PWI3, well_being_df$PWI4, well_being_df$PWI5)
+```
+
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
