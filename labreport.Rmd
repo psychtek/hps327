@@ -45,12 +45,12 @@ View(well_being_df)
 describe(well_being_df)
 ```
 
-# check for missing or na data
+# Check for missing or na data
 ```{r}
 which(is.na(well_being_df))
 ```
 
-# Subsetting 
+# Subsetting and variables setup
 
 Getting errors when modelling from different data types. Needed to convert each variable to a group factor. Created a function to make this happen quicker. 
 
@@ -68,13 +68,11 @@ employment <- sapply(well_being_df[,3], as.numeric)
 
 gender <- sapply(well_being_df[,2], as.numeric)
 
+age <- sapply(well_being_df[,1], as.numeric)
 #function
 create_col_variable <- function(x,y)
   sapply(well_being_df[,x:y], as.numeric) #need to figure out how it could take a blank argument: x <- create_col_variable(,2) for example.
 
-
-
-  
 ```
 
 Print the labels attributed with the variables on import
