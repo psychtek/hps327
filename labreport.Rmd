@@ -31,7 +31,7 @@ library(labelled)
 SPSS file into a data frame using the haven package
 Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes.
 
-**DV:** Personal Wellbeing Index (pwi)
+**DV:** Personal Wellbeing Index (pwi)  
 **IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
 
 ```{r}
