@@ -22,6 +22,7 @@ library(psych)
 library(lm.beta)
 library(haven)
 library(papaja)
+library(dplyr)
 ```
 
 #import SPSS file into a data frame using the haven package
@@ -53,6 +54,7 @@ ncomplete/nrows
 
 
 #Subsetting each variable
+Until I learn to subset more effectively without downloading a heap of packages. 
 ```{r}
 personality <- well_being_df[11:60]
 cognition <- well_being_df[64:70]
@@ -62,22 +64,35 @@ gender <- well_being_df[,2]
 employment <- well_being_df[,3]
 ```
 
-
-```{r}
-library(ggplot2)
-#Plotting the dependent variable distribution
-pl1 <- ggplot(pwi, aes("well_being_df"))
-pl1 + geom_density(fill = "red", alpha = "0.7")
-```
-
-
 # Look at the distribution 
 ```{r}
 plot(well_being_df$Age)
 hist(well_being_df$Age)
 ```
+
+The core set of items forming the PWI comprise seven questions of satisfaction with specific life domains as follows:
+
+####Questions
+|How satisfied are you with...? | Domains |
+|-------:|:-------:|
+|1. your standard of living?| [Standard of Living] |
+|2. your health?| [Personal Health] |
+|3. what you are achieving in life?| [Achieving in Life] |
+|4. your personal relationships?|  [Personal Relationships] |
+|5. how safe you feel?| [Personal Safety]
+|6. feeling part of your community?| [Community-Connectedness]
+|7. your future security?|  [Future Security]
+
+ 
+  
+
 ```{r}
-PWI_index <- c(well_being_df$PWI1, well_being_df$PWI2, well_being_df$PWI3, well_being_df$PWI4, well_being_df$PWI5)
+select(well_being_df, starts_with("PWI")) %>% group_by("PWI", add = FALSE)
+```
+
+
+```{r}
+PWI_index <- c(well_being_df$PWI1, well_being_df$PWI2, well_being_df$PWI3, well_being_df$PWI4, well_being_df$PWI5) %>% mean(PWI_index * 10)
 ```
 
 
