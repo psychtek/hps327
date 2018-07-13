@@ -23,14 +23,16 @@ When you click the **Knit** button a document will be generated that includes bo
 library(psych)
 library(lm.beta)
 library(haven)
-library(papaja)
 library(dplyr)
 library(labelled)
 ```
 
-#import 
+# import 
 SPSS file into a data frame using the haven package
-Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes. 
+Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes.
+
+**DV:** Personal Wellbeing Index (pwi)
+**IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
 
 ```{r}
 
@@ -39,25 +41,17 @@ View(well_being_df)
 ```
 
 # Take a look at the data
-```{r echo=TRUE}
+```{r}
 describe(well_being_df)
 ```
 
-#check for missing or na data
+# check for missing or na data
 ```{r}
 which(is.na(well_being_df))
 ```
 
+# Subsetting 
 
-If number of observations with missing values are much lower than the total number of observations, then there’s not much loss of information by dropping them. 
-```{r}
-nrows <- nrow(well_being_df)
-ncomplete <- sum(complete.cases(well_being_df))
-ncomplete/nrows
-```
-
-
-#Subsetting 
 Getting errors when modelling from different data types. Needed to convert each variable to a group factor. Created a function to make this happen quicker. 
 
 ```{r}
@@ -76,21 +70,23 @@ gender <- sapply(well_being_df[,2], as.numeric)
 
 #function
 create_col_variable <- function(x,y)
-  sapply(well_being_df[,x:y], as.numeric)
+  sapply(well_being_df[,x:y], as.numeric) #need to figure out how it could take a blank argument: x <- create_col_variable(,2) for example.
+
+
 
   
 ```
 
-Print the labels associated with the variables
+Print the labels attributed with the variables on import
 ```{r}
 var_label(well_being_df)
 attributes(well_being_df)
 ```
 
 ***
-The core set of items forming the PWI comprise seven questions of satisfaction with specific life domains as follows:
+The core set of items forming the PWI comprise of seven questions of satisfaction with specific life domains as follows:
 
-#Questions
+##### Questions
 |How satisfied are you with...? | Domains |
 1. your standard of living? | Standard of Living |
 2. your health?| Personal Health |
@@ -103,7 +99,3 @@ The core set of items forming the PWI comprise seven questions of satisfaction w
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-##Abstract
-
-##Introduction
