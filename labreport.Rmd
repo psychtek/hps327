@@ -77,14 +77,14 @@ The core set of items forming the PWI comprise seven questions of satisfaction w
 
 #Questions
 |How satisfied are you with...? | Domains |
-|-------:|:-------:|
-|1. your standard of living?| Standard of Living |
-|2. your health?| Personal Health |
-|3. what you are achieving in life?| Achieving in Life |
-|4. your personal relationships?|  Personal Relationships |
-|5. how safe you feel?| Personal Safety |
-|6. feeling part of your community?| Community-Connectedness|
-|7. your future security?|  Future Security|
+|------|-------|
+| 1. your standard of living?| Standard of Living |
+| 2. your health?| Personal Health |
+| 3. what you are achieving in life?| Achieving in Life |
+| 4. your personal relationships?|  Personal Relationships |
+| 5. how safe you feel?| Personal Safety |
+| 6. feeling part of your community?| Community-Connectedness|
+| 7. your future security?|  Future Security|
 
  
   
