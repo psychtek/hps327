@@ -37,11 +37,13 @@ Reading SPSS-data with haven keeps the numeric values for variables and adds the
 ```{r}
 
 well_being_df <- read_sav("WellbeingFINAL.sav")
+attach(well_being_df)
 View(well_being_df)
 ```
 
 # Take a look at the data
 ```{r}
+colnames(well_being_df)
 describe(well_being_df)
 ```
 
@@ -75,11 +77,28 @@ create_col_variable <- function(x,y)
 
 ```
 
+I was overthinking the approach. So I am simplifing by summarising data first then mutating into the dataframe. 
+
+
 Print the labels attributed with the variables on import
 ```{r}
 var_label(well_being_df)
 attributes(well_being_df)
 ```
+
+
+```{r}
+#for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
+select(well_being_df, Gender, Age) %>%
+  group_by(Gender) %>%
+  summarise_all(funs(mean, sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
+
+```
+
+select(well_being_df, Gender, Age) %>%
+  group_by(Gender) %>%
+  summarise_all(funs(mean, sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
+
 
 ***
 The core set of items forming the PWI comprise of seven questions of satisfaction with specific life domains as follows:
