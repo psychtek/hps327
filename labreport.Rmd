@@ -21,7 +21,6 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r}
 # Included librarys for functions
 library(psych)
-library(lm.beta)
 library(haven)
 library(dplyr)
 library(labelled)
@@ -77,27 +76,29 @@ create_col_variable <- function(x,y)
 
 ```
 
-I was overthinking the approach. So I am simplifing by summarising data first then mutating into the dataframe. 
-
 
 Print the labels attributed with the variables on import
 ```{r}
-var_label(well_being_df)
-attributes(well_being_df)
+val_labels(well_being_df$Gender)
+#attributes(well_being_df)
 ```
 
 
 ```{r}
 #for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
-select(well_being_df, Gender, Age) %>%
+Gender <- select(well_being_df, Gender, Age) %>%
   group_by(Gender) %>%
-  summarise_all(funs(mean, sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
+  summarise_all(funs(mean, n = n(), sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
+Gender$Gender
+describe(Gender)
+
+#For each employment status (1:5) summarise mean, sd min and max values 
+Employment <- select(well_being_df, EmploymentStatus, Gender) %>%
+  group_by(EmploymentStatus) %>%
+  summarise_all(funs(mean, n = n(), sd, min(.,is.na = TRUE), max(.,is.na = TRUE)))
+Employment$EmploymentStatus
 
 ```
-
-select(well_being_df, Gender, Age) %>%
-  group_by(Gender) %>%
-  summarise_all(funs(mean, sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
 
 
 ***
