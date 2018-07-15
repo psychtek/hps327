@@ -53,37 +53,8 @@ which(is.na(well_being_df))
 
 # Subsetting and variables setup
 
-Getting errors when modelling from different data types. Needed to convert each variable to a group factor. Created a function to make this happen quicker. 
 
-```{r}
-#learning to use the sapply function to a list and converting factors to numeric types
-pwi <- sapply(well_being_df[,4:10], as.numeric)
-
-personality <- sapply(well_being_df[,11:60], as.numeric)
-
-cognition <- sapply(well_being_df[,64:70], as.numeric)
-
-affect <- sapply(well_being_df[,61:63], as.numeric)
-
-employment <- sapply(well_being_df[,3], as.numeric)
-
-gender <- sapply(well_being_df[,2], as.numeric)
-
-age <- sapply(well_being_df[,1], as.numeric)
-#function
-create_col_variable <- function(x,y)
-  sapply(well_being_df[,x:y], as.numeric) #need to figure out how it could take a blank argument: x <- create_col_variable(,2) for example.
-
-```
-
-
-Print the labels attributed with the variables on import
-```{r}
-val_labels(well_being_df$Gender)
-#attributes(well_being_df)
-```
-
-
+Thanks to some Stackexchange help, I can now coerce the dummy codings to their labels
 ```{r}
 #for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
 Gender <- select(well_being_df, Gender, Age) %>%
@@ -91,15 +62,13 @@ Gender <- select(well_being_df, Gender, Age) %>%
   group_by(Gender) %>%
   summarise_all(funs(mean, n = n(), sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
 Gender
-describe(Gender)
 
 #For each employment status (1:5) summarise mean, sd min and max values 
 Employment <- select(well_being_df, EmploymentStatus, Gender) %>% 
   mutate(EmploymentStatus = labelled::to_factor(EmploymentStatus)) %>% # use labelled package 
   group_by(EmploymentStatus) %>% 
   summarise_all(funs(mean, n = n(), sd,min(.,is.na = TRUE), max(.,is.na = TRUE)))
-Employment$EmploymentStatus
-describe(Employment)
+Employment
 ```
 
 
@@ -115,7 +84,6 @@ The core set of items forming the PWI comprise of seven questions of satisfactio
 5. how safe you feel?| Personal Safety |
 6. feeling part of your community?| Community-Connectedness|
 7. your future security?|  Future Security|
-
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
