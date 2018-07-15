@@ -33,6 +33,16 @@ Reading SPSS-data with haven keeps the numeric values for variables and adds the
 **DV:** Personal Wellbeing Index (pwi)  
 **IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
 
+
+Check for missing values and that they are lower than the total number of observations. 
+If number of observations with missing values are much lower than the total number of observations, then there’s not much loss of information by dropping them. 
+```{r}
+nrows <- nrow(well_being_df)
+ncomplete <- sum(complete.cases(well_being_df))
+ncomplete/nrows
+```
+
+
 ```{r}
 
 well_being_df <- read_sav("WellbeingFINAL.sav")
@@ -54,13 +64,15 @@ which(is.na(well_being_df))
 # Subsetting and variables setup
 
 
-Thanks to some Stackexchange help, I can now coerce the dummy codings to their labels
+Thanks to some Stackexchange help, I can now coerce the dummy codings to their labels. The select() function cannot handle character strings as arguments.
+This might become a problem when column names are given as a string vector for example.
+To solve this problem, the select_() function was equipped in dplyr
 ```{r}
 #for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
 Gender <- select(well_being_df, Gender, Age) %>%
   mutate(Gender = labelled::to_factor(Gender)) %>%
   group_by(Gender) %>%
-  summarise_all(funs(mean, n = n(), sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
+  summarise_all(funs(mean, n = n(), sd, min(.,is.na = TRUE), max(.,is.na = TRUE)))
 Gender
 
 #For each employment status (1:5) summarise mean, sd min and max values 
