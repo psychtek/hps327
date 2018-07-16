@@ -23,12 +23,20 @@ When you click the **Knit** button a document will be generated that includes bo
 library(psych)
 library(haven)
 library(dplyr)
+library(broom)
 library(labelled)
 ```
 
 # import 
 SPSS file into a data frame using the haven package
 Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes.
+
+```{r}
+
+well_being_df <- read_sav("WellbeingFINAL.sav")
+attach(well_being_df)
+View(well_being_df)
+```
 
 **DV:** Personal Wellbeing Index (pwi)  
 **IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
@@ -42,13 +50,6 @@ ncomplete <- sum(complete.cases(well_being_df))
 ncomplete/nrows
 ```
 
-
-```{r}
-
-well_being_df <- read_sav("WellbeingFINAL.sav")
-attach(well_being_df)
-View(well_being_df)
-```
 
 # Take a look at the data
 ```{r}
@@ -81,7 +82,24 @@ Employment <- select(well_being_df, EmploymentStatus, Gender) %>%
   group_by(EmploymentStatus) %>% 
   summarise_all(funs(mean, n = n(), sd,min(.,is.na = TRUE), max(.,is.na = TRUE)))
 Employment
+
+#Create a new variable for the Personal Wellbeing Index 
+x <- select(well_being_df) %>% mutate(pwi_index = well_being_df$PWI1 + well_being_df$PWI2 + well_being_df$PWI3 + well_being_df$PWI4 + well_being_df$PWI5 + well_being_df$PWI6 + well_being_df$PWI7)
+
+cognition <- Cognition1 + Cognition2 + Cognition3 + Cognition4 + Cognition5 + Cognition6 + Cognition7
+
+affect <- well_being_df$Affect1 + well_being_df$Affect2 + well_being_df$Affect3
+
+pwi_index <- well_being_df$PWI1 + well_being_df$PWI2 + well_being_df$PWI3 + well_being_df$PWI4 + well_being_df$PWI5 + well_being_df$PWI6 + well_being_df$PWI7
+
+summary(lm(pwi_index ~ cognition + affect))
+
 ```
+
+```{r}
+stargazer(Employment)
+```
+
 
 
 ***
