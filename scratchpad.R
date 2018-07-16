@@ -72,3 +72,24 @@ Employment <- select(well_being_df, EmploymentStatus, Gender) %>%
   group_by(EmploymentStatus) %>% 
   summarise_all(funs(mean, n = n(), sd,min(.,is.na = TRUE), max(.,is.na = TRUE)))
 Employment
+
+
+
+#
+#You can access your columns without "$" but still can use their labels :
+ # 
+#  rowSums(data[,c("a","b","c")]
+#          
+#          If your columns are too much and u can't type "a b c d ... z", you can use ascii code of them with one loop :
+#          
+#          vec <- rep(0,10)
+#          
+#          for (i in 1:10)
+#          {
+#          vec[i]<- intToUtf8(64+i)
+#          }
+          
+#          It provides you "A", "B", ... ,"J" ; now u can use rowSums(data[,vec])
+          
+#          About your last question in your comment, when u use "," in data[] it defines row's index before it and column's index after it, also in data[] you can use a logical values, because of it above codes running correct.
+          

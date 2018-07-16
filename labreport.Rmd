@@ -86,13 +86,19 @@ Employment
 #Create a new variable for the Personal Wellbeing Index 
 x <- select(well_being_df) %>% mutate(pwi_index = well_being_df$PWI1 + well_being_df$PWI2 + well_being_df$PWI3 + well_being_df$PWI4 + well_being_df$PWI5 + well_being_df$PWI6 + well_being_df$PWI7)
 
+Gender <- well_being_df$Gender
+
 cognition <- Cognition1 + Cognition2 + Cognition3 + Cognition4 + Cognition5 + Cognition6 + Cognition7
 
 affect <- well_being_df$Affect1 + well_being_df$Affect2 + well_being_df$Affect3
 
 pwi_index <- well_being_df$PWI1 + well_being_df$PWI2 + well_being_df$PWI3 + well_being_df$PWI4 + well_being_df$PWI5 + well_being_df$PWI6 + well_being_df$PWI7
 
-summary(lm(pwi_index ~ cognition + affect))
+personality <- rowSums(well_being_df[,11:60]) #doesnt save labels
+
+#create a model
+lm(formula = pwi_index ~ affect + cognition + personality + Gender)
+
 
 ```
 
