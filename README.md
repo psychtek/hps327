@@ -1,2 +1,6 @@
 # hps327
-research methods capstone
+Research Methods Capstone
+
+Term 2 2018
+
+Topic: Competing Models of Subjective Wellbeing
