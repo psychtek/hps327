@@ -24,13 +24,13 @@ create_col_variable <- function(x,y)
 
 attach(well_being_df)
 Male <- select(well_being_df, Gender, Age, EmploymentStatus) %>% 
-  filter(Gender == 1)
+  filter(Gender == 1) #Males
 
 Female <- select(well_being_df, Gender, Age, EmploymentStatus) %>% 
-  filter(Gender == 2)
+  filter(Gender == 2) #Females
 
 Trans <- select(well_being_df, Gender, Age, EmploymentStatus) %>% 
-  filter(Gender == 3)
+  filter(Gender == 3) #Transgender
 
 #group by gender and summarise means
 select(well_being_df, Gender, Age, EmploymentStatus) %>%
@@ -49,8 +49,6 @@ select(well_being_df, Age) %>%
   summarise(average = mean(Age))
 
 #What is the average PWI Score?
-select(well_being_df, .vars = 4:10) %>%
-  grouped_df(well_being_df, )
 
 colSums(well_being_df[4:10])/169*10
 
@@ -93,3 +91,47 @@ Employment
           
 #          About your last question in your comment, when u use "," in data[] it defines row's index before it and column's index after it, also in data[] you can use a logical values, because of it above codes running correct.
           
+
+well_being_df2 <- well_being_df
+
+
+Gender <- well_being_df$Gender        
+
+#Trying to mutatue PWI and add rows
+well_being_df2 %>% mutate(personality = rowSums(well_being_df2[.11:60]))
+#Error in mutate_impl(.data, dots) : 
+  Evaluation error: Column indexes must be integer, not 0.11, 1.11, 2.11, 
+3.11, 4.11, 5.11, 6.11, 7.11, 8.11, 9.11, 10.11, 11.11, 12.11, 13.11, 14.11, 
+15.11, 16.11, 17.11, 18.11, 19.11, 20.11, 21.11, 22.11, 23.11, 24.11, 25.11, 
+26.11, 27.11, 28.11, 29.11, 30.11, 31.11, 32.11, 33.11, 34.11, 35.11, 36.11, 
+37.11, 38.11, 39.11, 40.11, 41.11, 42.11, 43.11, 44.11, 45.11, 46.11, 47.11, 
+48.11, 49.11, 50.11, 51.11, 52.11, 53.11, 54.11, 55.11, 56.11, 57.11, 58.11, 59.11.
+
+well_being_df2 %>% mutate(pwi = rowSums(select(., contains("PWI"))))
+# A tibble: 169 x 72
+Age Gender  EmploymentStatus PWI1   PWI2   PWI3   PWI4  PWI5  PWI6  PWI7  Personality1 Personality2 Personality3
+
+well_being_df2 %>% 
+  mutate(blubb = well_being_df2 %>% 
+           rowwise() %>% 
+           select(., contains("PWI")) %>% 
+           rowSums()
+         )
+
+
+rowSums(select(well_being_df, contains("PWI"))) #this works 
+
+x <- mutate(well_being_df2, x = rowSums(select(well_being_df2, contains("PWI"))) #this works 
+
+
+
+well_being_df2 %>%
+  mutate(x = rowSums(select(., contains("PWI")))) %>%
+  head()
+
+rowSums(select(well_being_df, contains("PWI"))) 
+
+df <- well_being_df2 %>% mutate(PWI_Indexer = rowSums(select(., contains("PWI"))))
+
+mutate(well_being_df, x = rowSums(select(well_being_df, contains("PWI"))))     
+
