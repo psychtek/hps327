@@ -135,3 +135,12 @@ df <- well_being_df2 %>% mutate(PWI_Indexer = rowSums(select(., contains("PWI"))
 
 mutate(well_being_df, x = rowSums(select(well_being_df, contains("PWI"))))     
 
+
+library(memisc) #memsic is a package for working with survey data files
+df <- spss.system.file("WellbeingFINAL.sav") #import the data file into an data.set object to view labels
+codebook(df)
+description(df)
+mydata <- subset(df) #subset works as like as.data.frame
+
+
+mutate(mydata, x = rowSums(select(mydata, contains("PWI"))))     
