@@ -45,21 +45,27 @@ How satisfied are you with...? | Domains |
 6. feeling part of your community?| Community-Connectedness|
 7. your future security?|  Future Security|
 
+Data derived on the Personal Wellbeing Index scale items may be used either at the level of individual domains, or the domain scores may be aggregated and averaged to form the Personal Wellbeing Index (PWI).
+
 ## Personality 
+### NEO-PI
 
 ## Affect (HPMood) 
+### Homeostatically Protected Mood
+1. Happy
+2. Content
+3. Excited
+
+**DV:** Personal Wellbeing Index (pwi)  
+**IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
 
 ***
 ```{r}
 
 well_being_df <- read_sav("WellbeingFINAL.sav")
 attach(well_being_df)
-#View(well_being_df)
+View(well_being_df)
 ```
-
-**DV:** Personal Wellbeing Index (pwi)  
-**IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
-
 
 Check for missing values and that they are lower than the total number of observations. 
 If number of observations with missing values are much lower than the total number of observations, then there’s not much loss of information by dropping them. 
@@ -84,34 +90,35 @@ which(is.na(well_being_df))
 
 # Subsetting and variables setup
 
-Thanks to some Stackexchange help, I can now coerce the dummy codings to their labels. The select() function cannot handle character strings as arguments. For now I have stored the data in the working environment as opposed to mutating it into the dataframe till I am sure I have this correct. 
+Coerce the dummy codings to their labels. The select() function cannot handle character strings as arguments. 
 ```{r}
 #for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
-Gender <- select(well_being_df, Gender, Age) %>%
-  mutate(Gender = labelled::to_factor(Gender)) %>%
-  group_by(Gender) %>%
-  summarise_all(funs(mean, n = n(), sd, min(.,is.na = TRUE), max(.,is.na = TRUE)))
+# Gender <- select(well_being_df, Gender, Age) %>%
+#  mutate(Gender = labelled::to_factor(Gender)) %>%
+#  group_by(Gender) %>%
+#  summarise_all(funs(mean, n = n(), sd, min(.,is.na = TRUE), max(.,is.na = TRUE)))
 
-Gender #display table
+# Gender #display table
 
 #For each employment status (1:5) summarise mean, sd min and max values 
-Employment <- select(well_being_df, EmploymentStatus, Gender) %>% 
-  mutate(EmploymentStatus = labelled::to_factor(EmploymentStatus)) %>% # use labelled package 
-  group_by(EmploymentStatus) %>% 
-  summarise_all(funs(mean, n = n(), sd,min(.,is.na = TRUE), max(.,is.na = TRUE)))
+# Employment <- select(well_being_df, EmploymentStatus, Gender) %>% 
+#  mutate(EmploymentStatus = labelled::to_factor(EmploymentStatus)) %>% # use labelled package 
+#  group_by(EmploymentStatus) %>% 
+#  summarise_all(funs(mean, n = n(), sd,min(.,is.na = TRUE), max(.,is.na = TRUE)))
 
-Employment #display table
+# Employment #display table
 
 #check assumptions and distributions
 
 
 
 #Create a new column for each variable and mutate to a new column on existing dataframe 
-well_being_df <- well_being_df %>% 
-  mutate(pwi_index = rowSums(select(., contains("PWI")))) #PWI Variable
 
 well_being_df <- well_being_df %>% 
   mutate(affect = rowSums(select(., contains("Affect")))) #Affect variable
+
+well_being_df <- well_being_df %>% 
+  mutate(pwi_index = rowSums(select(., contains("PWI")))) #PWI Variable - need to select for each domain
 
 well_being_df <- well_being_df %>% 
   mutate(cognition = rowSums(select(., contains("Cognition")))) #Cognition
@@ -119,7 +126,14 @@ well_being_df <- well_being_df %>%
 well_being_df <- well_being_df %>% 
   mutate(Personality = rowSums(select(., contains("Personality")))) #Personality
 
-#Have a look at some plots
+
+#What is the average PWI Score for each domain of our sample?
+Personal.Wellbeing.Index <- c("Standard of Living", "Personal Health", "Achieving in Life", "Personal Relationships", "Personal Safety", "Community", "Future Security")
+
+PWi.Means <- colSums(well_being_df[4:10]/169*10) #As per the manual - move one decimal to the left
+cbind(Personal.Wellbeing.Index, as.numeric(PWi.Means))
+
+#Have a look at some plots - Personal wellbeing and HPMood
 ggplot(data = well_being_df, aes(x = well_being_df$affect, y = well_being_df$pwi_index)) +
   geom_point(aes(color = )) +
   theme_bw() +
@@ -132,7 +146,10 @@ ggplot(data = well_being_df, aes(x = well_being_df$affect, y = well_being_df$pwi
   theme(legend.position = "bottom")
 
 #create a model
-my.model <- lm(formula = pwi_index ~ affect + cognition + Personality)
+my.model <- lm(formula = well_being_df$pwi_index ~ 
+                 well_being_df$affect + 
+                 well_being_df$cognition + 
+                 well_being_df$Personality)
 
 confint(my.model, level = 0.95)
 
