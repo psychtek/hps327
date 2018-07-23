@@ -48,9 +48,9 @@ Gender
 select(well_being_df, Age) %>%
   summarise(average = mean(Age))
 
-#What is the average PWI Score?
+#What is the average PWI Score for each domain?
 
-colSums(well_being_df[4:10])/169*10
+colSums(well_being_df[4:10]/169*10)
 
 colMeans(well_being_df[4:10])
 

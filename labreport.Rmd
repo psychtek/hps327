@@ -28,30 +28,27 @@ library(stargazer)
 library(labelled)
 ```
 
-# import 
-SPSS file into a data frame using the haven package
-Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes.
-
 The core set of items forming the PWI comprise of seven questions of satisfaction with specific life domains as follows:
 
-##### Questions
+### Personal Wellbeing Index
 
-How satisfied are you with...? | Domains |
-1. your standard of living? | Standard of Living |
-2. your health?| Personal Health |
-3. what you are achieving in life?| Achieving in Life |
-4. your personal relationships?|  Personal Relationships |
-5. how safe you feel?| Personal Safety |
-6. feeling part of your community?| Community-Connectedness|
-7. your future security?|  Future Security|
+#### How satisfied are you with...?
+
+1. your standard of living? - Standard of Living
+2. your health? - Personal Health
+3. what you are achieving in life? - Achieving in Life
+4. your personal relationships? - Personal Relationships
+5. how safe you feel? - Personal Safety
+6. feeling part of your community? - Community-Connectedness
+7. your future security? - Future Security
 
 Data derived on the Personal Wellbeing Index scale items may be used either at the level of individual domains, or the domain scores may be aggregated and averaged to form the Personal Wellbeing Index (PWI).
 
-## Personality 
-### NEO-PI
+### Personality 
+#### NEO-PI
 
-## Affect (HPMood) 
-### Homeostatically Protected Mood
+### Affect (HPMood) 
+#### Homeostatically Protected Mood
 1. Happy
 2. Content
 3. Excited
@@ -60,6 +57,9 @@ Data derived on the Personal Wellbeing Index scale items may be used either at t
 **IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
 
 ***
+## Import 
+SPSS file into a data frame using the haven package
+Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes.
 ```{r}
 
 well_being_df <- read_sav("WellbeingFINAL.sav")
@@ -79,7 +79,7 @@ ncomplete/nrows
 
 # Take a look at the data
 ```{r}
-describe(well_being_df)
+# describe(well_being_df)
 ```
 
 # Check for missing or na data
@@ -93,12 +93,14 @@ which(is.na(well_being_df))
 Coerce the dummy codings to their labels. The select() function cannot handle character strings as arguments. 
 ```{r}
 #for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
+# attach(well_being_df)
 # Gender <- select(well_being_df, Gender, Age) %>%
 #  mutate(Gender = labelled::to_factor(Gender)) %>%
 #  group_by(Gender) %>%
 #  summarise_all(funs(mean, n = n(), sd, min(.,is.na = TRUE), max(.,is.na = TRUE)))
 
-# Gender #display table
+# Gender #display gender table
+
 
 #For each employment status (1:5) summarise mean, sd min and max values 
 # Employment <- select(well_being_df, EmploymentStatus, Gender) %>% 
