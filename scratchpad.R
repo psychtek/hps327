@@ -39,9 +39,10 @@ select(well_being_df, Gender, Age, EmploymentStatus) %>%
 
 #for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
 select(well_being_df, Gender, Age) %>%
-  mutate(Gender = labelled::to_factor(Gender) %>%
-  group_by(Gender) %>%
+  mutate(gender = labelled::to_factor(Gender)) %>%
+  group_by(gender) %>%
   summarise_all(funs(mean, n = n(), sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
+  
 Gender
 
 #Whats our overall mean age of responses? 
@@ -144,3 +145,17 @@ mydata <- subset(df) #subset works as like as.data.frame
 
 
 mutate(mydata, x = rowSums(select(mydata, contains("PWI"))))     
+
+
+#Working out how to subset more effectively 
+select(well_being_df, num_range("PWI", 1:7)) #Used to select a custom column 
+x <- rowSums(select(well_being_df, num_range("PWI", 1:7))) #sum each row per observation
+
+x <- well_being_df %>% #this works
+  mutate(swb = rowSums(select(., num_range("PWI", 1:7))))
+
+#playing around with a function that could select rows as needed
+myfunction <- function(a,x,y) {
+  x <- well_being_df %>% #this works
+  mutate(a = rowSums(select(., num_range(x, y))))
+}
