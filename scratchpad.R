@@ -154,8 +154,10 @@ x <- rowSums(select(well_being_df, num_range("PWI", 1:7))) #sum each row per obs
 x <- well_being_df %>% #this works
   mutate(swb = rowSums(select(., num_range("PWI", 1:7))))
 
+rowSums(select(well_being_df, num_range("Personality", 11:20))) #selecting subsets of the personality measures
+
 #playing around with a function that could select rows as needed
-myfunction <- function(a,x,y) {
-  x <- well_being_df %>% #this works
-  mutate(a = rowSums(select(., num_range(x, y))))
+myfunction <- function(colnam, prefix_, range_) {
+  well_being_df %>% #this works
+  mutate(colnam = rowSums(select(well_being_df, num_range("prefix_", range_))))
 }
