@@ -139,8 +139,32 @@ x <- rowSums(select(well_being_df, num_range("PWI", 1:7))) #sum each row per obs
 x <- well_being_df %>% #this works
   mutate(swb = rowSums(select(., num_range("PWI", 1:7))))
 
-rowSums(select(well_being_df, num_range("Personality", 11:20))) #selecting subsets of the personality measures
+Personality <- c("Open", "Consciencious", "Extraversion", "Agreeable", "Neurotic")
 
+
+Open <- rowSums(select(well_being_df, num_range("Personality", 1:10))) #selecting subsets of the personality measures
+Consciencious <- rowSums(select(well_being_df, num_range("Personality", 11:20))) 
+Extraversion <- rowSums(select(well_being_df, num_range("Personality", 21:30))) 
+Agreeable <- rowSums(select(well_being_df, num_range("Personality", 31:40))) 
+Neurotic <- rowSums(select(well_being_df, num_range("Personality", 41:50))) 
+
+well_being_df <- well_being_df %>%
+  mutate(Open = rowSums(select(well_being_df, num_range("Personality", 1:10)))) %>%
+  mutate(Consciencious = rowSums(select(well_being_df, num_range("Personality", 11:20)))) %>%
+  mutate(Extraversion = rowSums(select(well_being_df, num_range("Personality", 21:30))) ) %>%
+  mutate(Agreeable = rowSums(select(well_being_df, num_range("Personality", 31:40))) ) %>%
+  mutate(Neurotic = rowSums(select(well_being_df, num_range("Personality", 41:50))))
+
+big5 <- data_frame(well_being_df$Open, well_being_df$Consciencious, well_being_df$Extraversion, well_being_df$Agreeable, well_being_df$Neurotic)
+
+
+
+
+my.model2 <- lm(formula = well_being_df$pwi_index ~ 
+                 well_being_df$affect + 
+                 well_being_df$cognition + 
+                 well_being_df$Personality +
+                 big5)
 
 well_being_df <- well_being_df %>% 
   mutate(pwi_index = rowSums(select(., contains("PWI"))))

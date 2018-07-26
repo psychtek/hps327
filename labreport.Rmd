@@ -46,6 +46,11 @@ Data derived on the Personal Wellbeing Index scale items may be used either at t
 
 ### Personality 
 #### NEO-PI
+1. Openness
+2. Consciencious
+3. Extraversion
+4. Agreeable
+5. Neurotic
 
 ### Affect (HPMood) 
 #### Homeostatically Protected Mood
@@ -74,12 +79,6 @@ If number of observations with missing values are much lower than the total numb
 nrows <- nrow(well_being_df)
 ncomplete <- sum(complete.cases(well_being_df))
 ncomplete/nrows
-```
-
-
-# Take a look at the data
-```{r}
-# describe(well_being_df)
 ```
 
 # Check for missing or na data
@@ -128,6 +127,13 @@ well_being_df <- well_being_df %>%
 well_being_df <- well_being_df %>% 
   mutate(Personality = rowSums(select(., contains("Personality")))) #Personality
 
+#Compute new variables for each personality domain
+well_being_df <- well_being_df %>% 
+  mutate(Open = rowSums(select(well_being_df, num_range("Personality", 1:10)))) %>%
+  mutate(Consciencious = rowSums(select(well_being_df, num_range("Personality", 11:20)))) %>%
+  mutate(Extraversion = rowSums(select(well_being_df, num_range("Personality", 21:30))) ) %>%
+  mutate(Agreeable = rowSums(select(well_being_df, num_range("Personality", 31:40))) ) %>%
+  mutate(Neurotic = rowSums(select(well_being_df, num_range("Personality", 41:50))))
 
 #What is the average PWI Score for each domain of our sample?
 Personal.Wellbeing.Index <- c("Standard of Living", "Personal Health", "Achieving in Life", "Personal Relationships", "Personal Safety", "Community", "Future Security")
