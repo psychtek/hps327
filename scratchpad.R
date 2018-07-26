@@ -62,9 +62,6 @@ resp = colSums(well_being_df[4:10])/sum(well_being_df[4:10])*100
 casez = colSums(well_being_df[4:10])/nrow(well_being_df[4:10])*100
 resp.case
 
-well_being_df %>% mutate_at(.funs = funs(age = ./Affect1), .vars = 4:10)
-
-
 #for each employment answer
 Employment <- select(well_being_df, EmploymentStatus, Gender) %>% 
   mutate(EmploymentStatus = labelled::to_factor(EmploymentStatus)) %>% # use labelled package 
@@ -95,18 +92,6 @@ Employment
 
 well_being_df2 <- well_being_df
 
-
-Gender <- well_being_df$Gender        
-
-#Trying to mutatue PWI and add rows
-well_being_df2 %>% mutate(personality = rowSums(well_being_df2[.11:60]))
-#Error in mutate_impl(.data, dots) : 
-  Evaluation error: Column indexes must be integer, not 0.11, 1.11, 2.11, 
-3.11, 4.11, 5.11, 6.11, 7.11, 8.11, 9.11, 10.11, 11.11, 12.11, 13.11, 14.11, 
-15.11, 16.11, 17.11, 18.11, 19.11, 20.11, 21.11, 22.11, 23.11, 24.11, 25.11, 
-26.11, 27.11, 28.11, 29.11, 30.11, 31.11, 32.11, 33.11, 34.11, 35.11, 36.11, 
-37.11, 38.11, 39.11, 40.11, 41.11, 42.11, 43.11, 44.11, 45.11, 46.11, 47.11, 
-48.11, 49.11, 50.11, 51.11, 52.11, 53.11, 54.11, 55.11, 56.11, 57.11, 58.11, 59.11.
 
 well_being_df2 %>% mutate(pwi = rowSums(select(., contains("PWI"))))
 # A tibble: 169 x 72
@@ -156,8 +141,15 @@ x <- well_being_df %>% #this works
 
 rowSums(select(well_being_df, num_range("Personality", 11:20))) #selecting subsets of the personality measures
 
+
+well_being_df <- well_being_df %>% 
+  mutate(pwi_index = rowSums(select(., contains("PWI"))))
+
+rowSums(select(well_being_df, num_range("PWI", 1:7))) #means ###
+
+
 #playing around with a function that could select rows as needed
-myfunction <- function(colnam, prefix_, range_) {
+myfunction <- function(x, y) {
   well_being_df %>% #this works
-  mutate(colnam = rowSums(select(well_being_df, num_range("prefix_", range_))))
+  mutate(x = rowSums(select(well_being_df, starts_with(y))))
 }

@@ -132,20 +132,8 @@ well_being_df <- well_being_df %>%
 #What is the average PWI Score for each domain of our sample?
 Personal.Wellbeing.Index <- c("Standard of Living", "Personal Health", "Achieving in Life", "Personal Relationships", "Personal Safety", "Community", "Future Security")
 
-PWi.Means <- colSums(well_being_df[4:10]/169*10) #As per the manual - move one decimal to the left
+PWi.Means <- colSums(well_being_df[4:10]/169*10) #As per the manual - move one decimal to the right for mean scores
 cbind(Personal.Wellbeing.Index, as.numeric(PWi.Means))
-
-#Have a look at some plots - Personal wellbeing and HPMood
-ggplot(data = well_being_df, aes(x = well_being_df$affect, y = well_being_df$pwi_index)) +
-  geom_point(aes(color = )) +
-  theme_bw() +
-  ggtitle("Subjective Wellbeing Model") +
-  theme( plot.title = element_text(vjust = 1.0) ) +
-  xlab("Homostasis Mood Index") +
-  theme( axis.title.x = element_text(vjust = -.5) ) +
-  ylab("Personal Wellbeing Index") +
-  theme( axis.title.y = element_text(vjust = 1.0) ) +
-  theme(legend.position = "bottom")
 
 #create a model
 my.model <- lm(formula = well_being_df$pwi_index ~ 
@@ -153,11 +141,25 @@ my.model <- lm(formula = well_being_df$pwi_index ~
                  well_being_df$cognition + 
                  well_being_df$Personality)
 
-confint(my.model, level = 0.95)
+coef(my.model) #coefficient table
 
-coef(my.model)
+summary(my.model) #print the outout of the model
 
-summary(my.model)
+anova(my.model) #run a 
+
+#Have a look at some plots - Personal wellbeing and HPMood
+ggplot(data = well_being_df, aes(x = well_being_df$affect, y = well_being_df$pwi_index)) +
+  geom_point(aes(color = "red")) +
+  theme_bw() +
+  ggtitle("Subjective Wellbeing Model") +
+  theme( plot.title = element_text(vjust = 1.0) ) +
+  xlab("Homeostasis Mood Index") +
+  theme( axis.title.x = element_text(vjust = -.5) ) +
+  ylab("Personal Wellbeing Index") +
+  theme( axis.title.y = element_text(vjust = 1.0) ) +
+  theme(legend.position = "bottom")
+
+
 
 ```
 
