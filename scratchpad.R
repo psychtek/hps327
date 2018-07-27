@@ -121,6 +121,19 @@ df <- well_being_df2 %>% mutate(PWI_Indexer = rowSums(select(., contains("PWI"))
 
 mutate(well_being_df, x = rowSums(select(well_being_df, contains("PWI"))))     
 
+# Confidence Interval
+confidence.intervals <- function(x){
+  alpha <- 0.05 # set 95% CI
+  xbar <- mean(x) #sample mean
+  s <- sd(x) # standard deviation of x
+  n <- length(x) #number of cases
+  
+  CI <- qt(1-alpha/2, n-1)*s/sqrt(n)
+  
+  c(xbar - CI, xbar + CI)
+}
+
+
 
 library(memisc) #memsic is a package for working with survey data files
 df <- spss.system.file("WellbeingFINAL.sav") #import the data file into an data.set object to view labels
@@ -177,3 +190,14 @@ myfunction <- function(x, y) {
   well_being_df %>% #this works
   mutate(x = rowSums(select(well_being_df, starts_with(y))))
 }
+
+
+# for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
+
+Gender <- select(well_being_df, well_being_df$Gender) %>%
+  mutate(Gender_ = labelled::to_factor(well_being_df$Gender)) %>%
+  group_by(Gender_) %>%
+  summarise_all(funs(mean, n = n(), sd, min(.,is.na = TRUE), max(.,is.na = TRUE)))
+
+Gender #display gender table
+

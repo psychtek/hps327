@@ -18,7 +18,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 
-```{r}
+```{r Included Library, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
 # Included librarys for functions
 library(psych)
 library(haven)
@@ -29,6 +29,38 @@ library(labelled)
 ```
 
 The core set of items forming the PWI comprise of seven questions of satisfaction with specific life domains as follows:
+
+
+
+
+**DV:** Personal Wellbeing Index (pwi)  
+**IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
+
+***
+## Import 
+SPSS file into a data frame using the haven package
+Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes.
+```{r Import}
+
+well_being_df <- read_sav("WellbeingFINAL.sav")
+# attach(well_being_df)
+View(well_being_df)
+```
+
+Check for missing values and that they are lower than the total number of observations. 
+If number of observations with missing values are much lower than the total number of observations, then there’s not much loss of information by dropping them. 
+
+```{r Data Check}
+nrows <- nrow(well_being_df)
+ncomplete <- sum(complete.cases(well_being_df))
+ncomplete/nrows
+
+# Check for missing or na data
+which(is.na(well_being_df))
+
+```
+
+# Subsetting and variables setup
 
 ### Personal Wellbeing Index
 
@@ -44,6 +76,12 @@ The core set of items forming the PWI comprise of seven questions of satisfactio
 
 Data derived on the Personal Wellbeing Index scale items may be used either at the level of individual domains, or the domain scores may be aggregated and averaged to form the Personal Wellbeing Index (PWI).
 
+```{r Subjective WellBeing}
+well_being_df <- well_being_df %>% #PWI Variable - need to select for each domain
+  mutate(pwi_index = rowSums(select(., contains("PWI")))) 
+
+```
+
 ### Personality 
 #### NEO-PI
 1. Openness
@@ -51,78 +89,7 @@ Data derived on the Personal Wellbeing Index scale items may be used either at t
 3. Extraversion
 4. Agreeable
 5. Neurotic
-
-### Affect (HPMood) 
-#### Homeostatically Protected Mood
-1. Happy
-2. Content
-3. Excited
-
-**DV:** Personal Wellbeing Index (pwi)  
-**IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
-
-***
-## Import 
-SPSS file into a data frame using the haven package
-Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes.
-```{r}
-
-well_being_df <- read_sav("WellbeingFINAL.sav")
-attach(well_being_df)
-View(well_being_df)
-```
-
-Check for missing values and that they are lower than the total number of observations. 
-If number of observations with missing values are much lower than the total number of observations, then there’s not much loss of information by dropping them. 
-
-```{r}
-nrows <- nrow(well_being_df)
-ncomplete <- sum(complete.cases(well_being_df))
-ncomplete/nrows
-```
-
-# Check for missing or na data
-```{r}
-which(is.na(well_being_df))
-```
-
-
-# Subsetting and variables setup
-
-Coerce the dummy codings to their labels. The select() function cannot handle character strings as arguments. 
-```{r}
-#for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
-# attach(well_being_df)
-# Gender <- select(well_being_df, Gender, Age) %>%
-#  mutate(Gender = labelled::to_factor(Gender)) %>%
-#  group_by(Gender) %>%
-#  summarise_all(funs(mean, n = n(), sd, min(.,is.na = TRUE), max(.,is.na = TRUE)))
-
-# Gender #display gender table
-
-
-#For each employment status (1:5) summarise mean, sd min and max values 
-# Employment <- select(well_being_df, EmploymentStatus, Gender) %>% 
-#  mutate(EmploymentStatus = labelled::to_factor(EmploymentStatus)) %>% # use labelled package 
-#  group_by(EmploymentStatus) %>% 
-#  summarise_all(funs(mean, n = n(), sd,min(.,is.na = TRUE), max(.,is.na = TRUE)))
-
-# Employment #display table
-
-#check assumptions and distributions
-
-
-
-#Create a new column for each variable and mutate to a new column on existing dataframe 
-
-well_being_df <- well_being_df %>% 
-  mutate(affect = rowSums(select(., contains("Affect")))) #Affect variable
-
-well_being_df <- well_being_df %>% 
-  mutate(pwi_index = rowSums(select(., contains("PWI")))) #PWI Variable - need to select for each domain
-
-well_being_df <- well_being_df %>% 
-  mutate(cognition = rowSums(select(., contains("Cognition")))) #Cognition
+```{r Personality}
 
 well_being_df <- well_being_df %>% 
   mutate(Personality = rowSums(select(., contains("Personality")))) #Personality
@@ -135,11 +102,60 @@ well_being_df <- well_being_df %>%
   mutate(Agreeable = rowSums(select(well_being_df, num_range("Personality", 31:40))) ) %>%
   mutate(Neurotic = rowSums(select(well_being_df, num_range("Personality", 41:50))))
 
-#What is the average PWI Score for each domain of our sample?
+
+```
+
+
+### Affect (HPMood) 
+#### Homeostatically Protected Mood
+1. Happy
+2. Content
+3. Excited
+
+```{r Affect}
+well_being_df <- well_being_df %>% 
+  mutate(affect = rowSums(select(., contains("Affect")))) #Affect variable
+
+#Homeostatic Mood 
+names(well_being_df)[61] <- "Happy" #rename HPMood labels 
+names(well_being_df)[62] <- "Content"
+names(well_being_df)[63] <- "Alert"
+affect.Means <- colSums(well_being_df[61:63]/169*10)#column means for each affect
+#HPMood <- c("Happy", "Content", "Alert") #create labels for columns
+#cbind(HPMood, as.numeric(affect.Means)) #combine and display 
+mean(well_being_df$affect)/3*10 #overall mean of HPMood
+
+```
+
+
+### Multiple Discrepancies Theory (MDT) - Cognition
+1. Self Best
+2. Self Future
+3. Self Progress
+4. Self Needs
+5. Self Deserves
+6. Self Other
+7. Self Wants
+
+```{r Cognition}
+
+well_being_df <- well_being_df %>% 
+  mutate(cognition = rowSums(select(., contains("Cognition")))) #Cognition
+
+colSums(select(well_being_df, num_range("Cognition", 1:7)))
+```
+
+## Descriptives
+
+```{r Descriptives}
+#What is the average PWI Score for each domain?
 Personal.Wellbeing.Index <- c("Standard of Living", "Personal Health", "Achieving in Life", "Personal Relationships", "Personal Safety", "Community", "Future Security")
 
-PWi.Means <- colSums(well_being_df[4:10]/169*10) #As per the manual - move one decimal to the right for mean scores
-cbind(Personal.Wellbeing.Index, as.numeric(PWi.Means))
+PWi.Means <- colSums(well_being_df[4:10]/169*10) #mean scores for each wellbeing column
+Subjective.Wellbeing <- cbind(Personal.Wellbeing.Index, as.numeric(PWi.Means)) #combine each column and display with domain names
+
+Subjective.Wellbeing
+round(mean(well_being_df$pwi_index)/7*10, digits = 2) #overall mean score: Subjective Wellbeing Score
 
 #create a model
 my.model <- lm(formula = well_being_df$pwi_index ~ 
@@ -170,7 +186,7 @@ ggplot(data = well_being_df, aes(x = well_being_df$affect, y = well_being_df$pwi
 ```
 
 Using the Stargazer library to output cleaner output tables
-```{r}
+```{r Regression Table}
 stargazer(my.model, 
           type = "text", 
           style = "all", 
