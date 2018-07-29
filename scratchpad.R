@@ -191,6 +191,29 @@ myfunction <- function(x, y) {
   mutate(x = rowSums(select(well_being_df, starts_with(y))))
 }
 
+plot1 <- ggplot(data = df, aes(x = df$affect, y = df$pwi_index)) +
+  geom_point(aes(color = "red")) +
+  theme_classic() +
+  ggtitle("Subjective Wellbeing Model") +
+  theme( plot.title = element_text(vjust = 1.0) ) +
+  xlab("Homeostasis Mood Index") +
+  theme( axis.title.x = element_text(vjust = -.5) ) +
+  ylab("Personal Wellbeing Index") +
+  theme( axis.title.y = element_text(vjust = 1.0) ) +
+  theme(legend.position = "bottom")
+
+plot2 <- ggplot(data = df, aes(x = df$cognition, y = df$pwi_index)) +
+  geom_point(aes(color = "red")) +
+  theme_classic() +
+  ggtitle("Subjective Wellbeing Model") +
+  theme( plot.title = element_text(vjust = 1.0) ) +
+  xlab("MDT") +
+  theme( axis.title.x = element_text(vjust = -.5) ) +
+  ylab("Personal Wellbeing Index") +
+  theme( axis.title.y = element_text(vjust = 1.0) ) +
+  theme(legend.position = "bottom")
+
+grid(plot1, plot2)
 
 # for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
 
@@ -201,3 +224,28 @@ Gender <- select(well_being_df, well_being_df$Gender) %>%
 
 Gender #display gender table
 
+df <- as.data.frame(well_being_df[,71:79]) #create a data frame woth the personality types
+summary(df)
+
+g <- as.data.frame(well_being_df$Gender)
+
+
+well_being_df <- well_being_df %>% #PWI Variable - need to select for each domain
+  mutate(pwi_index = rowSums(select(., contains("PWI")))/7*10) 
+
+well_being_df$pwi_index
+
+stargazer(df.all, HPMood, 
+          title = "Descriptives",
+          type = "text", 
+          style = "all", 
+          summary = TRUE, 
+          ci = FALSE, digits = 2)
+
+
+stargazer(HPMood, 
+          title = "Descriptives",
+          type = "text", 
+          style = "all", 
+          summary = TRUE, 
+          ci = FALSE, digits = 2)

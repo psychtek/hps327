@@ -11,12 +11,9 @@ geometry: margin = 1.2in
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
+## Statistics
+#### To Check
+Are summed variables mutated correctly? Affect sums should be mean or total score? 
 
 ```{r Included Library, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
 # Included librarys for functions
@@ -28,23 +25,24 @@ library(stargazer)
 library(labelled)
 ```
 
+
+~ FUUuuuuuu... a bloody comma!
+(╯°□°）╯︵ ┻━┻
+
+
 The core set of items forming the PWI comprise of seven questions of satisfaction with specific life domains as follows:
 
-
-
-
 **DV:** Personal Wellbeing Index (pwi)  
-**IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality), Employment(employment).
+**IVs:** Affect(affect), Cogniton(cognition), Gender(gender), Personality(personality)
 
 ***
 ## Import 
 SPSS file into a data frame using the haven package
 Reading SPSS-data with haven keeps the numeric values for variables and adds the value and variable labels as attributes.
 ```{r Import}
-
 well_being_df <- read_sav("WellbeingFINAL.sav")
-# attach(well_being_df)
-View(well_being_df)
+
+# View(well_being_df)
 ```
 
 Check for missing values and that they are lower than the total number of observations. 
@@ -78,7 +76,8 @@ Data derived on the Personal Wellbeing Index scale items may be used either at t
 
 ```{r Subjective WellBeing}
 well_being_df <- well_being_df %>% #PWI Variable - need to select for each domain
-  mutate(pwi_index = rowSums(select(., contains("PWI")))) 
+ # mutate(pwi_index = rowSums(select(., contains("PWI")))) #Was only summing totoal scores not case average
+   mutate(pwi_index = rowSums(select(., contains("PWI")))/7*10) #This sums score for each case and computes mean
 
 ```
 
@@ -91,10 +90,10 @@ well_being_df <- well_being_df %>% #PWI Variable - need to select for each domai
 5. Neurotic
 ```{r Personality}
 
-well_being_df <- well_being_df %>% 
-  mutate(Personality = rowSums(select(., contains("Personality")))) #Personality
+# well_being_df <- well_being_df %>% 
+#  mutate(Personality = rowSums(select(., contains("Personality")))) #Personality -- Dont need overal personality score only for each type
 
-#Compute new variables for each personality domain
+#Compute new variables for each personality domain - total score for each case
 well_being_df <- well_being_df %>% 
   mutate(Open = rowSums(select(well_being_df, num_range("Personality", 1:10)))) %>%
   mutate(Consciencious = rowSums(select(well_being_df, num_range("Personality", 11:20)))) %>%
@@ -114,16 +113,16 @@ well_being_df <- well_being_df %>%
 
 ```{r Affect}
 well_being_df <- well_being_df %>% 
-  mutate(affect = rowSums(select(., contains("Affect")))) #Affect variable
+  mutate(affect = rowSums(select(., contains("Affect")))/3) #Affect variable to new column
 
 #Homeostatic Mood 
 names(well_being_df)[61] <- "Happy" #rename HPMood labels 
 names(well_being_df)[62] <- "Content"
 names(well_being_df)[63] <- "Alert"
-affect.Means <- colSums(well_being_df[61:63]/169*10)#column means for each affect
+affect.Means <- colSums(well_being_df[61:63]/169)#column means for each affect
 #HPMood <- c("Happy", "Content", "Alert") #create labels for columns
 #cbind(HPMood, as.numeric(affect.Means)) #combine and display 
-mean(well_being_df$affect)/3*10 #overall mean of HPMood
+affect.Means
 
 ```
 
@@ -137,101 +136,103 @@ mean(well_being_df$affect)/3*10 #overall mean of HPMood
 6. Self Other
 7. Self Wants
 
-```{r Cognition}
-
+```{r MDT Cognition}
 well_being_df <- well_being_df %>% 
-  mutate(cognition = rowSums(select(., contains("Cognition")))) #Cognition
+  mutate(cognition = rowSums(select(., contains("Cognition")))/7) #Cognition
 
-colSums(select(well_being_df, num_range("Cognition", 1:7)))
+# colSums(select(well_being_df, num_range("Cognition", 1:7)))
 ```
 
-## Descriptives
+## Results
 
-```{r Descriptives}
-#What is the average PWI Score for each domain?
+1. create an object and pull the PWI columns then rename
+2. Create a data frame with used variables
+
+```{r Results}
+#create an object with label names
 Personal.Wellbeing.Index <- c("Standard of Living", "Personal Health", "Achieving in Life", "Personal Relationships", "Personal Safety", "Community", "Future Security")
 
-PWi.Means <- colSums(well_being_df[4:10]/169*10) #mean scores for each wellbeing column
-Subjective.Wellbeing <- cbind(Personal.Wellbeing.Index, as.numeric(PWi.Means)) #combine each column and display with domain names
+Subjective.Wellbeing <- cbind(well_being_df[4:10]) #create an object with PWI columns
+names(Subjective.Wellbeing) <- Personal.Wellbeing.Index # rename columns as set out in Personal.Wellbeing.Index
+HPMood <- cbind(well_being_df[,61:63]) 
 
-Subjective.Wellbeing
-round(mean(well_being_df$pwi_index)/7*10, digits = 2) #overall mean score: Subjective Wellbeing Score
+attach(well_being_df)
+# big5 <- data.frame(Open, Consciencious, Extraversion, Agreeable, Neurotic) #object with NEO-PI-R
+df.all <- data.frame(pwi_index, affect, cognition, Open, Consciencious, Extraversion, Agreeable, Neurotic)
 
-#create a model
-my.model <- lm(formula = well_being_df$pwi_index ~ 
-                 well_being_df$affect + 
-                 well_being_df$cognition + 
-                 well_being_df$Personality)
+detach(well_being_df)
+attach(df.all)
 
-coef(my.model) #coefficient table
+corr.test(df.all)
+# Anova(lm(formula = df.all$pwi_index ~ df.all$affect + df.all$cognition + df.all$Open + df.all$Consciencious + df.all$Extraversion))
 
-summary(my.model) #print the outout of the model
+#create a model to see the which is the potential strongest predictor for SWB:
+my.model <- lm(formula = pwi_index ~ 
+                 affect + 
+                 cognition +
+                 Open +
+                 Consciencious +
+                 Extraversion +
+                 Agreeable +
+                 Neurotic
+               )
 
-anova(my.model) #run a 
+SWB.Anova <- anova(my.model) #run an ANOVA 
 
-#Have a look at some plots - Personal wellbeing and HPMood
-ggplot(data = well_being_df, aes(x = well_being_df$affect, y = well_being_df$pwi_index)) +
+#Using the stargazer package to output cleaner tables 
+stargazer(df.all, HPMood, 
+          title = "Descriptives",
+          type = "text", 
+          style = "all", 
+          summary = TRUE, 
+          ci = FALSE, digits = 2)
+
+stargazer(HPMood, 
+          title = "Descriptives",
+          type = "text", 
+          style = "all", 
+          summary = TRUE, 
+          ci = FALSE, digits = 2)
+
+stargazer(my.model, SWB.Anova,
+          title = "Results",
+          type = "text", 
+          style = "all", 
+          summary = TRUE, 
+          dep.var.labels = "Personal Wellbeing Index", 
+          ci = FALSE, digits = 2) #the text prints table to the Console
+
+```
+
+### Plots 
+```{r Histogram and Plots}
+# Personal Wellbeing and Cognition
+ggplot(data = df.all, aes(x = cognition, y = pwi_index)) +
   geom_point(aes(color = "red")) +
   theme_bw() +
   ggtitle("Subjective Wellbeing Model") +
   theme( plot.title = element_text(vjust = 1.0) ) +
-  xlab("Homeostasis Mood Index") +
+  xlab("Multiple Discrepancy Theory (Cognition)") +
   theme( axis.title.x = element_text(vjust = -.5) ) +
   ylab("Personal Wellbeing Index") +
   theme( axis.title.y = element_text(vjust = 1.0) ) +
   theme(legend.position = "bottom")
 
 
+# Personal wellbeing and HPMood
+ggplot(data = df.all, aes(x = affect, y = pwi_index)) +
+  geom_point(aes(color = "red")) +
+  theme_bw() +
+  ggtitle("Subjective Wellbeing Model") +
+  theme( plot.title = element_text(vjust = 1.0) ) +
+  xlab("Homeostasis Mood Index (Affect)") +
+  theme( axis.title.x = element_text(vjust = -.5) ) +
+  ylab("Personal Wellbeing Index") +
+  theme( axis.title.y = element_text(vjust = 1.0) ) +
+  theme(legend.position = "bottom")
+
 
 ```
-
-Using the Stargazer library to output cleaner output tables
-```{r Regression Table}
-stargazer(my.model, 
-          type = "text", 
-          style = "all", 
-          summary = TRUE, 
-          dep.var.labels = "Personal Wellbeing Index", 
-          ci = TRUE, digits = 2) #the text prints table to the Console
-```
-
-
-
-
-### Inserting html code for table copied from the output: stargazer(my.model, type = "html")
-
-<table style="text-align:center"><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td><em>Dependent variable:</em></td></tr>
-<tr><td></td><td colspan="1" style="border-bottom: 1px solid black"></td></tr>
-<tr><td style="text-align:left"></td><td>Personal Wellbeing Index</td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">affect</td><td>1.00<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.80, 1.21)</td></tr>
-<tr><td style="text-align:left"></td><td>t = 9.80</td></tr>
-<tr><td style="text-align:left"></td><td>p = 0.00</td></tr>
-<tr><td style="text-align:left">cognition</td><td>0.16<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.06, 0.26)</td></tr>
-<tr><td style="text-align:left"></td><td>t = 3.03</td></tr>
-<tr><td style="text-align:left"></td><td>p = 0.003</td></tr>
-<tr><td style="text-align:left">personality</td><td>-0.03</td></tr>
-<tr><td style="text-align:left"></td><td>(-0.13, 0.07)</td></tr>
-<tr><td style="text-align:left"></td><td>t = -0.62</td></tr>
-<tr><td style="text-align:left"></td><td>p = 0.54</td></tr>
-<tr><td style="text-align:left">Gender</td><td>-0.65</td></tr>
-<tr><td style="text-align:left"></td><td>(-2.29, 1.00)</td></tr>
-<tr><td style="text-align:left"></td><td>t = -0.77</td></tr>
-<tr><td style="text-align:left"></td><td>p = 0.45</td></tr>
-<tr><td style="text-align:left">Constant</td><td>30.06<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(13.89, 46.24)</td></tr>
-<tr><td style="text-align:left"></td><td>t = 3.64</td></tr>
-<tr><td style="text-align:left"></td><td>p = 0.0004</td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>169</td></tr>
-<tr><td style="text-align:left">R<sup>2</sup></td><td>0.55</td></tr>
-<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.54</td></tr>
-<tr><td style="text-align:left">Residual Std. Error</td><td>5.33 (df = 164)</td></tr>
-<tr><td style="text-align:left">F Statistic</td><td>50.82<sup>***</sup> (df = 4; 164) (p = 0.00)</td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
-</table>
-
 ***
 
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+┬─┬ノ(ಠ_ಠノ) ~Ok its fixed. 
