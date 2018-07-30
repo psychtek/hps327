@@ -15,11 +15,6 @@ employment <- sapply(well_being_df[,3], as.numeric)
 gender <- sapply(well_being_df[,2], as.numeric)
 
 age <- sapply(well_being_df[,1], as.numeric)
-#function
-create_col_variable <- function(x,y)
-  sapply(well_being_df[,x:y], as.numeric) #need to figure out how it could take a blank argument: x <- create_col_variable(,2) for example.
-
-```
 
 
 attach(well_being_df)
@@ -56,105 +51,6 @@ colSums(well_being_df[4:10]/169*10)
 colMeans(well_being_df[4:10])
 
 
-
-resp.case = data.frame(Freq = colSums(well_being_df[4:10])) 
-resp = colSums(well_being_df[4:10])/sum(well_being_df[4:10])*100
-casez = colSums(well_being_df[4:10])/nrow(well_being_df[4:10])*100
-resp.case
-
-#for each employment answer
-Employment <- select(well_being_df, EmploymentStatus, Gender) %>% 
-  mutate(EmploymentStatus = labelled::to_factor(EmploymentStatus)) %>% # use labelled package 
-  group_by(EmploymentStatus) %>% 
-  summarise_all(funs(mean, n = n(), sd,min(.,is.na = TRUE), max(.,is.na = TRUE)))
-Employment
-
-
-
-#
-#You can access your columns without "$" but still can use their labels :
- # 
-#  rowSums(data[,c("a","b","c")]
-#          
-#          If your columns are too much and u can't type "a b c d ... z", you can use ascii code of them with one loop :
-#          
-#          vec <- rep(0,10)
-#          
-#          for (i in 1:10)
-#          {
-#          vec[i]<- intToUtf8(64+i)
-#          }
-          
-#          It provides you "A", "B", ... ,"J" ; now u can use rowSums(data[,vec])
-          
-#          About your last question in your comment, when u use "," in data[] it defines row's index before it and column's index after it, also in data[] you can use a logical values, because of it above codes running correct.
-          
-
-well_being_df2 <- well_being_df
-
-
-well_being_df2 %>% mutate(pwi = rowSums(select(., contains("PWI"))))
-# A tibble: 169 x 72
-Age Gender  EmploymentStatus PWI1   PWI2   PWI3   PWI4  PWI5  PWI6  PWI7  Personality1 Personality2 Personality3
-
-well_being_df2 %>% 
-  mutate(blubb = well_being_df2 %>% 
-           rowwise() %>% 
-           select(., contains("PWI")) %>% 
-           rowSums()
-         )
-
-
-rowSums(select(well_being_df, contains("PWI"))) #this works 
-
-x <- mutate(well_being_df2, x = rowSums(select(well_being_df2, contains("PWI"))) #this works 
-
-
-
-well_being_df2 %>%
-  mutate(x = rowSums(select(., contains("PWI")))) %>%
-  head()
-
-rowSums(select(well_being_df, contains("PWI"))) 
-
-df <- well_being_df2 %>% mutate(PWI_Indexer = rowSums(select(., contains("PWI"))))
-
-mutate(well_being_df, x = rowSums(select(well_being_df, contains("PWI"))))     
-
-# Confidence Interval
-confidence.intervals <- function(x){
-  alpha <- 0.05 # set 95% CI
-  xbar <- mean(x) #sample mean
-  s <- sd(x) # standard deviation of x
-  n <- length(x) #number of cases
-  
-  CI <- qt(1-alpha/2, n-1)*s/sqrt(n)
-  
-  c(xbar - CI, xbar + CI)
-}
-
-
-
-library(memisc) #memsic is a package for working with survey data files
-df <- spss.system.file("WellbeingFINAL.sav") #import the data file into an data.set object to view labels
-codebook(df)
-description(df)
-mydata <- subset(df) #subset works as like as.data.frame
-
-
-mutate(mydata, x = rowSums(select(mydata, contains("PWI"))))     
-
-
-#Working out how to subset more effectively 
-select(well_being_df, num_range("PWI", 1:7)) #Used to select a custom column 
-x <- rowSums(select(well_being_df, num_range("PWI", 1:7))) #sum each row per observation
-
-x <- well_being_df %>% #this works
-  mutate(swb = rowSums(select(., num_range("PWI", 1:7))))
-
-Personality <- c("Open", "Consciencious", "Extraversion", "Agreeable", "Neurotic")
-
-
 Open <- rowSums(select(well_being_df, num_range("Personality", 1:10))) #selecting subsets of the personality measures
 Consciencious <- rowSums(select(well_being_df, num_range("Personality", 11:20))) 
 Extraversion <- rowSums(select(well_being_df, num_range("Personality", 21:30))) 
@@ -179,73 +75,19 @@ my.model2 <- lm(formula = well_being_df$pwi_index ~
                  well_being_df$Personality +
                  big5)
 
-well_being_df <- well_being_df %>% 
-  mutate(pwi_index = rowSums(select(., contains("PWI"))))
 
-rowSums(select(well_being_df, num_range("PWI", 1:7))) #means ###
+library(corrplot)
 
+corrplot(corr, method = "circle")
 
-#playing around with a function that could select rows as needed
-myfunction <- function(x, y) {
-  well_being_df %>% #this works
-  mutate(x = rowSums(select(well_being_df, starts_with(y))))
+cv.lm(data = newdf, lm1, m = 3) #cross validation 
+
+# M., Ling invert function
+invertItem <- function(x, min, max) {
+  if(!is.numeric(x) | !is.numeric(min) | !is.numeric(max)) stop("Inputs are not numeric")
+  ifelse(max<min, stop("Maximum value is less than minimum value"), "")
+  ifelse(x>max | x < min, stop("Value is out of expected range"), "")
+  
+  reb <- (min-1)
+  (max - reb + 1) - (x - reb) + reb
 }
-
-plot1 <- ggplot(data = df, aes(x = df$affect, y = df$pwi_index)) +
-  geom_point(aes(color = "red")) +
-  theme_classic() +
-  ggtitle("Subjective Wellbeing Model") +
-  theme( plot.title = element_text(vjust = 1.0) ) +
-  xlab("Homeostasis Mood Index") +
-  theme( axis.title.x = element_text(vjust = -.5) ) +
-  ylab("Personal Wellbeing Index") +
-  theme( axis.title.y = element_text(vjust = 1.0) ) +
-  theme(legend.position = "bottom")
-
-plot2 <- ggplot(data = df, aes(x = df$cognition, y = df$pwi_index)) +
-  geom_point(aes(color = "red")) +
-  theme_classic() +
-  ggtitle("Subjective Wellbeing Model") +
-  theme( plot.title = element_text(vjust = 1.0) ) +
-  xlab("MDT") +
-  theme( axis.title.x = element_text(vjust = -.5) ) +
-  ylab("Personal Wellbeing Index") +
-  theme( axis.title.y = element_text(vjust = 1.0) ) +
-  theme(legend.position = "bottom")
-
-grid(plot1, plot2)
-
-# for each gender summarise the mean, sd, min and max values 1 = Male, 2 = Female and 3 = Transgender
-
-Gender <- select(well_being_df, well_being_df$Gender) %>%
-  mutate(Gender_ = labelled::to_factor(well_being_df$Gender)) %>%
-  group_by(Gender_) %>%
-  summarise_all(funs(mean, n = n(), sd, min(.,is.na = TRUE), max(.,is.na = TRUE)))
-
-Gender #display gender table
-
-df <- as.data.frame(well_being_df[,71:79]) #create a data frame woth the personality types
-summary(df)
-
-g <- as.data.frame(well_being_df$Gender)
-
-
-well_being_df <- well_being_df %>% #PWI Variable - need to select for each domain
-  mutate(pwi_index = rowSums(select(., contains("PWI")))/7*10) 
-
-well_being_df$pwi_index
-
-stargazer(df.all, HPMood, 
-          title = "Descriptives",
-          type = "text", 
-          style = "all", 
-          summary = TRUE, 
-          ci = FALSE, digits = 2)
-
-
-stargazer(HPMood, 
-          title = "Descriptives",
-          type = "text", 
-          style = "all", 
-          summary = TRUE, 
-          ci = FALSE, digits = 2)
