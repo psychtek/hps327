@@ -1,7 +1,16 @@
+# Included librarys for functions
+library(psych)
+library(haven)
+library(dplyr)
+library(stargazer)
+library(labelled)
+
+well_being_df <- read_sav("WellbeingFINAL.sav")
+
 # As per the PWI manual: score/number of domains*10 to get a SWB score. 
 # Then mutate this to a new column called "PW.Index"
 #
-select(well_being_df) %>%
+well_being_df <- well_being_df %>% 
 mutate(PW.Index = (well_being_df$PWI1 + 
                 well_being_df$PWI2 + 
                 well_being_df$PWI3 + 
@@ -14,9 +23,9 @@ mutate(PW.Index = (well_being_df$PWI1 +
 # These are summed and mutated to a new column for each trait.
 
 # Openess
-select(well_being_df) %>%
-  mutate(Openess =
-           (well_being_df$Personality1 + 
+well_being_df <- well_being_df %>% 
+  mutate(Openess = (
+           well_being_df$Personality1 + 
   well_being_df$Personality2 +
   well_being_df$Personality3 +
   well_being_df$Personality4 +
@@ -28,9 +37,9 @@ select(well_being_df) %>%
   well_being_df$Personality10))
 
 # Conscientiousness
-select(well_being_df) %>%
-  mutate(Conscientiousness =
-           (well_being_df$Personality11 + 
+well_being_df <- well_being_df %>% 
+  mutate(Conscientiousness = (
+           well_being_df$Personality11 + 
               well_being_df$Personality12 +
               well_being_df$Personality13 +
               well_being_df$Personality14 +
@@ -42,9 +51,9 @@ select(well_being_df) %>%
               well_being_df$Personality20))
 
 # Extraversion
-select(well_being_df) %>%
-  mutate(Extraversion =
-           (well_being_df$Personality21 + 
+well_being_df <- well_being_df %>% 
+  mutate(Extraversion = (
+           well_being_df$Personality21 + 
               well_being_df$Personality22 +
               well_being_df$Personality23 +
               well_being_df$Personality24 +
@@ -56,9 +65,9 @@ select(well_being_df) %>%
               well_being_df$Personality30))
 
 # Agreeableness
-select(well_being_df) %>%
-  mutate(Agreeableness =
-           (well_being_df$Personality31 + 
+well_being_df <- well_being_df %>% 
+  mutate(Agreeableness = (
+           well_being_df$Personality31 + 
               well_being_df$Personality32 +
               well_being_df$Personality33 +
               well_being_df$Personality34 +
@@ -70,9 +79,9 @@ select(well_being_df) %>%
               well_being_df$Personality40))
 
 # Neuroticism
-select(well_being_df) %>%
-  mutate(Neurticism  =
-           (well_being_df$Personality41 + 
+well_being_df <- well_being_df %>% 
+  mutate(Neuroticism  = (
+           well_being_df$Personality41 + 
               well_being_df$Personality42 +
               well_being_df$Personality43 +
               well_being_df$Personality44 +
@@ -83,20 +92,20 @@ select(well_being_df) %>%
               well_being_df$Personality49 +
               well_being_df$Personality50))
 
-# Homeostatically Protected Mood as a measuer by Davern., et, al. that asks how people 
-# feel about life in general across three domains of "happy", "content" & "excited or alert".
+# Homeostatically Protected Mood (Core Affect) as a measuer by Davern., et, al. that asks how people 
+# feel about life in general across three domains of "happy", "content" & "excited/alert".
 # Here the relevant columns are pulled, summed, divided by the 3 domains and mutated to a new column
 # called "affect". 
-select(well_being_df) %>%
-  mutate(affect =
-           (well_being_df$Affect1 +
+well_being_df <- well_being_df %>% 
+  mutate(affect = (
+           well_being_df$Affect1 +
               well_being_df$Affect2 +
               well_being_df$Affect3))
   
 
 ### Multiple Discrepancies Theory (MDT) - Cognition 
 # Firstly I mutate to a new column labelled "MDT" and averaged. 
-# Then each discrepancy mean is worked out and stored in its respective object. 
+# Then each discrepancy mean is worked out and stored in its variable. 
 
 # 1. Self Best
 # 2. Self Future
@@ -106,9 +115,10 @@ select(well_being_df) %>%
 # 6. Self Other
 # 7. Self Wants
 
-select(well_being_df) %>% 
-  mutate(MDT =
-           (well_being_df$Cognition1 +
+# This will create a new variable with the overal MDT cognition mean score
+well_being_df <- well_being_df %>%  
+  mutate(MDT =  (
+           well_being_df$Cognition1 +
            well_being_df$Cognition2 +
            well_being_df$Cognition3 +
            well_being_df$Cognition4 +
@@ -117,11 +127,124 @@ select(well_being_df) %>%
            well_being_df$Cognition7)/7
            )
 
-select(well_being_df) %>% 
-  mutate(self.best = well_being_df$Cognition1) %>%
-  mutate(self.future = well_being_df$Cognition2) %>%
-  mutate(self.progress = well_being_df$Cognition3) %>%
-  mutate(self.needs = well_being_df$Cognition4) %>%
-  mutate(self.deserves = well_being_df$Cognition5) %>%
-  mutate(self.other = well_being_df$Cognition6) %>%
-  mutate(self.wants = well_being_df$Cognition7)
+# Rename columns to refelct the discrepancies 
+well_being_df <- well_being_df %>% 
+  mutate(self.best =  (well_being_df$Cognition1)) %>%
+  mutate(self.future = (well_being_df$Cognition2)) %>%
+  mutate(self.progress = (well_being_df$Cognition3)) %>%
+  mutate(self.needs = (well_being_df$Cognition4)) %>%
+  mutate(self.deserves = (well_being_df$Cognition5)) %>%
+  mutate(self.other = (well_being_df$Cognition6)) %>%
+  mutate(self.wants = (well_being_df$Cognition7))
+
+# Descriptives of key variables
+Descriptives <- describe(well_being_df[71:85]) #Using the brackets to call on the rows that were mutated to the df
+
+# Making use of the stargazer library to output a nicer looking table for html
+# Cummins et.al, 2009 showed that the population SWB mean 74.93 and SD = 12.36.
+stargazer(Descriptives, 
+          title = "Descriptives",
+          type = "text", 
+          style = "all", 
+          summary = FALSE, 
+          ci = FALSE, digits = 2)
+
+# Looking at the discriptives things look pretty ok in terms of skew.
+# The main response variable is negatively skewed however, given the population mean
+# is up around 70s then this looks ok. 
+
+hist(well_being_df$PW.Index)
+
+# Next I will have a look at the distribution of the Big 5 scores
+# Graphical representations of Big 5 scores
+bplot.big5 <- cbind(well_being_df$Openess, 
+                    well_being_df$Conscientiousness, 
+                    well_being_df$Extraversion, 
+                    well_being_df$Agreeableness, 
+                    well_being_df$Neuroticism)
+
+boxplot.names <- c("O", "C", "E", "A", "N")
+
+boxplot(bplot.big5, main = "Big 5 Means", names = boxplot.names, horizontal = FALSE)  
+
+
+# Combine into an object variables of interest
+Group.All <- as.data.frame(cbind(well_being_df$PW.Index, well_being_df$Age, well_being_df$Gender, 
+                     well_being_df$affect, well_being_df$MDT,
+                     well_being_df$Openess, well_being_df$Conscientiousness, 
+                     well_being_df$Extraversion, well_being_df$Agreeableness,
+                     well_being_df$Neuroticism, well_being_df$self.best,
+                     well_being_df$self.future, well_being_df$self.progress,
+                     well_being_df$self.needs, well_being_df$self.deserves,
+                     well_being_df$self.other, well_being_df$self.wants)) #using cbind as calling variables with well_being_df$... removes col names for some reason
+
+# Check all the correlations in a matrix
+round(cor(Group.All, use = "pair"), 2) 
+
+# Openess was negatively assocaited with Subjective Wellbeing (SWB) scores (-0.32), neuroticism
+# had a slight negative association but the remainder of the big 5 traits had little association.
+# Which is surprising considering that if you are open trait then woulnt you have thought the SWB be higher?
+# Strongest correlation was that of affect followed by MDT. Self.other had little or no association
+# on SWB. 
+
+#Step one of the multiple regression will use the two strongest correlates followed by the big
+# 5 then MDT. 
+model1 <- lm(well_being_df$PW.Index ~ well_being_df$Age + well_being_df$Gender)
+
+model2 <- lm(well_being_df$PW.Index ~ well_being_df$Age + well_being_df$Gender +
+               well_being_df$affect + well_being_df$MDT)
+
+model3 <- lm(well_being_df$PW.Index ~ well_being_df$Age + well_being_df$Gender +
+               well_being_df$affect + well_being_df$MDT +
+               well_being_df$Openess + well_being_df$Conscientiousness + 
+               well_being_df$Extraversion + well_being_df$Agreeableness +
+               well_being_df$Neuroticism)
+
+model4 <- lm(well_being_df$PW.Index ~ well_being_df$Age + well_being_df$Gender +
+               well_being_df$affect + well_being_df$MDT +
+               well_being_df$Openess + well_being_df$Conscientiousness + 
+               well_being_df$Extraversion + well_being_df$Agreeableness +
+               well_being_df$Neuroticism + well_being_df$self.best +
+               well_being_df$self.future + well_being_df$self.progress +
+               well_being_df$self.needs + well_being_df$self.deserves +
+               well_being_df$self.other + well_being_df$self.wants)
+
+
+
+#Hierachial regression 
+summary(model1) #PWI ~ age and gender
+summary(model2) #affect and MDT
+summary(model3) #Big 5
+summary(model4) #MDT domains significant p<.01
+
+# Run an ANOVA to check for sig effect. 
+anova(model1, model2, model3, model4)
+
+# affect was the strongest predictor on SWB followed by self.future. 
+# Model 3 was the only significant model accounting for 62% variance in SWB and
+# affect was the strongest unique contributor to SWB followed by self.future. 
+
+
+model.Affect <- (lm(well_being_df$PW.Index ~ well_being_df$affect))
+
+plot(well_being_df$PW.Index, well_being_df$affect, pch = 16, cex = 1.3, col = "blue",
+     main = "Personal Wellbeing Against Affect",
+     xlab = "Affect", ylab = "PWI Score")
+
+abline(model.Affect)
+
+# model.all <- lm(well_being_df$PW.Index ~., data = Group.All)
+bplot.b5.mdt <- as.data.frame(c(well_being_df$Openess, 
+                    well_being_df$Neuroticism,
+                    well_being_df$affect,
+                    well_being_df$MDT,
+                    well_being_df$PW.Index))
+
+
+install.packages("PerformanceAnalytics")
+
+  library("PerformanceAnalytics")
+chart.Correlation(bplot.b5.mdt, histogram=TRUE, pch=19)
+
+
+        

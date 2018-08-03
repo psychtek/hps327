@@ -26,9 +26,6 @@ library(labelled)
 ```
 
 
-~ FUUuuuuuu... a bloody comma!
-(╯°□°）╯︵ ┻━┻
-
 
 The core set of items forming the PWI comprise of seven questions of satisfaction with specific life domains as follows:
 
@@ -49,12 +46,7 @@ Check for missing values and that they are lower than the total number of observ
 If number of observations with missing values are much lower than the total number of observations, then there’s not much loss of information by dropping them. 
 
 ```{r Data Check}
-nrows <- nrow(well_being_df)
-ncomplete <- sum(complete.cases(well_being_df))
-ncomplete/nrows
 
-# Check for missing or na data
-which(is.na(well_being_df))
 
 ```
 
@@ -168,6 +160,15 @@ corr.test(df.all)
 
 #create a model to see the which is the potential strongest predictor for SWB:
 my.model <- lm(formula = pwi_index ~ 
+                 affect
+               )
+
+my.model2 <- lm(formula = pwi_index ~ 
+                 affect + 
+                 cognition
+               )
+
+my.model3 <- lm(formula = pwi_index ~ 
                  affect + 
                  cognition +
                  Open +
@@ -177,7 +178,9 @@ my.model <- lm(formula = pwi_index ~
                  Neurotic
                )
 
-SWB.Anova <- anova(my.model) #run an ANOVA 
+
+
+SWB.Anova <- anova(my.model, my.model2, my.model3) #run an ANOVA 
 
 #Using the stargazer package to output cleaner tables 
 stargazer(df.all, HPMood, 
@@ -203,6 +206,18 @@ stargazer(my.model, SWB.Anova,
           ci = FALSE, digits = 2) #the text prints table to the Console
 
 ```
+
+## ~ FUUuuuuuu... bloody doing things the hard way! forgot AGE!
+## (╯°□°）╯︵ ┻━┻
+
+### Create a new data frame with age and gender
+```{r}
+newdf <- cbind.data.frame(well_being_df$Age, well_being_df$Gender, df.all, HPMood, Subjective.Wellbeing)
+colnames(newdf)[which(names(newdf) == "well_being_df$Age")] <- "Age"
+colnames(newdf)[which(names(newdf) == "well_being_df$Gender")] <- "Gender"
+stargazer(newdf, type = "text")
+```
+
 
 ### Plots 
 ```{r Histogram and Plots}

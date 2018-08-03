@@ -82,7 +82,7 @@ corrplot(corr, method = "circle")
 
 cv.lm(data = newdf, lm1, m = 3) #cross validation 
 
-# M., Ling invert function
+# M. Ling invert function
 invertItem <- function(x, min, max) {
   if(!is.numeric(x) | !is.numeric(min) | !is.numeric(max)) stop("Inputs are not numeric")
   ifelse(max<min, stop("Maximum value is less than minimum value"), "")
