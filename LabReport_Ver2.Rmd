@@ -126,9 +126,9 @@ called "affect".
 ```{r Affect}
 well_being_df <- well_being_df %>% 
   mutate(affect = 
-           (Affect1 +
-              Affect2 +
-              Affect3))
+           (Affect1 + # happy
+              Affect2 + # content
+              Affect3)) # excited
 
 ```
 
@@ -201,7 +201,7 @@ Next I will have a look at the distribution of the Big 5 scores
 Graphical representations of Big 5 scores in a box plot. 
 
 ```{r Big 5 Plot}
-bplot.big5 <- cbind(Openess, 
+bplot.big5 <- cbind(Openness, 
                     Conscientiousness, 
                     Extraversion, 
                     Agreeableness, 
@@ -240,32 +240,59 @@ Step one of the multiple regression will use the two strongest correlates follow
 model1 <- lm(PW.Index ~ Age + Gender, data = well_being_df)
 
 model2 <- lm(PW.Index ~ Age + Gender +
-               affect + MDT, data = well_being_df)
+               affect + MDT, data = well_being_df) #Both sig effect of affect and MDT
 
 model3 <- lm(PW.Index ~ Age + Gender +
                affect + MDT +
-               Openess + Conscientiousness + 
+               Openness + Conscientiousness + 
                Extraversion + Agreeableness +
-               Neuroticism, data = well_being_df)
+               Neuroticism, data = well_being_df) #additional of personality constructs - not sig
 
-model4 <- lm(PW.Index ~ Age + 
+model4 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrepancies
                Gender +
-               affect + MDT +
-               Openess + Conscientiousness + 
-               Extraversion + Agreeableness +
-               Neuroticism + self_best +
-               self_future + self_progress +
-               self_needs + self_deserves +
-               self_other + self_wants, data = well_being_df)
+               affect +
+               self_best +
+               self_future + 
+               self_progress +
+               self_needs + 
+               self_deserves +
+               self_other + 
+               self_wants, data = well_being_df) 
+
+
+model5 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrepancies and Big5
+               Gender +
+               affect +
+               self_best +
+               Openness + 
+               Conscientiousness + 
+               Extraversion + 
+               Agreeableness +
+               Neuroticism +
+               self_future + 
+               self_progress +
+               self_needs + 
+               self_deserves +
+               self_other + 
+               self_wants, data = well_being_df) #62% variance. self_best/future are sig
+
+#removing Big Five constructs has 0.6066 then adding has 0.6169. 2% difference
+#using only the extraveriosn and neurotic traits is where the 2% additoinal variance is coming form. 
+#
+
 
 #Hierachial regression 
-summary(model1) #PWI ~ age and gender
-summary(model2) #affect and MDT
-summary(model3) #Big 5
-summary(model4) #MDT domains significant p<.01
+summary(model1) #PWI ~ age and gender. No sig predictors r.sqrd = 0.016
+summary(model2) #affect p<0.00001 and MDT p<0.01 r.sqrd = 0.55 
+summary(model3) #Big 5 same sig as model2 r.sqrd = 0.5639 - ANOVA showed NO sig effect on model
+summary(model4) #age p<.05, affect p<0.00001, self_best p<0.05, self_future p<0.01
+summary(model5) #non sig
+# MOdel for was the only sig model at p<0.01
 
 # Run an ANOVA to check for sig effect. 
-anova(model1, model2, model3, model4)
+anova(model1, model2, model3, model4, model5)
+
+effect_sizes_model4 <- modelEffectSizes(model4, Digits = 2) #check effect sizes and partials
 
 # Print a nice table to screen using the stargazer library
 stargazer(model4,
