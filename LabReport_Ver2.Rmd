@@ -117,6 +117,59 @@ well_being_df <- well_being_df %>%
         Personality49 +
         Personality50))
 
+well_being_df <- well_being_df %>% 
+  mutate(Personality = 
+           (Personality1 +
+           Personality2 +
+           Personality3 + 
+           Personality4 +
+           Personality5 +
+           Personality6 +
+           Personality7 +
+           Personality8 +
+           Personality9 +
+           Personality10 +
+           Personality11 + 
+           Personality12 +
+           Personality13 +
+           Personality14 +
+           Personality15 +
+           Personality16 +
+           Personality17 +
+           Personality18 +
+           Personality19 +
+           Personality20 +
+           Personality21 + 
+           Personality22 +
+           Personality23 +
+           Personality24 +
+           Personality25 +
+           Personality26 +
+           Personality27 +
+           Personality28 +
+           Personality29 +
+           Personality30 +
+           Personality31 + 
+           Personality32 +
+           Personality33 +
+           Personality34 +
+           Personality35 +
+           Personality36 +
+           Personality37 +
+           Personality38 +
+           Personality39 +
+           Personality40 +
+           Personality41 + 
+           Personality42 +
+           Personality43 +
+           Personality44 +
+           Personality45 +
+           Personality46 +
+           Personality47 +
+           Personality48 +
+           Personality49 +
+           Personality50)/50)
+     
 ```
 
 Homeostatically Protected Mood (Core Affect) as a measuer by Davern., et, al. that asks how people 
