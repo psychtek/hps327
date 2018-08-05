@@ -1,19 +1,19 @@
 ---
-title             : "The title"
-shorttitle        : "Title"
+title             : "Subjective Wellbeing"
+shorttitle        : "SWB Outcomes"
 
 author: 
-  - name          : "First Author"
+  - name          : "Aaron Willcox"
     affiliation   : "1"
     corresponding : yes    # Define only one corresponding author
-    address       : "Postal address"
-    email         : "my@email.com"
-  - name          : "Ernst-August Doelle"
-    affiliation   : "1,2"
+    address       : "2/69 Dorking Road "
+    email         : "aaron@willcox.io"
+  - name          : ""
+    affiliation   : "1"
 
 affiliation:
   - id            : "1"
-    institution   : "Wilhelm-Wundt-University"
+    institution   : "Deakin University"
   - id            : "2"
     institution   : "Konstanz Business School"
 
@@ -25,8 +25,8 @@ author_note: |
 abstract: |
   Enter abstract here. Each new line herein must be indented, like this line.
   
-keywords          : "keywords"
-wordcount         : "X"
+keywords          : "Subjective Wellbeing. Personality, Big Five, Multiple Discrepancies Theory"
+wordcount         : "3000"
 
 bibliography      : ["r-references.bib"]
 
@@ -62,10 +62,19 @@ We report how we determined our sample size, all data exclusions (if any), all m
 ## Procedure
 
 ## Data analysis
-We used `r cite_r("r-references.bib")` for all our analyses.
-
 
 # Results
+```{r}
+library(dplyr)
+
+# Calculate summary statistics
+
+
+# Print table in APA format
+
+# papaja::apa_table(., caption = "Descriptive statistics of SWB measure by outcome")
+```
+
 
 # Discussion
 
@@ -74,7 +83,7 @@ We used `r cite_r("r-references.bib")` for all our analyses.
 
 # References
 ```{r create_r-references}
-r_refs(file = "r-references.bib")
+#r_refs(file = "r-references.bib")
 ```
 
 \begingroup
