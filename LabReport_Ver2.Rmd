@@ -2,7 +2,10 @@
 title: "Lab Report Ver2"
 author: "Aaron Willcox"
 date: "03/08/2018"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -16,6 +19,7 @@ library(psych)
 library(haven)
 library(dplyr)
 library(lmSupport)
+library(broom)
 library(stargazer)
 library(tableone)
 ```
@@ -117,7 +121,7 @@ well_being_df <- well_being_df %>%
         Personality49 +
         Personality50))
 
-well_being_df <- well_being_df %>% 
+well_being_df <- well_being_df %>%  #personality group
   mutate(Personality = 
            (Personality1 +
            Personality2 +
@@ -190,13 +194,13 @@ Multiple Discrepancies Theory (MDT) - Cognition
 Firstly I mutate to a new column labelled "MDT" and averaged. 
 Then each discrepancy mean is worked out and stored in its variable. 
 
-1. self_wants = 
-2. self_other = 
+1. self_wants 
+2. self_other 
 3. self_deserves
-4. self_needs = 
+4. self_needs 
 5. self_progress
-6. self_future =
-7. self_past =    
+6. self_future
+7. self_past  
 
 ```{r MDT}
 # This will create a new variable with the overal MDT cognition mean score
@@ -239,8 +243,6 @@ stargazer(Descriptives,
           ci = FALSE, digits = 2)
 ```
 
-
-
 Looking at the discriptives things look pretty ok in terms of skew.
 The main response variable is negatively skewed however, given the population mean
 is up around 70s then this looks ok. 
@@ -263,7 +265,8 @@ bplot.big5 <- cbind(well_being_df$Openness,
 boxplot.names <- c("O", "C", "E", "A", "N")
 
 boxplot(bplot.big5, main = "Big 5 Means", names = boxplot.names, horizontal = FALSE)  
-hist(well_being_df$Personality)
+
+hist(well_being_df$Personality) #personality as a group plot
 
 ```
 
@@ -339,7 +342,7 @@ summary(model4) #sig p<.0001. affect and self_other
 summary(model5) 
 
 # Run an ANOVA to check for sig effect. 
-anova(model1, model2, model3, model4, model5)
+SWB_ANOVA <- anova(model1, model2, model3, model4, model5)
 
 
 #run model 4 again with the additional Personality group
@@ -370,6 +373,52 @@ stargazer(model4,
           ci = FALSE, digits = 2) #the text prints table to the Console
 
 ```
+
+```{r}
+
+m1 <- glance(model1)
+m2 <- glance(model2)
+m3 <- glance(model3)
+m4 <- glance(model4)
+
+Descriptives <- tibble::tribble(
+  ~model, ~R2, ~adj.R2,
+  "Model 1",  round(m1$r.squared, digits = 2),      round(m1$adj.r.squared, digits = 2),
+  "Model 2*",  round(m2$r.squared, digits = 2),      round(m2$adj.r.squared, digits = 2),
+  "Model 3",   round(m3$r.squared, digits = 2),      round(m3$adj.r.squared, digits = 2),
+  "Model 4*",   round(m4$r.squared, digits = 2),      round(m4$adj.r.squared, digits = 2)
+)
+
+require(rhandsontable)
+rhandsontable(Descriptives, rowHeaders = NULL,
+               digits = 3, useTypes = FALSE, search = FALSE,
+               width = NULL, height = NULL)
+
+```
+
+
+```{r Papaya Table}
+library(papaja)
+x <- glance(model4)
+
+descriptivez <- well_being_df %>% 
+  summarize(
+    Mean = x$r.squared
+    , Median = x$adj.r.squared , SD = x$sigma
+    , Min = x$p.value
+    , Max = x$df.residual
+  )
+
+descriptivez[, -1] <- printnum(descriptivez[, -1])
+apa_table(
+  descriptivez, 
+  caption = "Descriptive statistics of correct recall by dosage." , 
+  note = "This table was created with apa_table"
+)
+
+
+```
+ 
 
 
 Affect was the strongest predictor on SWB followed by self_other then self_Wants. 

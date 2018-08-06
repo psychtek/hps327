@@ -28,7 +28,7 @@ abstract: |
 keywords          : "Subjective Wellbeing. Personality, Big Five, Multiple Discrepancies Theory"
 wordcount         : "3000"
 
-bibliography      : ["r-references.bib"]
+bibliography      : ["references.bib"]
 
 figsintext        : no
 figurelist        : no
@@ -50,7 +50,8 @@ library("papaja")
 set.seed(42)
 ```
 
-
+## Introduction
+Insert a citation like [@RN584]
 
 # Methods
 We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
