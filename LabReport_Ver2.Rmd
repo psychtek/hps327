@@ -434,7 +434,7 @@ apa_table(
   note = "This table was created with apa_table"
 )
 
-apa_lm <- apa_print(my_lm)
+# apa_lm <- apa_print(my_lm)
 
 ```
  
