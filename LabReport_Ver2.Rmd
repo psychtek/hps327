@@ -19,6 +19,7 @@ library(psych)
 library(haven)
 library(dplyr)
 library(lmSupport)
+library(papaja)
 library(broom)
 library(stargazer)
 library(tableone)
@@ -334,19 +335,8 @@ model5 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrep
 #removing Big Five constructs has 0.6066 then adding has 0.6169. 2% difference
 #using only the extraveriosn and neurotic traits is where the 2% additoinal variance is coming form. 
 
-#Hierachial regression 
-summary(model1) #PWI ~ age and gender.
-summary(model2) #sig p <.0001 affect and MDT as a group
-summary(model3) #Big 5 no significance from ANOVA
-summary(model4) #sig p<.0001. affect and self_other 
-summary(model5) 
-
-# Run an ANOVA to check for sig effect. 
-SWB_ANOVA <- anova(model1, model2, model3, model4, model5)
-
-
-#run model 4 again with the additional Personality group
-model_personality <- lm(PW.Index ~ Age + 
+#run model 4 again with the additional Personality as a group
+model6 <- lm(PW.Index ~ Age + 
                Gender +
                affect +
                Personality +
@@ -358,7 +348,22 @@ model_personality <- lm(PW.Index ~ Age +
                self_future +
                self_past, data = well_being_df) 
 
-anova(model1, model2, model3, model4, model5, model_personality)
+
+#Hierachial regression 
+summary(model1) #PWI ~ age and gender.
+summary(model2) #sig p <.0001 affect and MDT as a group
+summary(model3) #Big 5 no significance from ANOVA
+summary(model4) #sig p<.0001. affect and self_other 
+summary(model5) 
+Summary(model6)
+
+# Run an ANOVA to check for sig effect. 
+SWB_ANOVA <- anova(model1, model2, model3, model4, model5, model6)
+
+
+
+
+anova(model1, model2, model3, model4, model5, model6)
 #personality still non sig
 
 effect_sizes_model4 <- modelEffectSizes(model4, Digits = 2) #check effect sizes and partials
@@ -373,6 +378,20 @@ stargazer(model4,
           ci = FALSE, digits = 2) #the text prints table to the Console
 
 ```
+
+Create a probablity plot to compare model to normal distribution
+```{r Probability Plot}
+
+pwi.residuals <- rstandard(model2)
+qqnorm(pwi.residuals, 
+       ylab="Standardized Residuals", 
+       xlab="Normal Scores", 
+       main="Personal Wellbeing Index")
+
+#qqline(as.data.frame(pwi.residuals))
+```
+
+
 
 ```{r}
 
@@ -397,8 +416,7 @@ rhandsontable(Descriptives, rowHeaders = NULL,
 ```
 
 
-```{r Papaya Table}
-library(papaja)
+```{r Papaja Table}
 x <- glance(model4)
 
 descriptivez <- well_being_df %>% 
@@ -416,6 +434,7 @@ apa_table(
   note = "This table was created with apa_table"
 )
 
+apa_lm <- apa_print(my_lm)
 
 ```
  
