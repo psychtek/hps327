@@ -355,7 +355,7 @@ summary(model2) #sig p <.0001 affect and MDT as a group
 summary(model3) #Big 5 no significance from ANOVA
 summary(model4) #sig p<.0001. affect and self_other 
 summary(model5) 
-Summary(model6)
+summary(model6)
 
 # Run an ANOVA to check for sig effect. 
 SWB_ANOVA <- anova(model1, model2, model3, model4, model5, model6)
