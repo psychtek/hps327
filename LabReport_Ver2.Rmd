@@ -263,11 +263,26 @@ bplot.big5 <- cbind(well_being_df$Openness,
                     well_being_df$Agreeableness, 
                     well_being_df$Neuroticism)
 
-boxplot.names <- c("O", "C", "E", "A", "N")
+boxplot.names <- c("O", "C", "E", "A", "N", "deserves", "future", "needs", "other", "past", "progress", "wants")
 
 boxplot(bplot.big5, main = "Big 5 Means", names = boxplot.names, horizontal = FALSE)  
 
 hist(well_being_df$Personality) #personality as a group plot
+
+boxplot_key_variables <- cbind(well_being_df$Openness, 
+                    well_being_df$Conscientiousness, 
+                    well_being_df$Extraversion, 
+                    well_being_df$Agreeableness, 
+                    well_being_df$Neuroticism,
+                    well_being_df$self_deserves,
+                    well_being_df$self_future,
+                    well_being_df$self_needs,
+                    well_being_df$self_other,
+                    well_being_df$self_past,
+                    well_being_df$self_progress,
+                    well_being_df$self_wants)
+
+boxplot(boxplot_key_variables, main = "Boxplot of Variables", names = boxplot.names, horizontal = FALSE)
 
 ```
 
