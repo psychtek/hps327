@@ -28,10 +28,12 @@ library(tableone)
 **DV:** Personal Wellbeing Index (pwi)  
 **IVs:** Affect(affect HPMood), Cogniton(cognition, MDT), Gender(gender), Personality(personality)
 
+## Traits have not been reversed coded and I am unsure of the actual order of personality questions as the data was from last term. 
+
 ***
 
 ```{r Import}
-well_being_df <- read_sav("WellbeingFINAL.sav")
+well_being_df <- read_sav("data/WellbeingFINAL.sav")
 
 ```
 
@@ -181,7 +183,7 @@ Homeostatically Protected Mood (Core Affect) as a measuer by Davern., et, al. th
 feel about life in general across three domains of "happy", "content" & "excited/alert".
 Here the relevant columns are pulled, summed, divided by the 3 domains and mutated to a new column
 called "affect". 
-```{r Affect}
+```{r HPMood}
 well_being_df <- well_being_df %>% 
   mutate(affect = 
            (Affect1 + # happy
@@ -246,50 +248,81 @@ stargazer(Descriptives,
 
 Looking at the discriptives things look pretty ok in terms of skew.
 The main response variable is negatively skewed however, given the population mean
-is up around 70s then this looks ok. 
-```{r Plots}
+is up around 70s then this looks ok. Regression is pretty robust to some skewness.  
+```{r Hist}
 hist(well_being_df$PW.Index) #PWI histogram
 ```
 
 
 
-Next I will have a look at the distribution of the Big 5 scores
-Graphical representations of Big 5 scores in a box plot. 
+### Next I will have a look at the plots and distributions of the Big 5, MDT and Cognition: 
 
-```{r Big 5 Plot}
-bplot.big5 <- cbind(well_being_df$Openness, 
+```{r Plots}
+# Create an object with the requrired columns
+boxplot_big5 <- cbind(well_being_df$Openness, 
                     well_being_df$Conscientiousness, 
                     well_being_df$Extraversion, 
                     well_being_df$Agreeableness, 
                     well_being_df$Neuroticism)
+#in order to name the boxplot more clearly, create an object with the names
+boxplot_names_big5 <- c("O", "C", "E", "A", "N")
 
-boxplot.names <- c("O", "C", "E", "A", "N", "deserves", "future", "needs", "other", "past", "progress", "wants")
+# Create a boxplot and use the object boxplot_names_big5 to label each one
+boxplot(boxplot_big5, main = "Big 5 Means", names = boxplot_names_big5, horizontal = FALSE) 
 
-boxplot(bplot.big5, main = "Big 5 Means", names = boxplot.names, horizontal = FALSE)  
-
+# check the distribution of personality as a group
 hist(well_being_df$Personality) #personality as a group plot
 
-boxplot_key_variables <- cbind(well_being_df$Openness, 
-                    well_being_df$Conscientiousness, 
-                    well_being_df$Extraversion, 
-                    well_being_df$Agreeableness, 
-                    well_being_df$Neuroticism,
-                    well_being_df$self_deserves,
-                    well_being_df$self_future,
-                    well_being_df$self_needs,
-                    well_being_df$self_other,
-                    well_being_df$self_past,
-                    well_being_df$self_progress,
-                    well_being_df$self_wants)
+# Create an object for MDT variables, name and display box plot.
+boxplot_mdt <- cbind(
+  well_being_df$self_deserves,
+  well_being_df$self_future,
+  well_being_df$self_needs,
+  well_being_df$self_other,
+  well_being_df$self_past,
+  well_being_df$self_progress,
+  well_being_df$self_wants)
 
-boxplot(boxplot_key_variables, main = "Boxplot of Variables", names = boxplot.names, horizontal = FALSE)
+
+boxplot_names_mdt <- c("deserves", "future", "needs", "other", "past", "progress", "wants")
+
+boxplot(boxplot_mdt, main = "Multiple Disc. Theory", names = boxplot_names_mdt, horizontal = FALSE) 
+
+# HPMood 
+boxplot_hpmood <- cbind(
+  well_being_df$Affect1,
+  well_being_df$Affect2,
+  well_being_df$Affect3
+)
+
+boxplot_hpmood_names <- c("Happy", "Content", "Excited")
+
+boxplot(boxplot_hpmood, main = "HPMood", names = boxplot_hpmood_names, horizontal = FALSE)
+
 
 ```
 
+Big 5 boxplot variations between each trait seem good. Even personality traits from survey participants suggesting no one dominant personality. Neuroticism has a few outliers though
+
+Ranges of scores were pretty even except for *self_deserves* and *self_future*. These score feel short of the upper quartile comparitively with the other variables. The scores median scores for *deserves* and *needs* both sitting on the 25th percentile line suggesting a large range of preference for that score. 
+
+HPmood has a good distribution of scores, nothing to see here, move along. 
+
+
+## Correlations
 
 Combine into an object variables of interest. Using cbind as calling variables with well_being_df$... removes col names for some reason
 
 ```{r Correlations}
+# Check correlations with cronbachs alpha
+alpha_big5 <- boxplot_big5
+alpha_big5 <- alpha(alpha_big5)
+alpha_big5$total$raw_alpha #raw alpha score - have not reversed score!! wait for real data
+
+alpha_hpmood <- boxplot_hpmood
+alpha_hpmood <- alpha(alpha_hpmood)
+alpha_hpmood$total$raw_alpha #raw alpha score
+
 Group.Corr <- well_being_df[71:86] 
 
 # Check all the correlations in a matrix
