@@ -21,7 +21,6 @@ library(dplyr)
 library(lmSupport)
 library(papaja)
 library(broom)
-library(stargazer)
 library(tableone)
 library(tictoc)
 tic("Running")
@@ -325,6 +324,13 @@ alpha_hpmood <- boxplot_hpmood
 alpha_hpmood <- alpha(alpha_hpmood)
 alpha_hpmood$total$raw_alpha #raw alpha score
 
+# Given the amount of IVs in the design will use omega value which also spits out alpha
+Omega_Personality <- cbind(well_being_df[72:76])
+omega(Omega_Personality)
+
+Omega_MDT <- cbind(well_being_df[80:86])
+omega(Omega_MDT)
+
 Group.Corr <- well_being_df[71:86] 
 
 # Check all the correlations in a matrix
@@ -343,60 +349,76 @@ Step one of the multiple regression will use the two strongest correlates follow
 5 then MDT. 
 
 ```{r Regression}
-model1 <- lm(PW.Index ~ Age + Gender, data = well_being_df) #baseline obtain total SS
 
-model2 <- lm(PW.Index ~ Age + Gender +
-               affect + MDT, data = well_being_df) #use known sign effects first based on previous research
+Gender_labels <- c("Male", "Female", "Transgender") #set labels for gender factor levels
 
-model3 <- lm(PW.Index ~ Age + Gender +
-               affect + MDT +
-               Openness + Conscientiousness + 
-               Extraversion + Agreeableness +
-               Neuroticism, data = well_being_df) #additional of personality constructs - not sig
+model1 <- lm(PW.Index ~ Age 
+             + factor(Gender)
+             , data = well_being_df) #baseline obtain total SS
+
+model2 <- lm(PW.Index ~ Age 
+             + Gender 
+             + affect 
+             + MDT
+             , data = well_being_df) #use known sign effects first based on previous research
+
+model3 <- lm(PW.Index ~ Age 
+             + factor(Gender, labels = Gender_labels) 
+             + affect 
+             + MDT 
+             + Openness 
+             + Conscientiousness 
+             + Extraversion 
+             + Agreeableness 
+             + Neuroticism
+             , data = well_being_df) #additional of personality constructs - not sig
 
 model4 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrepancies
-               Gender +
-               affect +
-               self_wants + 
-               self_other + 
-               self_deserves +
-               self_needs + 
-               self_progress +
-               self_future +
-               self_past, data = well_being_df) 
+               + factor(Gender, labels = Gender_labels) 
+             + affect
+             + self_wants 
+             + self_other 
+             + self_deserves
+             + self_needs 
+             + self_progress
+             + self_future
+             + self_past
+             , data = well_being_df) 
 
 
 model5 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrepancies and Big5
-               Gender +
-               affect +
-               Openness + 
-               Conscientiousness + 
-               Extraversion + 
-               Agreeableness +
-               Neuroticism +
-               self_wants + 
-               self_other + 
-               self_deserves +
-               self_needs + 
-               self_progress +
-               self_future +
-               self_past, data = well_being_df) #62% variance. self_best/future are sig
+               + factor(Gender, labels = Gender_labels)
+             + affect
+             + Openness 
+             + Conscientiousness
+             + Extraversion 
+             + Agreeableness
+             + Neuroticism
+             + self_wants 
+             + self_other 
+             + self_deserves
+             + self_needs 
+             + self_progress
+             + self_future
+             + self_past
+             , data = well_being_df) #62% variance. self_best/future are sig
 
 #removing Big Five constructs has 0.6066 then adding has 0.6169. 2% difference
 #using only the extraveriosn and neurotic traits is where the 2% additoinal variance is coming form. 
 
 #run model 4 again with the additional Personality as a group
-model6 <- lm(PW.Index ~ Age + 
-               Gender +
-               affect +
-               Personality +
-               self_wants + 
-               self_other + 
-               self_deserves +
-               self_needs + 
-               self_progress +
-               self_future +
-               self_past, data = well_being_df) 
+model6 <- lm(PW.Index ~ Age
+             +  factor(Gender, labels = Gender_labels)
+             +  affect
+             +  Personality
+             +  self_wants 
+             +  self_other 
+             +  self_deserves
+             +  self_needs 
+             +  self_progress
+             +  self_future
+             +  self_past
+             , data = well_being_df) 
 
 
 #Hierachial regression 
@@ -408,31 +430,36 @@ summary(model5)
 summary(model6)
 
 # Run an ANOVA to check for sig effect. 
-SWB_ANOVA <- anova(model1, model2, model3, model4, model5, model6)
-
-
-
-
 anova(model1, model2, model3, model4, model5, model6)
-#personality still non sig
+
+# personality still non sig
 
 effect_sizes_model4 <- modelEffectSizes(model4, Digits = 2) #check effect sizes and partials
 
-# Print a nice table to screen using the stargazer library
-stargazer(model4,
-          title = "Results",
-          type = "text", 
-          style = "all", 
-          summary = TRUE, 
-          dep.var.labels = "Personal Wellbeing Index", 
-          ci = FALSE, digits = 2) #the text prints table to the Console
 
 ```
 
-Create a probablity plot to compare model to normal distribution
+## Model Improvement
+using the step() function to see if there are variables which can be removed by comparing the model with all teh nested models. Step picks up the best fit by dropping models and repeating the process until it has the best fit. 
+
+```{r Best Fit}
+step(model6, test = "F") #step through each variable to test for best fit
+
+# Age, Self wants, self other and affect were the best fit. 
+best_fit_SWB <- lm(PW.Index ~ 
+                     Age 
+                   + self_wants 
+                   + self_other 
+                   + affect, data = well_being_df)
+summary(best_fit_SWB)
+anova(best_fit_SWB)
+modelAssumptions(best_fit_SWB)
+```
+
+Run a probability distribution to check residuals for homos
 ```{r Probability Plot}
 
-pwi.residuals <- rstandard(model2)
+pwi.residuals <- rstandard(model4)
 qqnorm(pwi.residuals, 
        ylab="Standardized Residuals", 
        xlab="Normal Scores", 
@@ -441,7 +468,11 @@ qqnorm(pwi.residuals,
 #qqline(as.data.frame(pwi.residuals))
 ```
 
-
+## Questions to answer:
+# 1. How much variance do the Ivs account for, together in the DV:R^2
+# 2. What is the relative importance for each of the Ivs in the model: Beta weights
+# 3. Which IV contributes the most unique variance to prediction of the DV: Check sr^2
+# 4. How much improvement in the model occurs when we add an additional IV or group of Ivs: Check R^2 Change
 
 ```{r}
 # Using the Broom library I can pull the model estimates from an assigned object 
@@ -453,10 +484,10 @@ m4 <- glance(model4)
 
 Descriptives <- tibble::tribble(
   ~model, ~R2, ~adj.R2,
-  "Model 1",  round(m1$r.squared, digits = 2),      round(m1$adj.r.squared, digits = 2),
-  "Model 2*",  round(m2$r.squared, digits = 2),      round(m2$adj.r.squared, digits = 2),
-  "Model 3",   round(m3$r.squared, digits = 2),      round(m3$adj.r.squared, digits = 2),
-  "Model 4*",   round(m4$r.squared, digits = 2),      round(m4$adj.r.squared, digits = 2)
+  "Model 1",  round(m1$r.squared, digits = 2),  round(m1$adj.r.squared, digits = 2),
+  "Model 2*",  round(m2$r.squared, digits = 2), round(m2$adj.r.squared, digits = 2),
+  "Model 3",   round(m3$r.squared, digits = 2), round(m3$adj.r.squared, digits = 2),
+  "Model 4*",   round(m4$r.squared, digits = 2), round(m4$adj.r.squared, digits = 2)
 )
 
 require(rhandsontable)
@@ -472,16 +503,17 @@ x <- glance(model4)
 
 descriptivez <- well_being_df %>% 
   summarize(
-    Mean = x$r.squared
-    , Median = x$adj.r.squared , SD = x$sigma
-    , Min = x$p.value
-    , Max = x$df.residual
+    R_Square = x$r.squared
+    , Ajusted_R = x$adj.r.squared , SIGMA = x$sigma
+    , PValue = x$p.value
+    , Residual = x$df.residual
   )
 
 descriptivez[, -1] <- printnum(descriptivez[, -1])
 apa_table(
   descriptivez, 
-  caption = "Descriptive statistics of correct recall by dosage." , 
+  format = "html",
+  caption = "Descriptive statistics." , 
   note = "This table was created with apa_table"
 )
 
