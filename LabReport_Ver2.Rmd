@@ -23,6 +23,8 @@ library(papaja)
 library(broom)
 library(stargazer)
 library(tableone)
+library(tictoc)
+tic("Running")
 ```
 
 **DV:** Personal Wellbeing Index (pwi)  
@@ -442,7 +444,8 @@ qqnorm(pwi.residuals,
 
 
 ```{r}
-
+# Using the Broom library I can pull the model estimates from an assigned object 
+# as needed. 
 m1 <- glance(model1)
 m2 <- glance(model2)
 m3 <- glance(model3)
@@ -494,4 +497,7 @@ Model 4 was significant model accounting for 62% variance in SWB and
 affect was the strongest unique contributor to SWB followed by self.future.
 Personality was not a significant contributor ... 
 
+```{r}
+toc()
+```
 
