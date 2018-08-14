@@ -237,14 +237,8 @@ well_being_df <- well_being_df %>%
 ```{r Descriptives}
 Descriptives <- describe(well_being_df[71:86]) #Using the brackets to call on the rows that were mutated to the dataframe
 
-# Making use of the stargazer library to output a nicer looking table for html
-# Cummins et.al, 2009 showed that the population SWB mean 74.93 and SD = 12.36.
-stargazer(Descriptives, 
-          title = "Descriptives",
-          type = "text", 
-          style = "all", 
-          summary = FALSE, 
-          ci = FALSE, digits = 2)
+Descriptives
+
 ```
 
 Looking at the discriptives things look pretty ok in terms of skew.
@@ -468,11 +462,11 @@ qqnorm(pwi.residuals,
 #qqline(as.data.frame(pwi.residuals))
 ```
 
-## Questions to answer:
-# 1. How much variance do the Ivs account for, together in the DV:R^2
-# 2. What is the relative importance for each of the Ivs in the model: Beta weights
-# 3. Which IV contributes the most unique variance to prediction of the DV: Check sr^2
-# 4. How much improvement in the model occurs when we add an additional IV or group of Ivs: Check R^2 Change
+### Questions to answer:
+#### 1. How much variance do the Ivs account for, together in the DV:R^2
+#### 2. What is the relative importance for each of the Ivs in the model: Beta weights
+#### 3. Which IV contributes the most unique variance to prediction of the DV: Check sr^2
+#### 4. How much improvement in the model occurs when we add an additional IV or group of Ivs: Check R^2 Change
 
 ```{r}
 # Using the Broom library I can pull the model estimates from an assigned object 
