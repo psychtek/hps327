@@ -91,3 +91,21 @@ invertItem <- function(x, min, max) {
   reb <- (min-1)
   (max - reb + 1) - (x - reb) + reb
 }
+
+
+
+descriptivez <- well_being_df %>% 
+  summarize(
+    R_Square = x$r.squared
+    , Ajusted_R = x$adj.r.squared , SIGMA = x$sigma
+    , PValue = x$p.value
+    , Residual = x$df.residual
+  )
+
+descriptivez[, -1] <- printnum(descriptivez[, -1])
+apa_table(
+  descriptivez, 
+  format = "html",
+  caption = "Descriptive statistics." , 
+  note = "This table was created with apa_table"
+)

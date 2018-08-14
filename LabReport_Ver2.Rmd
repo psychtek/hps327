@@ -186,7 +186,7 @@ Here the relevant columns are pulled, summed, divided by the 3 domains and mutat
 called "affect". 
 ```{r HPMood}
 well_being_df <- well_being_df %>% 
-  mutate(affect = 
+  mutate(HPMood = 
            (Affect1 + # happy
               Affect2 + # content
               Affect3)) # excited
@@ -307,31 +307,77 @@ HPmood has a good distribution of scores, nothing to see here, move along.
 ## Correlations
 
 Combine into an object variables of interest. Using cbind as calling variables with well_being_df$... removes col names for some reason
+```{r Correlations, results="asis"}
+glrstab <- function(x, export=FALSE) {
+  
+  r <-corr.test(x)$r	#taking just the correlation matrix; no N, or p
+  p <-corr.test(x)$p	#taking the p*s
+  
+  #define notions for significance levels
+  mystars <- ifelse(p < .001, "**"
+                    , ifelse(p < .01, "**"
+                             , ifelse(p < .05, "*"
+                                      , ifelse(p < .10, "+", " "))))
+  
+  #round r, define new matrix Rnew with the correlations from rnd and paste mystars
+  rnd  <- papaja::printnum(r, gt1 = FALSE, digits = 2)  #round, drop leading 0 - Thanks CRSH!								                     
+  Rnew <- matrix(paste(rnd, mystars, sep=""), ncol=ncol(rnd)) 
+  
+  #remove 1.0 correlations from diagonal  and set the strings
+  diag(Rnew) <- ''		
+  Rnew[upper.tri(Rnew)] <- ''								                	
+  
+  rownames(Rnew) <- paste(1:ncol(rnd), colnames(rnd), sep=" ")         #define number and name
+  colnames(Rnew) <- paste(1:ncol(rnd), "", sep="") 			       #define number
+  
+  #fun-part: we trim the top half 
+  Rnew[upper.tri(Rnew)] <- ''			
+  Rnew
+  
+  Rnew <- cbind(round(describe(x)[,3:4],2), Rnew)		     #describe x, M sD - put them in the matrix
+  colnames(Rnew)[1:2] <- c("M","SD")					      		#Beschriftung der neuen Spalten
+  Rnew <- Rnew[,1:(ncol(Rnew)-1)]							        	#delete the last column (ugly)
+  
+  #export to clipboard
+  
+  if (export==TRUE){
+    result<-write.table(Rnew
+                        , "clipboard"
+                        , sep=";"
+                        , row.names=FALSE)
+  }
+  else result <- Rnew
+  return(result)
+  
+}
 
-```{r Correlations}
-# Check correlations with cronbachs alpha
-alpha_big5 <- boxplot_big5
-alpha_big5 <- alpha(alpha_big5)
-alpha_big5$total$raw_alpha #raw alpha score - have not reversed score!! wait for real data
+corr_Matrix <- well_being_df[c(71:76, 78, 80:86)] #subset relevant columns
+a <- glrstab(corr_Matrix) #the function in action!
 
-alpha_hpmood <- boxplot_hpmood
-alpha_hpmood <- alpha(alpha_hpmood)
-alpha_hpmood$total$raw_alpha #raw alpha score
+rownames(a) <- c("PW.Index"
+                 , "Openness"
+                 , "Conscientiousness"
+                 , "Extraversion"
+                 , "Agreeableness"
+                 , "Neuroticism"
+                 , "affect"
+                 , "self_wants"
+                 , "self_other"
+                 , "self_deserves"
+                 , "self_needs"
+                 , "self_progress"
+                 , "self_future"
+                 , "self_past")
 
-# Given the amount of IVs in the design will use omega value which also spits out alpha
-Omega_Personality <- cbind(well_being_df[72:76])
-omega(Omega_Personality)
+colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13")
 
-Omega_MDT <- cbind(well_being_df[80:86])
-omega(Omega_MDT)
-
-Group.Corr <- well_being_df[71:86] 
-
-# Check all the correlations in a matrix
-round(cor(Group.Corr, use = "pair"), 2) 
+apa_table(a
+          , escape  = FALSE
+          , format = "html"
+          , caption = "Correlation matrix of the main variables"
+          , note    = "Very fine!")
 
 ```
-
 
 Openess was negatively assocaited with PWI scores (-0.32), neuroticism
 had a slight negative association but the remainder of the big 5 traits had little association.
@@ -352,13 +398,13 @@ model1 <- lm(PW.Index ~ Age
 
 model2 <- lm(PW.Index ~ Age 
              + Gender 
-             + affect 
+             + HPMood 
              + MDT
              , data = well_being_df) #use known sign effects first based on previous research
 
 model3 <- lm(PW.Index ~ Age 
              + factor(Gender, labels = Gender_labels) 
-             + affect 
+             + HPMood 
              + MDT 
              + Openness 
              + Conscientiousness 
@@ -369,7 +415,7 @@ model3 <- lm(PW.Index ~ Age
 
 model4 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrepancies
                + factor(Gender, labels = Gender_labels) 
-             + affect
+             + HPMood
              + self_wants 
              + self_other 
              + self_deserves
@@ -382,7 +428,7 @@ model4 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrep
 
 model5 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrepancies and Big5
                + factor(Gender, labels = Gender_labels)
-             + affect
+             + HPMood
              + Openness 
              + Conscientiousness
              + Extraversion 
@@ -403,7 +449,7 @@ model5 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrep
 #run model 4 again with the additional Personality as a group
 model6 <- lm(PW.Index ~ Age
              +  factor(Gender, labels = Gender_labels)
-             +  affect
+             +  HPMood
              +  Personality
              +  self_wants 
              +  self_other 
@@ -424,7 +470,8 @@ summary(model5)
 summary(model6)
 
 # Run an ANOVA to check for sig effect. 
-anova(model1, model2, model3, model4, model5, model6)
+ANOVA_Models <- anova(model1, model2, model3, model4, model5, model6)
+ANOVA_Models
 
 # personality still non sig
 
@@ -444,12 +491,37 @@ best_fit_SWB <- lm(PW.Index ~
                      Age 
                    + self_wants 
                    + self_other 
-                   + affect, data = well_being_df)
+                   + HPMood, data = well_being_df)
 summary(best_fit_SWB)
 anova(best_fit_SWB)
-modelAssumptions(best_fit_SWB)
+modelAssumptions(best_fit_SWB) #use the lmsupport library 
+model_effect_sizes <- modelEffectSizes(best_fit_SWB) # partial eta squared/effect size/magnitude
 ```
 
+
+
+```{r Papaja Table , results="asis"}
+
+apa_lm <- apa_print(best_fit_SWB) #apa_print function takes the lm object and creates format strings to report the results
+
+apa_table(apa_lm$table
+          , caption = "Regression"
+          ) # creates the apa formated table to print to screen
+
+apa_anova <- apa_print(anova(best_fit_SWB))
+apa_table(apa_anova$table
+          , caption = "ANOVA"
+          , note = "Dependant variable: Personal Wellbeing Index")
+
+
+
+#using glance I can pull specifc data from the object
+model_statistics <- glance(best_fit_SWB)
+
+
+
+```
+ 
 Run a probability distribution to check residuals for homos
 ```{r Probability Plot}
 
@@ -492,29 +564,6 @@ rhandsontable(Descriptives, rowHeaders = NULL,
 ```
 
 
-```{r Papaja Table}
-x <- glance(model4)
-
-descriptivez <- well_being_df %>% 
-  summarize(
-    R_Square = x$r.squared
-    , Ajusted_R = x$adj.r.squared , SIGMA = x$sigma
-    , PValue = x$p.value
-    , Residual = x$df.residual
-  )
-
-descriptivez[, -1] <- printnum(descriptivez[, -1])
-apa_table(
-  descriptivez, 
-  format = "html",
-  caption = "Descriptive statistics." , 
-  note = "This table was created with apa_table"
-)
-
-# apa_lm <- apa_print(my_lm)
-
-```
- 
 
 
 Affect was the strongest predictor on SWB followed by self_other then self_Wants. 
