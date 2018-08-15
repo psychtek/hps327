@@ -387,7 +387,7 @@ rownames(a) <- c( "Age"
                  , "MDT"
                  , "PW_Index_log10")
 
-colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+colnames(a)   <- c("$M$", "$SD$", "A", "G", "N", "E", "O", "A", "C", "HPM", "MDT")
 
 apa_table(a
           , escape  = FALSE
@@ -451,12 +451,16 @@ modelAssumptions(model3) #use the lmsupport library
 model_effect_sizes <- modelEffectSizes(model3) # partial eta squared/effect size/magnitude
 
 ```
+#### Notes
+pETA: MDT in model 2 accounted for .30 of the unique variance on PWI scores however, 
+n the next step, the addition of HPMood account for .20 and MDT dropped down to .05.
+
 
 ## Tables
 
 ```{r Papaja Table , results="asis"}
 
-apa_lm <- apa_print(model4) #apa_print function takes the lm object and creates format strings to report the results
+apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
 
 apa_table(apa_lm$table
           , caption = "Regression"
