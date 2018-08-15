@@ -131,3 +131,6 @@ well_being_df %>%
   summarise_all(funs(corr.test))
 
 
+well_being_df %>%
+  select("PW.Index", "HPMood", "self_wants", "self_other") %>%
+  summarise_all(funs(corr.test(.data)))

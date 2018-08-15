@@ -22,19 +22,14 @@ library(lmSupport)
 library(papaja)
 library(broom)
 library(tableone)
-library(tictoc)
-tic("Running")
 ```
 
 **DV:** Personal Wellbeing Index (pwi)  
 **IVs:** Affect(affect HPMood), Cogniton(cognition, MDT), Gender(gender), Personality(personality)
-
-##### ##Traits have not been reversed coded and I am unsure of the actual order of personality questions as the data was from last term. 
-
 ***
 
 ```{r Import}
-well_being_df <- read_sav("data/WellbeingFINAL.sav")
+well_being_df <- read_sav("data/Wellbeing_2018.sav")
 
 ```
 
@@ -48,11 +43,14 @@ which(is.na(well_being_df))
 ```
 
 
-As per the PWI manual: score/number of domains*10 to get a SWB score. 
-Then mutate this to a new column called "PW.Index"
+All items for the Personal Wellbeing Index (PWI) are measured along a scale ranging from 0 (No satisfaction at all) to 10 (Completely satisfied)
+*Total scores on the PWI are obtained by obtaining the average score across the 7 items and then multiplying by 10 to stretch the scale to 0 to 100. 
+*As per the PWI manual (http://www.acqol.com.au/uploads/pwi-a/pwi-a-english.pdf ), anyone who scores 0 or 100 is considered unreliable and their data are excluded from analyses involving the PWI (including descriptive statistics such as mean score on the PWI). 
+ 
+Then mutate this to a new column called "PW_Index"
 ```{r PWI Score}
 well_being_df <- well_being_df %>% 
-  mutate(PW.Index = (
+  mutate(PW_Index = (
     PWI1 + 
       PWI2 + 
       PWI3 + 
@@ -63,24 +61,51 @@ well_being_df <- well_being_df %>%
 ```
 
 
-Personality scores for each trait(O,C,E,A,N) are taken for each group of 10. 
-These are summed and mutated to a new column for each trait.
+Notes:
+Items are scored on a scale with options 1 = strongly disagree, 2 = disagree, 3 = neither agree nor disagree, 4 = agree, and 5 = strongly agree.
+Items 1-10 assess neuroticism. Items 6-10 need to be reverse coded so that high scores across all ten items reflect high levels of neuroticism.
+
+Items 11-20 assess extraversion. Items 16-20 need to be reverse coded so that high scores across all ten items reflect high levels of extraversion.
+
+Items 21-30 assess openness to experience. Items 26-30 need to be reverse coded so that high scores across all ten items reflect high levels of openness.
+
+Items 31-40 assess agreeableness. Items 36-40 need to be reverse coded so that high scores across all ten items reflect high levels of agreeableness.
+
+Items 41-50 assess conscientiousness. Items 46-50 need to be reverse coded so that high scores across all ten items reflect high levels of conscientiousness.
+
+Create the total scores for the subscales by averaging items.
+ 
+These are summed and mutated to a new column for each peronality trait.
 
 ```{r Personality}
+
+#Reverse score items 
+# M. Ling invert function
+invertItem <- function(x, min, max) {
+  if(!is.numeric(x) | !is.numeric(min) | !is.numeric(max)) stop("Inputs are not numeric")
+  ifelse(max<min, stop("Maximum value is less than minimum value"), "")
+  ifelse(x>max | x < min, stop("Value is out of expected range"), "")
+  
+  reb <- (min-1)
+  (max - reb + 1) - (x - reb) + reb
+}
+
+
+
 # Personality Traits
 well_being_df <- well_being_df %>% 
-  mutate(Openness = ( # Openness
+  mutate(Neuroticism = ( # Neuroticism
     Personality1 + 
       Personality2 +
       Personality3 +
       Personality4 +
       Personality5 +
-      Personality6 +
-      Personality7 +
-      Personality8 +
-      Personality9 +
-      Personality10), 
-    Conscientiousness = ( # Conscientiousness
+      invertItem(Personality6, 1, 10) +
+      invertItem(Personality7, 1, 10) +
+      invertItem(Personality8, 1, 10) +
+      invertItem(Personality9, 1, 10) +
+      invertItem(Personality10, 1, 10)), 
+    Extraversion = ( # extraversion
       Personality11 + 
         Personality12 +
         Personality13 +
@@ -91,39 +116,39 @@ well_being_df <- well_being_df %>%
         Personality18 +
         Personality19 +
         Personality20),
-    Extraversion = ( # Extraversion
+    Openness = ( # openness
       Personality21 + 
         Personality22 +
         Personality23 +
         Personality24 +
         Personality25 +
-        Personality26 +
-        Personality27 +
-        Personality28 +
-        Personality29 +
-        Personality30),
+        invertItem(Personality26,1,10) +
+        invertItem(Personality27,1,10) +
+        invertItem(Personality28,1,10) +
+        invertItem(Personality29,1,10) +
+        invertItem(Personality30,1,10)),
     Agreeableness = ( # Agreeableness
       Personality31 + 
         Personality32 +
         Personality33 +
         Personality34 +
         Personality35 +
-        Personality36 +
-        Personality37 +
-        Personality38 +
-        Personality39 +
-        Personality40),
-    Neuroticism  = (  # Neuroticism
+        invertItem(Personality36, 1, 10) +
+        invertItem(Personality37, 1, 10) +
+        invertItem(Personality38, 1, 10) +
+        invertItem(Personality39, 1, 10) +
+        invertItem(Personality40, 1, 10)),
+    Conscientiousness  = (  # conscientiousness
       Personality41 + 
         Personality42 +
         Personality43 +
         Personality44 +
         Personality45 +
-        Personality46 +
-        Personality47 +
-        Personality48 +
-        Personality49 +
-        Personality50))
+        invertItem(Personality46, 1, 10) +
+        invertItem(Personality47, 1, 10) +
+        invertItem(Personality48, 1, 10) +
+        invertItem(Personality49, 1, 10) +
+        invertItem(Personality50, 1, 10)))
 
 well_being_df <- well_being_df %>%  #personality group
   mutate(Personality = 
@@ -180,23 +205,29 @@ well_being_df <- well_being_df %>%  #personality group
      
 ```
 
-Homeostatically Protected Mood (Core Affect) as a measuer by Davern., et, al. that asks how people 
-feel about life in general across three domains of "happy", "content" & "excited/alert".
-Here the relevant columns are pulled, summed, divided by the 3 domains and mutated to a new column
-called "affect". 
+Homeostatically Protected Mood (Core Affect)
+Please indicate how each of the following describes your feelings when you think about your life in general. How ….
+1.	Happy do you generally feel?
+2.	Content do you generally feel?
+3.	Alert do you generally feel?
+
+Notes:
+Each item is scored on an end-defined rating scale with 0 = not at all, and 10 = extremely.
+Items are averaged to provide a single value reflecting homeostatically protected mood (HPMood).
+
+
 ```{r HPMood}
 well_being_df <- well_being_df %>% 
   mutate(HPMood = 
-           (Affect1 + # happy
-              Affect2 + # content
-              Affect3)) # excited
+           (Affect1 + # Happy
+              Affect2 + # Content
+              Affect3)/3) # Alert
 
 ```
 
 
 Multiple Discrepancies Theory (MDT) - Cognition 
-Firstly I mutate to a new column labelled "MDT" and averaged. 
-Then each discrepancy mean is worked out and stored in its variable. 
+Firstly I mutate to a new column labelled "MDT" and averaged.  
 
 1. self_wants 
 2. self_other 
@@ -205,6 +236,8 @@ Then each discrepancy mean is worked out and stored in its variable.
 5. self_progress
 6. self_future
 7. self_past  
+
+Items are averaged to indicate gap between desired and actual life circumstances, such that scores closer to 0 indicate actual circumstances less than desired, scores around 5 reflect life circumstances on par with desired level, and scores closer to 10 indicate actual circumstances are much better than desired.
 
 ```{r MDT}
 # This will create a new variable with the overal MDT cognition mean score
@@ -218,90 +251,79 @@ well_being_df <- well_being_df %>%
       Cognition6 +
       Cognition7)/7
   )
-
-# Rename columns to refelct the discrepancies 
-well_being_df <- well_being_df %>% 
-  mutate(self_wants =     Cognition1,
-         self_other =   Cognition2,
-         self_deserves = Cognition3,
-         self_needs =    Cognition4,
-         self_progress = Cognition5,
-         self_future =    Cognition6,
-         self_past =    Cognition7)
-
-
-
 ```
 
-### Descriptives of key variables
-```{r Descriptives}
-Descriptives <- describe(well_being_df[71:86]) #Using the brackets to call on the rows that were mutated to the dataframe
+### Data Clean Up
+```{r Data Clean}
+Descriptives <- describe(well_being_df[c(1,2,71:79)]) #Using the brackets to call on the rows that were mutated to the dataframe
 
 Descriptives
 
-```
+# Gender breakdown
+select(well_being_df, Gender) %>% 
+  mutate(sex = labelled::to_factor(Gender)) %>% 
+  group_by(sex) %>% 
+  summarise_all(funs(mean, n(), sd))
 
-Looking at the discriptives things look pretty ok in terms of skew.
-The main response variable is negatively skewed however, given the population mean
-is up around 70s then this looks ok. Regression is pretty robust to some skewness.  
-```{r Hist}
-hist(well_being_df$PW.Index) #PWI histogram
-```
+hist(well_being_df$Neuroticism) # good
+hist(well_being_df$Extraversion) # good
+hist(well_being_df$Openness) # good
+hist(well_being_df$Agreeableness) # good
+hist(well_being_df$Conscientiousness)# good
+hist(well_being_df$MDT) # good
+hist(well_being_df$Personality) # good
+hist(well_being_df$PW_Index) # any scores of 0 to 100 are considered unreliable.
 
+# obersation [1,] has a score of 100
+well_being_df <- well_being_df[-1,] #remove the row
+
+
+hist(well_being_df$PW_Index)
+# Still seeing some smapling bias in scores and distribution is positively skewed
+# Thi violates our assumption of normality
+plot(well_being_df$PW_Index)
+# any 0 or negative numbers? 
+# running a log10() transformation
+# mutate a new variable called PWI_log
+
+#Transform log10()
+well_being_df <- well_being_df %>% 
+  mutate(PW_Index_log10 = log((
+    PWI1 + 
+      PWI2 + 
+      PWI3 + 
+      PWI4 + 
+      PWI5 + 
+      PWI6 + 
+      PWI7)))
+
+#re-run descriptives
+
+Descriptives <- describe(well_being_df[c(1,2,71:80)])
+Descriptives
+
+```
 
 
 ### Next I will have a look at the plots and distributions of the Big 5, MDT and Cognition: 
 
 ```{r Plots}
 # Create an object with the requrired columns
-boxplot_big5 <- cbind(well_being_df$Openness, 
-                    well_being_df$Conscientiousness, 
-                    well_being_df$Extraversion, 
-                    well_being_df$Agreeableness, 
-                    well_being_df$Neuroticism)
+boxplot_big5 <- cbind(well_being_df$Neuroticism,
+                      well_being_df$Extraversion, 
+                      well_being_df$Openness, 
+                      well_being_df$Agreeableness, 
+                      well_being_df$Conscientiousness) 
+
 #in order to name the boxplot more clearly, create an object with the names
-boxplot_names_big5 <- c("O", "C", "E", "A", "N")
+boxplot_names_big5 <- c("N", "E", "O", "A", "C")
 
 # Create a boxplot and use the object boxplot_names_big5 to label each one
 boxplot(boxplot_big5, main = "Big 5 Means", names = boxplot_names_big5, horizontal = FALSE) 
 
-# check the distribution of personality as a group
-hist(well_being_df$Personality) #personality as a group plot
-
-# Create an object for MDT variables, name and display box plot.
-boxplot_mdt <- cbind(
-  well_being_df$self_deserves,
-  well_being_df$self_future,
-  well_being_df$self_needs,
-  well_being_df$self_other,
-  well_being_df$self_past,
-  well_being_df$self_progress,
-  well_being_df$self_wants)
-
-
-boxplot_names_mdt <- c("deserves", "future", "needs", "other", "past", "progress", "wants")
-
-boxplot(boxplot_mdt, main = "Multiple Disc. Theory", names = boxplot_names_mdt, horizontal = FALSE) 
-
-# HPMood 
-boxplot_hpmood <- cbind(
-  well_being_df$Affect1,
-  well_being_df$Affect2,
-  well_being_df$Affect3
-)
-
-boxplot_hpmood_names <- c("Happy", "Content", "Excited")
-
-boxplot(boxplot_hpmood, main = "HPMood", names = boxplot_hpmood_names, horizontal = FALSE)
-
-
 ```
 
-Big 5 boxplot variations between each trait seem good. Even personality traits from survey participants suggesting no one dominant personality. Neuroticism has a few outliers though
-
-Ranges of scores were pretty even except for *self_deserves* and *self_future*. These score feel short of the upper quartile comparitively with the other variables. The scores median scores for *deserves* and *needs* both sitting on the 25th percentile line suggesting a large range of preference for that score. 
-
-HPmood has a good distribution of scores, nothing to see here, move along. 
+Big 5 boxplot variations between each trait seem good. Extraversion shows a smaller range of scores and lower overal mean.  
 
 
 ## Correlations
@@ -351,38 +373,35 @@ glrstab <- function(x, export=FALSE) {
   
 }
 
-corr_Matrix <- well_being_df[c(71:76, 78, 80:86)] #subset relevant columns
+corr_Matrix <- well_being_df[c(1:2, 71:75, 77:78, 80)] #subset relevant columns
 a <- glrstab(corr_Matrix) #the function in action!
 
-rownames(a) <- c("PW.Index"
-                 , "Openness"
-                 , "Conscientiousness"
-                 , "Extraversion"
-                 , "Agreeableness"
+rownames(a) <- c( "Age"
+                 , "Gender"
                  , "Neuroticism"
-                 , "affect"
-                 , "self_wants"
-                 , "self_other"
-                 , "self_deserves"
-                 , "self_needs"
-                 , "self_progress"
-                 , "self_future"
-                 , "self_past")
+                 , "Extraversion"
+                 , "Openness"
+                 , "Agreeableness"
+                 , "Conscientiousness"
+                 , "HPMood"
+                 , "MDT"
+                 , "PW_Index_log10")
 
-colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13")
+colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 
 apa_table(a
           , escape  = FALSE
           , format = "html"
           , caption = "Correlation matrix of the main variables"
           , note    = "p<.001***, p<.01**, p<.05*, p<.10+")
+
+
+# Reliability anaysis 
+NEO_effect_size_alpha <- alpha(well_being_df[c(11:60)], check.keys = TRUE)
+NEO_effect_size_omega <- omega(well_being_df[c(11:60)])
+
 ```
 
-
-Openess was negatively assocaited with PWI scores (-0.32), neuroticism
-had a slight negative association but the remainder of the big 5 traits had little association.
-Strongest correlation was that of affect followed by MDT. 
-Break down of the discrepancies: all were moderatly correlated with PWI scores except for self future. Perhaps the inability to affectively forecast isnt reliable indicator of SWB? 
 
 ### Regression
 Step one of the multiple regression will use the two strongest correlates followed by the big
@@ -390,125 +409,60 @@ Step one of the multiple regression will use the two strongest correlates follow
 
 ```{r Regression}
 
-Gender_labels <- c("Male", "Female", "Transgender") #set labels for gender factor levels
+Gender_labels <- c("Male", "Female") #set labels for gender factor levels
 
-model1 <- lm(PW.Index ~ Age 
-             + factor(Gender)
+model1 <- lm(PW_Index_log10 ~ Age 
+             + Gender
              , data = well_being_df) #baseline obtain total SS
 
-model2 <- lm(PW.Index ~ Age 
-             + Gender 
-             + HPMood 
+model2 <- lm(PW_Index_log10 ~ Age 
+             + Gender
              + MDT
              , data = well_being_df) #use known sign effects first based on previous research
 
-model3 <- lm(PW.Index ~ Age 
-             + factor(Gender, labels = Gender_labels) 
-             + HPMood 
+model3 <- lm(PW_Index_log10 ~ Age 
+             + Gender 
              + MDT 
-             + Openness 
-             + Conscientiousness 
-             + Extraversion 
-             + Agreeableness 
-             + Neuroticism
+             + HPMood
+             , data = well_being_df)
+
+model4 <- lm(PW_Index_log10 ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Personality
              , data = well_being_df) #additional of personality constructs - not sig
 
-model4 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrepancies
-               + factor(Gender, labels = Gender_labels) 
-             + HPMood
-             + self_wants 
-             + self_other 
-             + self_deserves
-             + self_needs 
-             + self_progress
-             + self_future
-             + self_past
-             , data = well_being_df) 
-
-
-model5 <- lm(PW.Index ~ Age + #model without overall MDT effect and with discrepancies and Big5
-               + factor(Gender, labels = Gender_labels)
-             + HPMood
-             + Openness 
-             + Conscientiousness
-             + Extraversion 
-             + Agreeableness
-             + Neuroticism
-             + self_wants 
-             + self_other 
-             + self_deserves
-             + self_needs 
-             + self_progress
-             + self_future
-             + self_past
-             , data = well_being_df) #62% variance. self_best/future are sig
-
-#removing Big Five constructs has 0.6066 then adding has 0.6169. 2% difference
-#using only the extraveriosn and neurotic traits is where the 2% additoinal variance is coming form. 
-
-#run model 4 again with the additional Personality as a group
-model6 <- lm(PW.Index ~ Age
-             +  factor(Gender, labels = Gender_labels)
-             +  HPMood
-             +  Personality
-             +  self_wants 
-             +  self_other 
-             +  self_deserves
-             +  self_needs 
-             +  self_progress
-             +  self_future
-             +  self_past
-             , data = well_being_df) 
-
-
 #Hierachial regression 
-summary(model1) #PWI ~ age and gender.
-summary(model2) #sig p <.0001 affect and MDT as a group
-summary(model3) #Big 5 no significance from ANOVA
-summary(model4) #sig p<.0001. affect and self_other 
-summary(model5) 
-summary(model6)
+summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
+summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
+summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood
+summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + big5
 
 # Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model1, model2, model3, model4, model5, model6)
+ANOVA_Models <- anova(model1, model2, model3, model4)
 ANOVA_Models
 
 # personality still non sig
 
-effect_sizes_model4 <- modelEffectSizes(model4, Digits = 2) #check effect sizes and partials
+effect_sizes_model3 <- modelEffectSizes(model3, Digits = 2) #check effect sizes and partials
 
+modelAssumptions(model3) #use the lmsupport library 
+model_effect_sizes <- modelEffectSizes(model3) # partial eta squared/effect size/magnitude
 
 ```
 
-## Model Improvement
-using the step() function to see if there are variables which can be removed by comparing the model with all teh nested models. Step picks up the best fit by dropping models and repeating the process until it has the best fit. 
-
-```{r Best Fit}
-step(model6, test = "F") #step through each variable to test for best fit
-
-# Age, Self wants, self other and affect were the best fit. 
-best_fit_SWB <- lm(PW.Index ~ 
-                     Age 
-                   + self_wants 
-                   + self_other 
-                   + HPMood, data = well_being_df)
-summary(best_fit_SWB)
-anova(best_fit_SWB)
-modelAssumptions(best_fit_SWB) #use the lmsupport library 
-model_effect_sizes <- modelEffectSizes(best_fit_SWB) # partial eta squared/effect size/magnitude
-```
-
-
+## Tables
 
 ```{r Papaja Table , results="asis"}
 
-apa_lm <- apa_print(best_fit_SWB) #apa_print function takes the lm object and creates format strings to report the results
+apa_lm <- apa_print(model4) #apa_print function takes the lm object and creates format strings to report the results
 
 apa_table(apa_lm$table
           , caption = "Regression"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(best_fit_SWB))
+apa_anova <- apa_print(anova(model4))
 apa_table(apa_anova$table
           , caption = "ANOVA"
           , note = "Dependant variable: Personal Wellbeing Index")
@@ -516,7 +470,7 @@ apa_table(apa_anova$table
 
 
 #using glance I can pull specifc data from the object
-model_statistics <- glance(best_fit_SWB)
+model_statistics <- glance(model4)
 
 
 
@@ -561,18 +515,5 @@ rhandsontable(Descriptives, rowHeaders = NULL,
                digits = 3, useTypes = FALSE, search = FALSE,
                width = NULL, height = NULL)
 
-```
-
-
-
-
-Affect was the strongest predictor on SWB followed by self_other then self_Wants. 
-Model 2 was sig with MDT as a group however,
-Model 4 was significant model accounting for 62% variance in SWB and
-affect was the strongest unique contributor to SWB followed by self.future.
-Personality was not a significant contributor ... 
-
-```{r}
-toc()
 ```
 
