@@ -29,7 +29,7 @@ tic("Running")
 **DV:** Personal Wellbeing Index (pwi)  
 **IVs:** Affect(affect HPMood), Cogniton(cognition, MDT), Gender(gender), Personality(personality)
 
-## Traits have not been reversed coded and I am unsure of the actual order of personality questions as the data was from last term. 
+##### ##Traits have not been reversed coded and I am unsure of the actual order of personality questions as the data was from last term. 
 
 ***
 
@@ -314,7 +314,7 @@ glrstab <- function(x, export=FALSE) {
   p <-corr.test(x)$p	#taking the p*s
   
   #define notions for significance levels
-  mystars <- ifelse(p < .001, "**"
+  mystars <- ifelse(p < .001, "***"
                     , ifelse(p < .01, "**"
                              , ifelse(p < .05, "*"
                                       , ifelse(p < .10, "+", " "))))
@@ -375,9 +375,9 @@ apa_table(a
           , escape  = FALSE
           , format = "html"
           , caption = "Correlation matrix of the main variables"
-          , note    = "Very fine!")
-
+          , note    = "p<.001***, p<.01**, p<.05*, p<.10+")
 ```
+
 
 Openess was negatively assocaited with PWI scores (-0.32), neuroticism
 had a slight negative association but the remainder of the big 5 traits had little association.

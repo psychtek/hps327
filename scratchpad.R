@@ -109,3 +109,25 @@ apa_table(
   caption = "Descriptive statistics." , 
   note = "This table was created with apa_table"
 )
+
+well_being_df %>% 
+  select(
+    "PW.Index"
+    , "Age"
+    , "Gender"
+    , "Openness"
+    , "Conscientiousness"
+    , "Extraversion"
+    , "Agreeableness"
+    , "Neuroticism"
+    , "affect"
+    , "self_wants"
+    , "self_other"
+    , "self_deserves"
+    , "self_needs"
+    , "self_progress"
+    , "self_future"
+    , "self_past") %>%
+  summarise_all(funs(corr.test))
+
+
