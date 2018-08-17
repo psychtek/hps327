@@ -21,7 +21,7 @@ library(dplyr)
 library(lmSupport)
 library(papaja)
 library(broom)
-library(tableone)
+library(car)
 ```
 
 **DV:** Personal Wellbeing Index (pwi)  
@@ -58,6 +58,18 @@ well_being_df <- well_being_df %>%
       PWI5 + 
       PWI6 + 
       PWI7)/7*10)
+
+# Check for scores of zero or 100
+PWI_score_check <- filter(well_being_df, well_being_df$PW_Index == 100)
+
+# score of 100 identified at row 1
+well_being_df[1,]
+
+# remove the row
+well_being_df <- well_being_df[-1,]
+
+
+
 ```
 
 
@@ -100,11 +112,11 @@ well_being_df <- well_being_df %>%
       Personality3 +
       Personality4 +
       Personality5 +
-      invertItem(Personality6, 1, 10) +
-      invertItem(Personality7, 1, 10) +
-      invertItem(Personality8, 1, 10) +
-      invertItem(Personality9, 1, 10) +
-      invertItem(Personality10, 1, 10)), 
+      invertItem(Personality6, 1, 5) +
+      invertItem(Personality7, 1, 5) +
+      invertItem(Personality8, 1, 5) +
+      invertItem(Personality9, 1, 5) +
+      invertItem(Personality10, 1, 5)), 
     Extraversion = ( # extraversion
       Personality11 + 
         Personality12 +
@@ -122,33 +134,33 @@ well_being_df <- well_being_df %>%
         Personality23 +
         Personality24 +
         Personality25 +
-        invertItem(Personality26,1,10) +
-        invertItem(Personality27,1,10) +
-        invertItem(Personality28,1,10) +
-        invertItem(Personality29,1,10) +
-        invertItem(Personality30,1,10)),
+        invertItem(Personality26,1,5) +
+        invertItem(Personality27,1,5) +
+        invertItem(Personality28,1,5) +
+        invertItem(Personality29,1,5) +
+        invertItem(Personality30,1,5)),
     Agreeableness = ( # Agreeableness
       Personality31 + 
         Personality32 +
         Personality33 +
         Personality34 +
         Personality35 +
-        invertItem(Personality36, 1, 10) +
-        invertItem(Personality37, 1, 10) +
-        invertItem(Personality38, 1, 10) +
-        invertItem(Personality39, 1, 10) +
-        invertItem(Personality40, 1, 10)),
+        invertItem(Personality36, 1, 5) +
+        invertItem(Personality37, 1, 5) +
+        invertItem(Personality38, 1, 5) +
+        invertItem(Personality39, 1, 5) +
+        invertItem(Personality40, 1, 5)),
     Conscientiousness  = (  # conscientiousness
       Personality41 + 
         Personality42 +
         Personality43 +
         Personality44 +
         Personality45 +
-        invertItem(Personality46, 1, 10) +
-        invertItem(Personality47, 1, 10) +
-        invertItem(Personality48, 1, 10) +
-        invertItem(Personality49, 1, 10) +
-        invertItem(Personality50, 1, 10)))
+        invertItem(Personality46, 1, 5) +
+        invertItem(Personality47, 1, 5) +
+        invertItem(Personality48, 1, 5) +
+        invertItem(Personality49, 1, 5) +
+        invertItem(Personality50, 1, 5)))
 
 well_being_df <- well_being_df %>%  #personality group
   mutate(Personality = 
@@ -251,63 +263,34 @@ well_being_df <- well_being_df %>%
       Cognition6 +
       Cognition7)/7
   )
-```
-
-### Data Clean Up
-```{r Data Clean}
-Descriptives <- describe(well_being_df[c(1,2,71:79)]) #Using the brackets to call on the rows that were mutated to the dataframe
-
-Descriptives
-
-# Gender breakdown
-select(well_being_df, Gender) %>% 
-  mutate(sex = labelled::to_factor(Gender)) %>% 
-  group_by(sex) %>% 
-  summarise_all(funs(mean, n(), sd))
-
-hist(well_being_df$Neuroticism) # good
-hist(well_being_df$Extraversion) # good
-hist(well_being_df$Openness) # good
-hist(well_being_df$Agreeableness) # good
-hist(well_being_df$Conscientiousness)# good
-hist(well_being_df$MDT) # good
-hist(well_being_df$Personality) # good
-hist(well_being_df$PW_Index) # any scores of 0 to 100 are considered unreliable.
-
-# obersation [1,] has a score of 100
-well_being_df <- well_being_df[-1,] #remove the row
-
-
-hist(well_being_df$PW_Index)
-# Still seeing some smapling bias in scores and distribution is positively skewed
-# Thi violates our assumption of normality
-plot(well_being_df$PW_Index)
-# any 0 or negative numbers? 
-# running a log10() transformation
-# mutate a new variable called PWI_log
-
-#Transform log10()
-well_being_df <- well_being_df %>% 
-  mutate(PW_Index_log10 = log((
-    PWI1 + 
-      PWI2 + 
-      PWI3 + 
-      PWI4 + 
-      PWI5 + 
-      PWI6 + 
-      PWI7)))
-
-#re-run descriptives
-
-Descriptives <- describe(well_being_df[c(1,2,71:80)])
-Descriptives
 
 ```
 
+### Check data 
 
-### Next I will have a look at the plots and distributions of the Big 5, MDT and Cognition: 
+If looking for relationships between variables then transform the problematic variable if looking for differences then transform all needed variables. 
 
 ```{r Plots}
+boxplot(as.numeric(well_being_df$Neuroticism)
+        , main = "Neuroticism"
+        , horizontal = TRUE)
+
+boxplot(as.numeric(well_being_df$Extraversion)
+        , main = "Extraversion"
+        , horizontal = TRUE) 
+
+boxplot(as.numeric(well_being_df$Openness)
+        , main = "Openness"
+        , horizontal = TRUE)
+
+boxplot(as.numeric(well_being_df$Agreeableness)
+        , main = "Agreeableness"
+        , horizontal = TRUE)
+
+boxplot(as.numeric(well_being_df$Conscientiousness)
+        , main = "Conscientiousness"
+        , horizontal = TRUE)
+
 # Create an object with the requrired columns
 boxplot_big5 <- cbind(well_being_df$Neuroticism,
                       well_being_df$Extraversion, 
@@ -321,15 +304,53 @@ boxplot_names_big5 <- c("N", "E", "O", "A", "C")
 # Create a boxplot and use the object boxplot_names_big5 to label each one
 boxplot(boxplot_big5, main = "Big 5 Means", names = boxplot_names_big5, horizontal = FALSE) 
 
-```
+boxplot(as.numeric(well_being_df$MDT)
+        , main = "MDT"
+        , horizontal = TRUE)
 
-Big 5 boxplot variations between each trait seem good. Extraversion shows a smaller range of scores and lower overal mean.  
+boxplot(as.numeric(well_being_df$Personality)
+        , main = "Personality"
+        , horizontal = TRUE) 
+
+boxplot(as.numeric(well_being_df$HPMood)
+        , main = "HPMood"
+        , horizontal = TRUE
+        , outline = TRUE)
+
+# A few outliers in the DV
+boxplot(as.numeric(well_being_df$PW_Index)
+        , horizontal = TRUE
+     , main = "Personal Wellbeing Index"
+     , outline = TRUE
+     , outwez = TRUE) 
+
+# Positively skewed and almost bimodal
+hist(well_being_df$PW_Index)
+
+plot(well_being_df$PW_Index)
+
+boxplot.stats(well_being_df$PW_Index)
+
+#Descriptives <- describe(well_being_df[c(1,2,71:79)], fast = TRUE) #re-run descriptives
+
+#Descriptives #print descriptive statistics
+
+boxplot(as.numeric(well_being_df$HPMood), horizontal = TRUE)
+# Still seeing some smapling bias in scores and distribution is positively skewed
+# This could violates our assumption of normality
+# run a boxplot
+
+
+
+# Extraversion has some outliers
+
+```
 
 
 ## Correlations
 
 Combine into an object variables of interest. Using cbind as calling variables with well_being_df$... removes col names for some reason
-```{r Correlations, results="asis"}
+```{r Correlation Table, results="asis"}
 glrstab <- function(x, export=FALSE) {
   
   r <-corr.test(x)$r	#taking just the correlation matrix; no N, or p
@@ -373,7 +394,7 @@ glrstab <- function(x, export=FALSE) {
   
 }
 
-corr_Matrix <- well_being_df[c(1:2, 71:75, 77:78, 80)] #subset relevant columns
+corr_Matrix <- well_being_df[c(1:2, 72:79, 71)] #subset relevant columns
 a <- glrstab(corr_Matrix) #the function in action!
 
 rownames(a) <- c( "Age"
@@ -383,11 +404,12 @@ rownames(a) <- c( "Age"
                  , "Openness"
                  , "Agreeableness"
                  , "Conscientiousness"
+                 , "Personality"
                  , "HPMood"
                  , "MDT"
-                 , "PW_Index_log10")
+                 , "PW_Index")
 
-colnames(a)   <- c("$M$", "$SD$", "A", "G", "N", "E", "O", "A", "C", "HPM", "MDT")
+colnames(a)   <- c("$M$", "$SD$", "A", "G", "N", "E", "O", "A", "C", "Personality", "HPM", "MDT")
 
 apa_table(a
           , escape  = FALSE
@@ -396,65 +418,214 @@ apa_table(a
           , note    = "p<.001***, p<.01**, p<.05*, p<.10+")
 
 
-# Reliability anaysis 
-NEO_effect_size_alpha <- alpha(well_being_df[c(11:60)], check.keys = TRUE)
-NEO_effect_size_omega <- omega(well_being_df[c(11:60)])
-
 ```
-
+Correlations between Neuroticism and HPMood, MDT and PWI were all moderatly negative. This pattern can be shared with in that even directionality of constructs on PWI except for extraversion on mood. The positve correlation highlighted that being extraverted and feeling content, happy and alert taps into a more motivated construct and less domain related wellbeing. 
 
 ### Regression
 Step one of the multiple regression will use the two strongest correlates followed by the big
 5 then MDT. 
 
-```{r Regression}
+## Modelling 
+
+```{r Regression Part 1}
 
 Gender_labels <- c("Male", "Female") #set labels for gender factor levels
 
-model1 <- lm(PW_Index_log10 ~ Age 
+model1 <- lm(PW_Index ~ Age 
              + Gender
              , data = well_being_df) #baseline obtain total SS
 
-model2 <- lm(PW_Index_log10 ~ Age 
+model2 <- lm(PW_Index ~ Age 
              + Gender
              + MDT
              , data = well_being_df) #use known sign effects first based on previous research
 
-model3 <- lm(PW_Index_log10 ~ Age 
+model3 <- lm(PW_Index ~ Age 
              + Gender 
              + MDT 
              + HPMood
              , data = well_being_df)
 
-model4 <- lm(PW_Index_log10 ~ Age 
+model4 <- lm(PW_Index ~ Age 
              + Gender 
              + MDT 
              + HPMood 
              + Personality
-             , data = well_being_df) #additional of personality constructs - not sig
+             , data = well_being_df) #additional of personality groups
+
+model5 <- lm(PW_Index ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             + Agreeableness
+             + Conscientiousness
+             , data = well_being_df) #run with personality traits
 
 #Hierachial regression 
-summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
-summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
+#summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
+#summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
 summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood
-summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + big5
+#summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + group personality
+#summary(model5) # with personality traits
 
 # Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model1, model2, model3, model4)
+ANOVA_Models <- anova(model1, model2, model3, model4, model5)
 ANOVA_Models
 
-# personality still non sig
-
+# Model 3 sig at p<.001
 effect_sizes_model3 <- modelEffectSizes(model3, Digits = 2) #check effect sizes and partials
 
 modelAssumptions(model3) #use the lmsupport library 
 model_effect_sizes <- modelEffectSizes(model3) # partial eta squared/effect size/magnitude
 
+apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
 ```
+
+## Results Table
+```{r, results="asis"}
+apa_table(apa_lm$table
+          , caption = "Regression"
+          ) # creates the apa formated table to print to screen
+
+apa_anova <- apa_print(anova(model3))
+apa_table(apa_anova$table
+          , caption = "ANOVA"
+          , note = "Dependant variable: Personal Wellbeing Index")
+
+
+```
+
+
 #### Notes
+
 pETA: MDT in model 2 accounted for .30 of the unique variance on PWI scores however, 
 n the next step, the addition of HPMood account for .20 and MDT dropped down to .05.
+This trend can be seen in teh beta coefficients as well. Need to treat outliers in the DV
 
+
+### Residuals
+
+#### Model 3 come through as the best fit so will check the residuals to see if it can be improved
+
+```{r Residuals}
+
+
+my_residuals <- residuals(model3)
+
+hist( x = my_residuals )           # plot a histogram 
+
+qqnorm( y = my_residuals )         # draw a QQ plot 
+ 
+# shapiro-wilk test: compares scores in sample to to norm dist. if the test 
+# test is non-sig p>.05 tells us the the dist of sample is not sig different from normal
+# If test is sig p<.05 then the distribution in question is significant different from normal. 
+# Warning: large sample sizes may get different results. Always plot!
+shapiro.test( x = my_residuals )
+ 
+# which finds no indication that normality is violated 
+residualPlots(model3)
+
+model3_cooksd <- cooks.distance(model3)
+
+plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+
+abline(h = 4*mean(model3_cooksd, na.rm=T), col="red")  # add cutoff line - scores 4 times greater than mean
+
+text(x=1:length(model3_cooksd)+1
+     , y=model3_cooksd
+     , labels=ifelse(model3_cooksd>4*mean(model3_cooksd, na.rm=T)
+                     ,names(model3_cooksd),"")
+     , col="red")  # add labels
+
+# find out which rows are influencial
+influential <- as.numeric(names(model3_cooksd)[(model3_cooksd > 4*mean(model3_cooksd, na.rm=T))])  # influential row numbers
+# head(well_being_df[influential, ])  # influential observations.
+
+outlierTest(model3) #get the most extreme outlier and return row number
+
+# Print which rows are most influencial
+influential
+
+# Remove rows
+well_being_df <- well_being_df[-c(2, 19, 21, 66, 81), ]
+
+hist(well_being_df$PW_Index)
+```
+
+### Re run models
+```{r Re-model}
+
+model1 <- lm(PW_Index ~ Age 
+             + Gender
+             , data = well_being_df) #baseline obtain total SS
+
+model2 <- lm(PW_Index ~ Age 
+             + Gender
+             + MDT
+             , data = well_being_df) #use known sign effects first based on previous research
+
+model3 <- lm((PW_Index) ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood
+             , data = well_being_df)
+
+model4 <- lm(PW_Index ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Personality
+             , data = well_being_df) #additional of personality groups
+
+model5 <- lm(PW_Index ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             + Agreeableness
+             + Conscientiousness
+             , data = well_being_df) #run with personality traits
+
+#Hierachial regression 
+#summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
+#summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
+summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood
+#summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + group personality
+#summary(model5) # with personality traits
+
+# Run an ANOVA to check for sig effect. 
+ANOVA_Models <- anova(model1, model2, model3, model4, model5)
+ANOVA_Models
+
+my_residuals_2 <- residuals(model3)
+shapiro.test( x = my_residuals_2 )
+
+model3_cooksd_new <- cooks.distance(model3)
+
+plot(model3_cooksd_new, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+
+abline(h = 4*mean(model3_cooksd_new, na.rm=T), col="red")  # add cutoff line - scores 4 times greater than mean
+
+text(x=1:length(model3_cooksd_new)+1
+     , y=model3_cooksd_new
+     , labels=ifelse(model3_cooksd_new>4*mean(model3_cooksd_new, na.rm=T)
+                     ,names(model3_cooksd_new),"")
+     , col="red")  # add labels
+
+plot(well_being_df$PW_Index)
+
+
+residualPlots(model3)
+
+
+
+
+```
 
 ## Tables
 
@@ -466,7 +637,7 @@ apa_table(apa_lm$table
           , caption = "Regression"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model4))
+apa_anova <- apa_print(anova(model3))
 apa_table(apa_anova$table
           , caption = "ANOVA"
           , note = "Dependant variable: Personal Wellbeing Index")
@@ -474,22 +645,10 @@ apa_table(apa_anova$table
 
 
 #using glance I can pull specifc data from the object
-model_statistics <- glance(model4)
+model_statistics <- glance(model3)
 
 
 
-```
- 
-Run a probability distribution to check residuals for homos
-```{r Probability Plot}
-
-pwi.residuals <- rstandard(model4)
-qqnorm(pwi.residuals, 
-       ylab="Standardized Residuals", 
-       xlab="Normal Scores", 
-       main="Personal Wellbeing Index")
-
-#qqline(as.data.frame(pwi.residuals))
 ```
 
 ### Questions to answer:
@@ -505,13 +664,15 @@ m1 <- glance(model1)
 m2 <- glance(model2)
 m3 <- glance(model3)
 m4 <- glance(model4)
+m5 <- glance(model5)
 
 Descriptives <- tibble::tribble(
   ~model, ~R2, ~adj.R2,
   "Model 1",  round(m1$r.squared, digits = 2),  round(m1$adj.r.squared, digits = 2),
-  "Model 2*",  round(m2$r.squared, digits = 2), round(m2$adj.r.squared, digits = 2),
+  "Model 2",  round(m2$r.squared, digits = 2), round(m2$adj.r.squared, digits = 2),
   "Model 3",   round(m3$r.squared, digits = 2), round(m3$adj.r.squared, digits = 2),
-  "Model 4*",   round(m4$r.squared, digits = 2), round(m4$adj.r.squared, digits = 2)
+  "Model 4",   round(m4$r.squared, digits = 2), round(m4$adj.r.squared, digits = 2),
+  "Model 5",   round(m5$r.squared, digits = 2), round(m5$adj.r.squared, digits = 2)
 )
 
 require(rhandsontable)

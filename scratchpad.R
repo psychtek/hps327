@@ -93,6 +93,11 @@ invertItem <- function(x, min, max) {
 }
 
 
+# Gender breakdown
+select(well_being_df, Gender) %>% 
+  mutate(sex = labelled::to_factor(Gender)) %>% 
+  group_by(sex) %>% 
+  summarise_all(funs(mean, n(), sd))
 
 descriptivez <- well_being_df %>% 
   summarize(
@@ -134,3 +139,43 @@ well_being_df %>%
 well_being_df %>%
   select("PW.Index", "HPMood", "self_wants", "self_other") %>%
   summarise_all(funs(corr.test(.data)))
+
+library(car)
+my_residuals <- residuals(model3)
+ hist( x = my_residuals )           # plot a histogram (similar to Figure 14.3a)
+ qqnorm( y = my_residuals )         # draw a QQ plot (similar to Figure 14.3b)
+ shapiro.test( x = my_residuals )
+
+
+
+#DATA LOAD
+data <- read.csv('Height_data.csv')
+PWI <- well_being_df$PW_Index
+
+hist(PWI) #histogram
+
+#POPULATION PARAMETER CALCULATIONS
+zscore <- function(variable, score){
+  p_sd <- sd(variable)*sqrt((length(variable)-1)/(length(variable)))#population calculations
+  p_mean <- mean(variable)
+  z <- (score - p_mean)/p_sd #calculate z score
+  return(z)
+}
+
+zscore(well_being_df$PW_Index, 97)
+
+plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+
+abline(h = 4*mean(model3_cooksd, na.rm=T), col="red")  # add cutoff line - scores 4 times greater than mean
+
+text(x=1:length(model3_cooksd)+1
+     , y=model3_cooksd
+     , labels=ifelse(model3_cooksd>4*mean(model3_cooksd, na.rm=T)
+                     ,names(model3_cooksd),"")
+     , col="red")  # add labels
+
+
+# Reliability anaysis
+# effect sizes
+NEO_effect_size_alpha <- alpha(well_being_df[c(11:60)], check.keys = TRUE)
+NEO_effect_size_omega <- omega(well_being_df[c(11:60)])
