@@ -329,11 +329,13 @@ hist(well_being_df$PW_Index)
 
 plot(well_being_df$PW_Index)
 
+# qqPlot(well_being_df$PW_Index)
+
 boxplot.stats(well_being_df$PW_Index)
 
-#Descriptives <- describe(well_being_df[c(1,2,71:79)], fast = TRUE) #re-run descriptives
+Descriptives <- describe(well_being_df[c(1,2,71:79)], fast = TRUE) #re-run descriptives
 
-#Descriptives #print descriptive statistics
+Descriptives #print descriptive statistics
 
 boxplot(as.numeric(well_being_df$HPMood), horizontal = TRUE)
 # Still seeing some smapling bias in scores and distribution is positively skewed
@@ -394,11 +396,12 @@ glrstab <- function(x, export=FALSE) {
   
 }
 
-corr_Matrix <- well_being_df[c(1:2, 72:79, 71)] #subset relevant columns
+corr_Matrix <- well_being_df[c(1:2, 71:79)] #subset relevant columns
 a <- glrstab(corr_Matrix) #the function in action!
 
 rownames(a) <- c( "Age"
                  , "Gender"
+                 , "PW_Index"
                  , "Neuroticism"
                  , "Extraversion"
                  , "Openness"
@@ -407,9 +410,9 @@ rownames(a) <- c( "Age"
                  , "Personality"
                  , "HPMood"
                  , "MDT"
-                 , "PW_Index")
+                 )
 
-colnames(a)   <- c("$M$", "$SD$", "A", "G", "N", "E", "O", "A", "C", "Personality", "HPM", "MDT")
+colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
 
 apa_table(a
           , escape  = FALSE
@@ -465,11 +468,11 @@ model5 <- lm(PW_Index ~ Age
              , data = well_being_df) #run with personality traits
 
 #Hierachial regression 
-#summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
-#summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
+summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
+summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
 summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood
-#summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + group personality
-#summary(model5) # with personality traits
+summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + group personality
+summary(model5) # with personality traits
 
 # Run an ANOVA to check for sig effect. 
 ANOVA_Models <- anova(model1, model2, model3, model4, model5)
@@ -616,8 +619,6 @@ text(x=1:length(model3_cooksd_new)+1
      , labels=ifelse(model3_cooksd_new>4*mean(model3_cooksd_new, na.rm=T)
                      ,names(model3_cooksd_new),"")
      , col="red")  # add labels
-
-plot(well_being_df$PW_Index)
 
 
 residualPlots(model3)

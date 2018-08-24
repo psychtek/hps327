@@ -175,6 +175,16 @@ text(x=1:length(model3_cooksd)+1
      , col="red")  # add labels
 
 
+Week6Data %>% 
+  select(tip, total_bill, sex) %>% 
+  gather(key = variable, value = value, -sex) %>% 
+  group_by(sex, variable) %>% 
+  summarise(value = list(value)) %>% 
+  spread(sex, value) %>% 
+  group_by(variable) %>% 
+  mutate(p_value = t.test(unlist(Female), unlist(Male))$p.value,
+         t_value = t.test(unlist(Female), unlist(Male))$statistic)
+
 # Reliability anaysis
 # effect sizes
 NEO_effect_size_alpha <- alpha(well_being_df[c(11:60)], check.keys = TRUE)
