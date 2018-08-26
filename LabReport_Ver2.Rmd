@@ -453,7 +453,7 @@ model4 <- lm(PW_Index ~ Age
              + Gender 
              + MDT 
              + HPMood 
-             + Personality
+             + Neuroticism
              , data = well_being_df) #additional of personality groups
 
 model5 <- lm(PW_Index ~ Age 
@@ -462,10 +462,37 @@ model5 <- lm(PW_Index ~ Age
              + HPMood 
              + Neuroticism
              + Extraversion
+             , data = well_being_df)
+
+model6 <- lm(PW_Index ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             , data = well_being_df)
+
+model7 <- lm(PW_Index ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             + Agreeableness
+             , data = well_being_df)
+
+model8 <- lm(PW_Index ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Neuroticism
+             + Extraversion
              + Openness
              + Agreeableness
              + Conscientiousness
-             , data = well_being_df) #run with personality traits
+             , data = well_being_df)
 
 #Hierachial regression 
 summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
@@ -473,18 +500,24 @@ summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
 summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood
 summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + group personality
 summary(model5) # with personality traits
+summary(model6)
+summary(model7)
+summary(model8)
+
 
 # Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model1, model2, model3, model4, model5)
+ANOVA_Models <- anova(model1, model2, model3, model4, model5, model6, model7, model8)
 ANOVA_Models
 
+model_one <- model8
+
 # Model 3 sig at p<.001
-effect_sizes_model3 <- modelEffectSizes(model3, Digits = 2) #check effect sizes and partials
+effect_sizes_model3 <- modelEffectSizes(model8, Digits = 2) #check effect sizes and partials
 
-modelAssumptions(model3) #use the lmsupport library 
-model_effect_sizes <- modelEffectSizes(model3) # partial eta squared/effect size/magnitude
+modelAssumptions(model8) #use the lmsupport library 
+model_effect_sizes <- modelEffectSizes(model8) # partial eta squared/effect size/magnitude
 
-apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
+apa_lm <- apa_print(model8) #apa_print function takes the lm object and creates format strings to report the results
 ```
 
 ## Results Table
@@ -493,7 +526,7 @@ apa_table(apa_lm$table
           , caption = "Regression"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model3))
+apa_anova <- apa_print(anova(model8))
 apa_table(apa_anova$table
           , caption = "ANOVA"
           , note = "Dependant variable: Personal Wellbeing Index")
@@ -516,7 +549,7 @@ This trend can be seen in teh beta coefficients as well. Need to treat outliers 
 ```{r Residuals}
 
 
-my_residuals <- residuals(model3)
+my_residuals <- residuals(model8)
 
 hist( x = my_residuals )           # plot a histogram 
 
@@ -531,7 +564,7 @@ shapiro.test( x = my_residuals )
 # which finds no indication that normality is violated 
 residualPlots(model3)
 
-model3_cooksd <- cooks.distance(model3)
+model3_cooksd <- cooks.distance(model8)
 
 plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
 
@@ -570,7 +603,7 @@ model2 <- lm(PW_Index ~ Age
              + MDT
              , data = well_being_df) #use known sign effects first based on previous research
 
-model3 <- lm((PW_Index) ~ Age 
+model3 <- lm(PW_Index ~ Age 
              + Gender 
              + MDT 
              + HPMood
@@ -580,7 +613,7 @@ model4 <- lm(PW_Index ~ Age
              + Gender 
              + MDT 
              + HPMood 
-             + Personality
+             + Neuroticism
              , data = well_being_df) #additional of personality groups
 
 model5 <- lm(PW_Index ~ Age 
@@ -589,26 +622,55 @@ model5 <- lm(PW_Index ~ Age
              + HPMood 
              + Neuroticism
              + Extraversion
+             , data = well_being_df)
+
+model6 <- lm(PW_Index ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             , data = well_being_df)
+
+model7 <- lm(PW_Index ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             + Agreeableness
+             , data = well_being_df)
+
+model8 <- lm(PW_Index ~ Age 
+             + Gender 
+             + MDT 
+             + HPMood 
+             + Neuroticism
+             + Extraversion
              + Openness
              + Agreeableness
              + Conscientiousness
-             , data = well_being_df) #run with personality traits
+             , data = well_being_df)
 
 #Hierachial regression 
 #summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
 #summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
-summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood
+#summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood
 #summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + group personality
 #summary(model5) # with personality traits
 
 # Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model1, model2, model3, model4, model5)
+ANOVA_Models <- anova(model1, model2, model3, model4, model5, model6, model7, model8)
 ANOVA_Models
 
-my_residuals_2 <- residuals(model3)
+model_two <- model8
+
+my_residuals_2 <- residuals(model8)
 shapiro.test( x = my_residuals_2 )
 
-model3_cooksd_new <- cooks.distance(model3)
+model3_cooksd_new <- cooks.distance(model8)
 
 plot(model3_cooksd_new, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
 
@@ -621,7 +683,7 @@ text(x=1:length(model3_cooksd_new)+1
      , col="red")  # add labels
 
 
-residualPlots(model3)
+residualPlots(model8)
 
 
 
@@ -632,13 +694,13 @@ residualPlots(model3)
 
 ```{r Papaja Table , results="asis"}
 
-apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
+apa_lm <- apa_print(model8) #apa_print function takes the lm object and creates format strings to report the results
 
 apa_table(apa_lm$table
           , caption = "Regression"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model3))
+apa_anova <- apa_print(anova(model8))
 apa_table(apa_anova$table
           , caption = "ANOVA"
           , note = "Dependant variable: Personal Wellbeing Index")
@@ -646,7 +708,7 @@ apa_table(apa_anova$table
 
 
 #using glance I can pull specifc data from the object
-model_statistics <- glance(model3)
+model_statistics <- glance(model8)
 
 
 
@@ -666,6 +728,9 @@ m2 <- glance(model2)
 m3 <- glance(model3)
 m4 <- glance(model4)
 m5 <- glance(model5)
+m6 <- glance(model6)
+m7 <- glance(model7)
+m8 <- glance(model8)
 
 Descriptives <- tibble::tribble(
   ~model, ~R2, ~adj.R2,
@@ -673,7 +738,10 @@ Descriptives <- tibble::tribble(
   "Model 2",  round(m2$r.squared, digits = 2), round(m2$adj.r.squared, digits = 2),
   "Model 3",   round(m3$r.squared, digits = 2), round(m3$adj.r.squared, digits = 2),
   "Model 4",   round(m4$r.squared, digits = 2), round(m4$adj.r.squared, digits = 2),
-  "Model 5",   round(m5$r.squared, digits = 2), round(m5$adj.r.squared, digits = 2)
+  "Model 5",   round(m5$r.squared, digits = 2), round(m5$adj.r.squared, digits = 2),
+  "Model 6",   round(m6$r.squared, digits = 2), round(m6$adj.r.squared, digits = 2),
+  "Model 7",   round(m7$r.squared, digits = 2), round(m7$adj.r.squared, digits = 2),
+  "Model 8",   round(m8$r.squared, digits = 2), round(m8$adj.r.squared, digits = 2)
 )
 
 require(rhandsontable)
