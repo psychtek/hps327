@@ -424,6 +424,29 @@ apa_table(a
 ```
 Correlations between Neuroticism and HPMood, MDT and PWI were all moderatly negative. This pattern can be shared with in that even directionality of constructs on PWI except for extraversion on mood. The positve correlation highlighted that being extraverted and feeling content, happy and alert taps into a more motivated construct and less domain related wellbeing. 
 
+### Intercorrelations
+Check alpha levels (omega) for intercorrelations on each domain. 
+
+```{r Alpha Check}
+
+
+Neuroticism_alpha <- alpha(well_being_df[c(11:20)], check.keys = TRUE)
+Extraversion_alpha <- alpha(well_being_df[c(21:30)], check.keys = TRUE)
+Openness_alpha <- alpha(well_being_df[c(31:40)], check.keys = TRUE)
+Agree_alpha <- alpha(well_being_df[c(41:50)], check.keys = TRUE)
+Conscient_alpha <- alpha(well_being_df[c(51:60)], check.keys = TRUE)
+
+apa_table(Neuroticism_alpha$total)
+apa_table(Extraversion_alpha$total)
+apa_table(Openness_alpha$total)
+apa_table(Agree_alpha$total)
+apa_table(Conscient_alpha$total)
+
+```
+
+
+
+
 ### Regression
 Step one of the multiple regression will use the two strongest correlates followed by the big
 5 then MDT. 
