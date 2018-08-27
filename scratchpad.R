@@ -187,5 +187,12 @@ Week6Data %>%
 
 # Reliability anaysis
 # effect sizes
-NEO_effect_size_alpha <- alpha(well_being_df[c(11:60)], check.keys = TRUE)
-NEO_effect_size_omega <- omega(well_being_df[c(11:60)])
+
+NEO_effect_size_omega <- omega(well_being_df[c(11:20)])
+
+
+Neuroticism_alpha <- alpha(well_being_df[c(11:20)], check.keys = TRUE)
+Extraversion_alpha <- alpha(well_being_df[c(21:30)], check.keys = TRUE)
+Openness_alpha <- alpha(well_being_df[c(31:40)], check.keys = TRUE)
+Agree_alpha <- alpha(well_being_df[c(41:50)], check.keys = TRUE)
+Conscient_alpha <- alpha(well_being_df[c(51:60)], check.keys = TRUE)
