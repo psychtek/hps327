@@ -123,11 +123,11 @@ well_being_df <- well_being_df %>%
         Personality13 +
         Personality14 +
         Personality15 +
-        Personality16 +
-        Personality17 +
-        Personality18 +
-        Personality19 +
-        Personality20),
+        invertItem(Personality16, 1, 5) +
+        invertItem(Personality17, 1, 5) +
+        invertItem(Personality18, 1, 5) +
+        invertItem(Personality19, 1, 5) +
+        invertItem(Personality20, 1, 5)),
     Openness = ( # openness
       Personality21 + 
         Personality22 +
@@ -161,59 +161,6 @@ well_being_df <- well_being_df %>%
         invertItem(Personality48, 1, 5) +
         invertItem(Personality49, 1, 5) +
         invertItem(Personality50, 1, 5)))
-
-well_being_df <- well_being_df %>%  #personality group
-  mutate(Personality = 
-           (Personality1 +
-           Personality2 +
-           Personality3 + 
-           Personality4 +
-           Personality5 +
-           Personality6 +
-           Personality7 +
-           Personality8 +
-           Personality9 +
-           Personality10 +
-           Personality11 + 
-           Personality12 +
-           Personality13 +
-           Personality14 +
-           Personality15 +
-           Personality16 +
-           Personality17 +
-           Personality18 +
-           Personality19 +
-           Personality20 +
-           Personality21 + 
-           Personality22 +
-           Personality23 +
-           Personality24 +
-           Personality25 +
-           Personality26 +
-           Personality27 +
-           Personality28 +
-           Personality29 +
-           Personality30 +
-           Personality31 + 
-           Personality32 +
-           Personality33 +
-           Personality34 +
-           Personality35 +
-           Personality36 +
-           Personality37 +
-           Personality38 +
-           Personality39 +
-           Personality40 +
-           Personality41 + 
-           Personality42 +
-           Personality43 +
-           Personality44 +
-           Personality45 +
-           Personality46 +
-           Personality47 +
-           Personality48 +
-           Personality49 +
-           Personality50)/50*10)
      
 ```
 
@@ -266,32 +213,11 @@ well_being_df <- well_being_df %>%
 
 ```
 
-### Check data 
+### Visualise and Check data 
 
-If looking for relationships between variables then transform the problematic variable if looking for differences then transform all needed variables. 
 
 ```{r Plots}
-boxplot(as.numeric(well_being_df$Neuroticism)
-        , main = "Neuroticism"
-        , horizontal = TRUE)
-
-boxplot(as.numeric(well_being_df$Extraversion)
-        , main = "Extraversion"
-        , horizontal = TRUE) 
-
-boxplot(as.numeric(well_being_df$Openness)
-        , main = "Openness"
-        , horizontal = TRUE)
-
-boxplot(as.numeric(well_being_df$Agreeableness)
-        , main = "Agreeableness"
-        , horizontal = TRUE)
-
-boxplot(as.numeric(well_being_df$Conscientiousness)
-        , main = "Conscientiousness"
-        , horizontal = TRUE)
-
-# Create an object with the requrired columns
+# Create an object with the required columns
 boxplot_big5 <- cbind(well_being_df$Neuroticism,
                       well_being_df$Extraversion, 
                       well_being_df$Openness, 
@@ -304,20 +230,20 @@ boxplot_names_big5 <- c("N", "E", "O", "A", "C")
 # Create a boxplot and use the object boxplot_names_big5 to label each one
 boxplot(boxplot_big5, main = "Big 5 Means", names = boxplot_names_big5, horizontal = FALSE) 
 
-boxplot(as.numeric(well_being_df$MDT)
+boxplot(as.numeric(well_being_df$MDT) #MDT - Cognition
         , main = "MDT"
         , horizontal = TRUE)
 
-boxplot(as.numeric(well_being_df$Personality)
-        , main = "Personality"
-        , horizontal = TRUE) 
+plot(well_being_df$MDT)
 
-boxplot(as.numeric(well_being_df$HPMood)
+boxplot(as.numeric(well_being_df$HPMood) #HPMood - Affect
         , main = "HPMood"
         , horizontal = TRUE
         , outline = TRUE)
 
-# A few outliers in the DV
+plot(well_being_df$HPMood)
+
+# DV Personal wellbeing index
 boxplot(as.numeric(well_being_df$PW_Index)
         , horizontal = TRUE
      , main = "Personal Wellbeing Index"
@@ -326,25 +252,18 @@ boxplot(as.numeric(well_being_df$PW_Index)
 
 # Positively skewed and almost bimodal
 hist(well_being_df$PW_Index)
-
 plot(well_being_df$PW_Index)
 
-# qqPlot(well_being_df$PW_Index)
+qqPlot(as.numeric(well_being_df$PW_Index))
+```
 
-boxplot.stats(well_being_df$PW_Index)
-
-Descriptives <- describe(well_being_df[c(1,2,71:79)], fast = TRUE) #re-run descriptives
+## Descriptives
+```{r Descriptives}
+Descriptives <- describe(well_being_df[c(1,2,71:78)], fast = TRUE) #re-run descriptives
 
 Descriptives #print descriptive statistics
 
-boxplot(as.numeric(well_being_df$HPMood), horizontal = TRUE)
-# Still seeing some smapling bias in scores and distribution is positively skewed
-# This could violates our assumption of normality
-# run a boxplot
 
-
-
-# Extraversion has some outliers
 
 ```
 
@@ -396,7 +315,7 @@ glrstab <- function(x, export=FALSE) {
   
 }
 
-corr_Matrix <- well_being_df[c(1:2, 71:79)] #subset relevant columns
+corr_Matrix <- well_being_df[c(1:2, 71:78)] #subset relevant columns
 a <- glrstab(corr_Matrix) #the function in action!
 
 rownames(a) <- c( "Age"
@@ -407,12 +326,11 @@ rownames(a) <- c( "Age"
                  , "Openness"
                  , "Agreeableness"
                  , "Conscientiousness"
-                 , "Personality"
                  , "HPMood"
                  , "MDT"
                  )
 
-colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
+colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 
 apa_table(a
           , escape  = FALSE
@@ -427,92 +345,152 @@ Correlations between Neuroticism and HPMood, MDT and PWI were all moderatly nega
 ### Intercorrelations
 Check alpha levels (omega) for intercorrelations on each domain. 
 
-```{r Alpha Check}
+#### Personal wellbeing index
+The combined survey mean scores from 28 surveys of the Australian population have produced a
+maximum variation of 3.2 percentage points in subjective wellbeing (see Australian Unity Wellbeing
+Index Report 28.0). Cronbach alpha lies between .70 and .85 in Australia and overseas. Inter-domain
+correlations are often moderate at round .30 to .55 and item-total correlations are at least .50. The
+index has also demonstrated good test-retest reliability across 1-2 week interval with an intra-class
+correlation coefficient of 0.84 (Lau and Cummins, 2005).    
+
+#### Personality
+
+```{r Alpha Check, warning=FALSE}
+
+omega(select(well_being_df, PWI1, PWI2, PWI3, PWI4, PWI5, PWI6, PWI7))
+
+personality_group <- well_being_df %>% #create an object with personality constructs and reversed scored items
+  select(num_range("Personality", 1:50)) %>% 
+  mutate(Personality6_R = invertItem(Personality6, 1, 5),
+         Personality7_R = invertItem(Personality7, 1, 5),
+         Personality8_R = invertItem(Personality8, 1, 5),
+         Personality9_R = invertItem(Personality9, 1, 5),
+         Personality10_R = invertItem(Personality10, 1, 5),
+         Personality16_R = invertItem(Personality16, 1, 5),
+         Personality17_R = invertItem(Personality17, 1, 5),
+         Personality18_R = invertItem(Personality18, 1, 5),
+         Personality19_R = invertItem(Personality19, 1, 5),
+         Personality20_R = invertItem(Personality20, 1, 5),
+         Personality26_R = invertItem(Personality26, 1,5),
+         Personality27_R = invertItem(Personality27, 1,5),
+         Personality28_R = invertItem(Personality28, 1,5),
+         Personality29_R = invertItem(Personality29, 1,5),
+         Personality30_R = invertItem(Personality30, 1,5),
+         Personality36_R = invertItem(Personality36, 1, 5),
+         Personality37_R = invertItem(Personality37, 1, 5),
+         Personality38_R = invertItem(Personality38, 1, 5),
+         Personality39_R = invertItem(Personality39, 1, 5),
+         Personality40_R = invertItem(Personality40, 1, 5),
+         Personality46_R = invertItem(Personality46, 1, 5),
+         Personality47_R = invertItem(Personality47, 1, 5),
+         Personality48_R = invertItem(Personality48, 1, 5),
+         Personality49_R = invertItem(Personality49, 1, 5),
+         Personality50_R = invertItem(Personality50, 1, 5))
+
+neo_omega <- select(personality_group
+                    , Personality1
+                    , Personality2
+                    , Personality3
+                    , Personality4
+                    , Personality5
+                    , Personality6_R
+                    , Personality7_R
+                    , Personality8_R
+                    , Personality9_R
+                    , Personality10_R)
+
+ext_omega <- select(personality_group
+                    , Personality11
+                    , Personality12
+                    , Personality13
+                    , Personality14
+                    , Personality15
+                    , Personality16_R
+                    , Personality17_R
+                    , Personality18_R
+                    , Personality19_R
+                    , Personality20_R)
 
 
-Neuroticism_alpha <- alpha(well_being_df[c(11:20)], check.keys = TRUE)
-Extraversion_alpha <- alpha(well_being_df[c(21:30)], check.keys = TRUE)
-Openness_alpha <- alpha(well_being_df[c(31:40)], check.keys = TRUE)
-Agree_alpha <- alpha(well_being_df[c(41:50)], check.keys = TRUE)
-Conscient_alpha <- alpha(well_being_df[c(51:60)], check.keys = TRUE)
+opn_omega <- select(personality_group
+                    , Personality21
+                    , Personality22
+                    , Personality23
+                    , Personality24
+                    , Personality25
+                    , Personality26_R
+                    , Personality27_R
+                    , Personality28_R
+                    , Personality29_R
+                    , Personality30_R)
 
-apa_table(Neuroticism_alpha$total)
-apa_table(Extraversion_alpha$total)
-apa_table(Openness_alpha$total)
-apa_table(Agree_alpha$total)
-apa_table(Conscient_alpha$total)
+agre_omega <- select(personality_group
+                    , Personality31
+                    , Personality32
+                    , Personality33
+                    , Personality34
+                    , Personality35
+                    , Personality36_R
+                    , Personality37_R
+                    , Personality38_R
+                    , Personality39_R
+                    , Personality40_R)
+
+conc_omega <- select(personality_group
+                     , Personality41
+                     , Personality42
+                     , Personality43
+                     , Personality44
+                     , Personality45
+                     , Personality46_R
+                     , Personality47_R
+                     , Personality48_R
+                     , Personality49_R
+                     , Personality50_R)
+
+corPlot(neo_omega, method = "circles")
+omega(neo_omega)
+
+corPlot(ext_omega)
+omega(ext_omega)
+
+corPlot(opn_omega)
+omega(opn_omega)
+
+corPlot(agre_omega)
+omega(agre_omega)
+
+corPlot(conc_omega)
+omega(conc_omega)
 
 
-Neuroticism_omega <-  omega(well_being_df[c(11:20)])
-Extraversion_omega <- omega(well_being_df[c(21:30)])
-Openness_omega <-     omega(well_being_df[c(31:40)])
-Agree_omega <-        omega(well_being_df[c(41:50)])
-Conscient_omega <-    omega(well_being_df[c(51:60)])
 ```
 
 
 
 
 ### Regression
-Step one of the multiple regression will use the two strongest correlates followed by the big
+Step one of the hierarchial regression will use the two strongest correlates followed by the big
 5 then MDT. 
 
 ## Modelling 
 
 ```{r Regression Part 1}
 
-Gender_labels <- c("Male", "Female") #set labels for gender factor levels
+# Gender_labels <- c("Male", "Female") #set labels for gender factor levels
 
 model1 <- lm(PW_Index ~ Age 
              + Gender
              , data = well_being_df) #baseline obtain total SS
 
-model2 <- lm(PW_Index ~ Age 
-             + Gender
-             + MDT
-             , data = well_being_df) #use known sign effects first based on previous research
 
-model3 <- lm(PW_Index ~ Age 
+model2 <- lm(PW_Index ~ Age 
              + Gender 
              + MDT 
              + HPMood
              , data = well_being_df)
 
-model4 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood 
-             + Neuroticism
-             , data = well_being_df) #additional of personality groups
-
-model5 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood 
-             + Neuroticism
-             + Extraversion
-             , data = well_being_df)
-
-model6 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood 
-             + Neuroticism
-             + Extraversion
-             + Openness
-             , data = well_being_df)
-
-model7 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood 
-             + Neuroticism
-             + Extraversion
-             + Openness
-             + Agreeableness
-             , data = well_being_df)
-
-model8 <- lm(PW_Index ~ Age 
+model3 <- lm(PW_Index ~ Age 
              + Gender 
              + MDT 
              + HPMood 
@@ -525,28 +503,24 @@ model8 <- lm(PW_Index ~ Age
 
 #Hierachial regression 
 summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
-summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
-summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood
-summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + group personality
-summary(model5) # with personality traits
-summary(model6)
-summary(model7)
-summary(model8)
+summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT + HPMood
+summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + Persoanlity traits
+
 
 
 # Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model1, model2, model3, model4, model5, model6, model7, model8)
+ANOVA_Models <- anova(model1, model2, model3)
 ANOVA_Models
 
-model_one <- model8
+model_one <- model3
 
 # Model 3 sig at p<.001
-effect_sizes_model3 <- modelEffectSizes(model8, Digits = 2) #check effect sizes and partials
+effect_sizes_model3 <- modelEffectSizes(model3, Digits = 2) #check effect sizes and partials
 
-modelAssumptions(model8) #use the lmsupport library 
-model_effect_sizes <- modelEffectSizes(model8) # partial eta squared/effect size/magnitude
+modelAssumptions(model3) #use the lmsupport library 
+model_effect_sizes <- modelEffectSizes(model3) # partial eta squared/effect size/magnitude
 
-apa_lm <- apa_print(model8) #apa_print function takes the lm object and creates format strings to report the results
+apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
 ```
 
 ## Results Table
@@ -555,20 +529,18 @@ apa_table(apa_lm$table
           , caption = "Regression"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model8))
+apa_anova <- apa_print(anova(model3))
 apa_table(apa_anova$table
           , caption = "ANOVA"
           , note = "Dependant variable: Personal Wellbeing Index")
 
+#N^2 or GES = generalised eta squared
 
 ```
 
 
 #### Notes
 
-pETA: MDT in model 2 accounted for .30 of the unique variance on PWI scores however, 
-n the next step, the addition of HPMood account for .20 and MDT dropped down to .05.
-This trend can be seen in teh beta coefficients as well. Need to treat outliers in the DV
 
 
 ### Residuals
@@ -578,7 +550,7 @@ This trend can be seen in teh beta coefficients as well. Need to treat outliers 
 ```{r Residuals}
 
 
-my_residuals <- residuals(model8)
+my_residuals <- residuals(model3)
 
 hist( x = my_residuals )           # plot a histogram 
 
@@ -593,7 +565,7 @@ shapiro.test( x = my_residuals )
 # which finds no indication that normality is violated 
 residualPlots(model3)
 
-model3_cooksd <- cooks.distance(model8)
+model3_cooksd <- cooks.distance(model3)
 
 plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
 
@@ -602,7 +574,7 @@ abline(h = 4*mean(model3_cooksd, na.rm=T), col="red")  # add cutoff line - score
 text(x=1:length(model3_cooksd)+1
      , y=model3_cooksd
      , labels=ifelse(model3_cooksd>4*mean(model3_cooksd, na.rm=T)
-                     ,names(model3_cooksd),"")
+      ,names(model3_cooksd),"")
      , col="red")  # add labels
 
 # find out which rows are influencial
@@ -615,7 +587,7 @@ outlierTest(model3) #get the most extreme outlier and return row number
 influential
 
 # Remove rows
-well_being_df <- well_being_df[-c(2, 19, 21, 66, 81), ]
+well_being_df <- well_being_df[-c(2, 19, 21, 84), ]
 
 hist(well_being_df$PW_Index)
 ```
@@ -627,52 +599,14 @@ model1 <- lm(PW_Index ~ Age
              + Gender
              , data = well_being_df) #baseline obtain total SS
 
-model2 <- lm(PW_Index ~ Age 
-             + Gender
-             + MDT
-             , data = well_being_df) #use known sign effects first based on previous research
 
-model3 <- lm(PW_Index ~ Age 
+model2 <- lm(PW_Index ~ Age 
              + Gender 
              + MDT 
              + HPMood
              , data = well_being_df)
 
-model4 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood 
-             + Neuroticism
-             , data = well_being_df) #additional of personality groups
-
-model5 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood 
-             + Neuroticism
-             + Extraversion
-             , data = well_being_df)
-
-model6 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood 
-             + Neuroticism
-             + Extraversion
-             + Openness
-             , data = well_being_df)
-
-model7 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood 
-             + Neuroticism
-             + Extraversion
-             + Openness
-             + Agreeableness
-             , data = well_being_df)
-
-model8 <- lm(PW_Index ~ Age 
+model3 <- lm(PW_Index ~ Age 
              + Gender 
              + MDT 
              + HPMood 
@@ -683,23 +617,17 @@ model8 <- lm(PW_Index ~ Age
              + Conscientiousness
              , data = well_being_df)
 
-#Hierachial regression 
-#summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
-#summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT
-#summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood
-#summary(model4) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + HPMood + group personality
-#summary(model5) # with personality traits
 
 # Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model1, model2, model3, model4, model5, model6, model7, model8)
+ANOVA_Models <- anova(model1, model2, model3)
 ANOVA_Models
 
-model_two <- model8
+model_two <- model3
 
-my_residuals_2 <- residuals(model8)
+my_residuals_2 <- residuals(model3)
 shapiro.test( x = my_residuals_2 )
 
-model3_cooksd_new <- cooks.distance(model8)
+model3_cooksd_new <- cooks.distance(model3)
 
 plot(model3_cooksd_new, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
 
@@ -712,24 +640,60 @@ text(x=1:length(model3_cooksd_new)+1
      , col="red")  # add labels
 
 
-residualPlots(model8)
+residualPlots(model3)
 
 
 
 
 ```
 
+## With outliers removed re-run the correlations and descriptives
+
+```{r CorrelationTable, results="asis"}
+corr_Matrix2 <- well_being_df[c(1:2, 71:78)] #subset relevant columns
+a2 <- glrstab(corr_Matrix2) #the function in action!
+
+rownames(a2) <- c( "Age"
+                 , "Gender"
+                 , "PW_Index"
+                 , "Neuroticism"
+                 , "Extraversion"
+                 , "Openness"
+                 , "Agreeableness"
+                 , "Conscientiousness"
+                 , "HPMood"
+                 , "MDT"
+                 )
+
+colnames(a2)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+
+apa_table(a2
+          , escape  = FALSE
+          , format = "html"
+          , caption = "Correlation matrix of the main variables"
+          , note    = "p<.001***, p<.01**, p<.05*, p<.10+")
+```
+
+```{r Means}
+
+Descriptives2 <- describe(well_being_df[c(1,2,71:78)], fast = TRUE) #re-run descriptives
+
+Descriptives2 #print descriptive statistics
+
+```
+
+
 ## Tables
 
 ```{r Papaja Table , results="asis"}
 
-apa_lm <- apa_print(model8) #apa_print function takes the lm object and creates format strings to report the results
+apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
 
 apa_table(apa_lm$table
           , caption = "Regression"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model8))
+apa_anova <- apa_print(anova(model3))
 apa_table(apa_anova$table
           , caption = "ANOVA"
           , note = "Dependant variable: Personal Wellbeing Index")
@@ -737,7 +701,7 @@ apa_table(apa_anova$table
 
 
 #using glance I can pull specifc data from the object
-model_statistics <- glance(model8)
+model_statistics <- glance(model3)
 
 
 
@@ -755,22 +719,13 @@ model_statistics <- glance(model8)
 m1 <- glance(model1)
 m2 <- glance(model2)
 m3 <- glance(model3)
-m4 <- glance(model4)
-m5 <- glance(model5)
-m6 <- glance(model6)
-m7 <- glance(model7)
-m8 <- glance(model8)
+
 
 Descriptives <- tibble::tribble(
   ~model, ~R2, ~adj.R2,
   "Model 1",  round(m1$r.squared, digits = 2),  round(m1$adj.r.squared, digits = 2),
   "Model 2",  round(m2$r.squared, digits = 2), round(m2$adj.r.squared, digits = 2),
-  "Model 3",   round(m3$r.squared, digits = 2), round(m3$adj.r.squared, digits = 2),
-  "Model 4",   round(m4$r.squared, digits = 2), round(m4$adj.r.squared, digits = 2),
-  "Model 5",   round(m5$r.squared, digits = 2), round(m5$adj.r.squared, digits = 2),
-  "Model 6",   round(m6$r.squared, digits = 2), round(m6$adj.r.squared, digits = 2),
-  "Model 7",   round(m7$r.squared, digits = 2), round(m7$adj.r.squared, digits = 2),
-  "Model 8",   round(m8$r.squared, digits = 2), round(m8$adj.r.squared, digits = 2)
+  "Model 3",   round(m3$r.squared, digits = 2), round(m3$adj.r.squared, digits = 2)
 )
 
 require(rhandsontable)

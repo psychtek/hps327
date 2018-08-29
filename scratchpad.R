@@ -196,3 +196,51 @@ Extraversion_alpha <- alpha(well_being_df[c(21:30)], check.keys = TRUE)
 Openness_alpha <- alpha(well_being_df[c(31:40)], check.keys = TRUE)
 Agree_alpha <- alpha(well_being_df[c(41:50)], check.keys = TRUE)
 Conscient_alpha <- alpha(well_being_df[c(51:60)], check.keys = TRUE)
+
+select(well_being_df, num_range("Personality", 1:10)) %>%
+  mutate_all(myaplha = omega(.))
+
+
+
+xvar2 <- select(well_being_df,  num_range("Personality", 1:50)) %>% 
+  mutate(Personality6_R = invertItem(Personality6, 1, 5),
+            Personality7_R = invertItem(Personality7, 1, 5),
+            Personality8_R = invertItem(Personality8, 1, 5),
+            Personality9_R = invertItem(Personality9, 1, 5),
+            Personality10_R = invertItem(Personality10, 1, 5),
+            Personality25_R = invertItem(Personality26,1,5),
+            Personality27_R = invertItem(Personality27,1,5),
+            Personality28_R = invertItem(Personality28,1,5),
+            Personality29_R = invertItem(Personality29,1,5),
+            Personality30_R = invertItem(Personality30,1,5),
+            Personality36_R = invertItem(Personality36, 1, 5),
+            Personality37_R = invertItem(Personality37, 1, 5),
+            Personality38_R = invertItem(Personality38, 1, 5),
+            Personality39_R = invertItem(Personality39, 1, 5),
+            Personality40_R = invertItem(Personality40, 1, 5),
+            Personality46_R = invertItem(Personality46, 1, 5),
+            Personality47_R = invertItem(Personality47, 1, 5),
+            Personality48_R = invertItem(Personality48, 1, 5),
+            Personality49_R = invertItem(Personality49, 1, 5),
+            Personality25_R = invertItem(Personality50, 1, 5)) 
+
+            #Personality26_R = invertItem(Personality26,1,5),
+well_being_df %>% 
+  transmute(Neuroticism = ( # Neuroticism
+    Personality1 + 
+      Personality2 +
+      Personality3 +
+      Personality4 +
+      Personality5 +
+      invertItem(Personality6, 1, 5) +
+      invertItem(Personality7, 1, 5) +
+      invertItem(Personality8, 1, 5) +
+      invertItem(Personality9, 1, 5) +
+      invertItem(Personality10, 1, 5)))
+
+  
+  Mirror imaging and brian simulation study 
+  EEG Setup
+  Monitoring Project
+  Interaction with participants proff
+  EEG sterilzation process.
