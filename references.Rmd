@@ -1,0 +1,18 @@
+---
+title: "References"
+author: "Aaron Willcox"
+date: "04/09/2018"
+output: html_document
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+[@RN298; @RN380; @RN467]
+
+Blah BLah Blah
+
+@RN380 BLAJ 
+
+# References
