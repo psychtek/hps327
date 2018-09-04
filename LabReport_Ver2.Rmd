@@ -22,6 +22,7 @@ library(lmSupport)
 library(papaja)
 library(broom)
 library(car)
+library(olsrr)
 ```
 
 **DV:** Personal Wellbeing Index (pwi)  
@@ -315,22 +316,21 @@ glrstab <- function(x, export=FALSE) {
   
 }
 
-corr_Matrix <- well_being_df[c(1:2, 71:78)] #subset relevant columns
+corr_Matrix <- well_being_df[c(71:78)] #subset relevant columns
 a <- glrstab(corr_Matrix) #the function in action!
 
-rownames(a) <- c( "Age"
-                 , "Gender"
-                 , "PW_Index"
-                 , "Neuroticism"
-                 , "Extraversion"
-                 , "Openness"
-                 , "Agreeableness"
-                 , "Conscientiousness"
-                 , "HPMood"
-                 , "MDT"
-                 )
+rownames(a) <- c(
+  "PW_Index"
+  , "Neuroticism"
+  , "Extraversion"
+  , "Openness"
+  , "Agreeableness"
+  , "Conscientiousness"
+  , "HPMood"
+  , "MDT"
+)
 
-colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7")
 
 apa_table(a
           , escape  = FALSE
@@ -448,7 +448,7 @@ conc_omega <- select(personality_group
                      , Personality49_R
                      , Personality50_R)
 
-corPlot(neo_omega, method = "circles")
+corPlot(neo_omega)
 omega(neo_omega)
 
 corPlot(ext_omega)
@@ -463,6 +463,16 @@ omega(agre_omega)
 corPlot(conc_omega)
 omega(conc_omega)
 
+omega(select(well_being_df, Affect1, Affect2, Affect3))
+
+omega(select(well_being_df
+             , Cognition1
+             , Cognition2
+             , Cognition3
+             , Cognition4
+             , Cognition5
+             , Cognition6
+             , Cognition7))
 
 ```
 
@@ -512,15 +522,19 @@ summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + Persoanlity tra
 ANOVA_Models <- anova(model1, model2, model3)
 ANOVA_Models
 
-model_one <- model3
+model_one <- model2
 
 # Model 3 sig at p<.001
-effect_sizes_model3 <- modelEffectSizes(model3, Digits = 2) #check effect sizes and partials
+# effect_sizes_model3 <- modelEffectSizes(model3, Digits = 2) #check effect sizes and partials
 
-modelAssumptions(model3) #use the lmsupport library 
-model_effect_sizes <- modelEffectSizes(model3) # partial eta squared/effect size/magnitude
+modelAssumptions(model2) #use the lmsupport library 
+#model_effect_sizes <- modelEffectSizes(model3) # partial eta squared/effect size/magnitude
 
-apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
+ols_plot_cooksd_chart(model2)
+ols_coll_diag(model2)
+ols_correlations(model2)
+
+apa_lm <- apa_print(model2) #apa_print function takes the lm object and creates format strings to report the results
 ```
 
 ## Results Table
@@ -550,7 +564,7 @@ apa_table(apa_anova$table
 ```{r Residuals}
 
 
-my_residuals <- residuals(model3)
+my_residuals <- residuals(model2)
 
 hist( x = my_residuals )           # plot a histogram 
 
@@ -563,9 +577,9 @@ qqnorm( y = my_residuals )         # draw a QQ plot
 shapiro.test( x = my_residuals )
  
 # which finds no indication that normality is violated 
-residualPlots(model3)
+residualPlots(model2)
 
-model3_cooksd <- cooks.distance(model3)
+model3_cooksd <- cooks.distance(model2)
 
 plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
 
@@ -581,7 +595,7 @@ text(x=1:length(model3_cooksd)+1
 influential <- as.numeric(names(model3_cooksd)[(model3_cooksd > 4*mean(model3_cooksd, na.rm=T))])  # influential row numbers
 # head(well_being_df[influential, ])  # influential observations.
 
-outlierTest(model3) #get the most extreme outlier and return row number
+outlierTest(model2) #get the most extreme outlier and return row number
 
 # Print which rows are most influencial
 influential
@@ -595,9 +609,9 @@ hist(well_being_df$PW_Index)
 ### Re run models
 ```{r Re-model}
 
-model1 <- lm(PW_Index ~ Age 
-             + Gender
-             , data = well_being_df) #baseline obtain total SS
+#model1 <- lm(PW_Index ~ Age 
+#             + Gender
+#             , data = well_being_df) #baseline obtain total SS
 
 
 model2 <- lm(PW_Index ~ Age 
@@ -606,28 +620,40 @@ model2 <- lm(PW_Index ~ Age
              + HPMood
              , data = well_being_df)
 
-model3 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood 
-             + Neuroticism
+#model3 <- lm(PW_Index ~ Age 
+#             + Gender 
+#             + MDT 
+#             + HPMood 
+#             + Neuroticism
+#             + Extraversion
+#             + Openness
+#             + Agreeableness
+ #            + Conscientiousness
+#             , data = well_being_df)
+
+model4 <- lm(PW_Index ~ Age
+             + Gender
+             + MDT
+             + HPMood
+             + Neuroticism 
              + Extraversion
-             + Openness
-             + Agreeableness
-             + Conscientiousness
              , data = well_being_df)
 
+#summary(model1)
+summary(model2)
+#summary(model3)
+summary(model4)
 
 # Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model1, model2, model3)
+ANOVA_Models <- anova(model2, model4)
 ANOVA_Models
 
-model_two <- model3
+model_two <- model2
 
-my_residuals_2 <- residuals(model3)
+my_residuals_2 <- residuals(model2)
 shapiro.test( x = my_residuals_2 )
 
-model3_cooksd_new <- cooks.distance(model3)
+model3_cooksd_new <- cooks.distance(model2)
 
 plot(model3_cooksd_new, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
 
@@ -640,7 +666,7 @@ text(x=1:length(model3_cooksd_new)+1
      , col="red")  # add labels
 
 
-residualPlots(model3)
+residualPlots(model2)
 
 
 
@@ -650,22 +676,21 @@ residualPlots(model3)
 ## With outliers removed re-run the correlations and descriptives
 
 ```{r CorrelationTable, results="asis"}
-corr_Matrix2 <- well_being_df[c(1:2, 71:78)] #subset relevant columns
+corr_Matrix2 <- well_being_df[c(71:78)] #subset relevant columns
 a2 <- glrstab(corr_Matrix2) #the function in action!
 
-rownames(a2) <- c( "Age"
-                 , "Gender"
-                 , "PW_Index"
-                 , "Neuroticism"
-                 , "Extraversion"
-                 , "Openness"
-                 , "Agreeableness"
-                 , "Conscientiousness"
-                 , "HPMood"
-                 , "MDT"
-                 )
+rownames(a2) <- c(
+  "PW_Index"
+  , "Neuroticism"
+  , "Extraversion"
+  , "Openness"
+  , "Agreeableness"
+  , "Conscientiousness"
+  , "HPMood"
+  , "MDT"
+)
 
-colnames(a2)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+colnames(a2)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7")
 
 apa_table(a2
           , escape  = FALSE
@@ -687,21 +712,28 @@ Descriptives2 #print descriptive statistics
 
 ```{r Papaja Table , results="asis"}
 
-apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
+apa_lm <- apa_print(model2) #apa_print function takes the lm object and creates format strings to report the results
 
 apa_table(apa_lm$table
           , caption = "Regression"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model3))
+apa_anova <- apa_print(anova(model2))
 apa_table(apa_anova$table
           , caption = "ANOVA"
           , note = "Dependant variable: Personal Wellbeing Index")
+```
 
+```{r moreplots}
 
+ols_plot_cooksd_chart(model2)
+ols_coll_diag(model2)
+ols_correlations(model2)
+ols_coll_diag(model3)
+ols_correlations(model3)
 
 #using glance I can pull specifc data from the object
-model_statistics <- glance(model3)
+model_statistics <- glance(model2)
 
 
 
