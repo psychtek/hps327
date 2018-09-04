@@ -4,6 +4,7 @@ author: "Aaron Willcox"
 date: "04/09/2018"
 output: html_document
 bibliography: references.bib
+csl: 
 ---
 
 ```{r setup, include=FALSE}
