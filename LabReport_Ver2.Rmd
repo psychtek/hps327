@@ -609,9 +609,9 @@ hist(well_being_df$PW_Index)
 ### Re run models
 ```{r Re-model}
 
-#model1 <- lm(PW_Index ~ Age 
-#             + Gender
-#             , data = well_being_df) #baseline obtain total SS
+model1 <- lm(PW_Index ~ Age 
+             + Gender
+             , data = well_being_df) #baseline obtain total SS
 
 
 model2 <- lm(PW_Index ~ Age 
@@ -620,32 +620,32 @@ model2 <- lm(PW_Index ~ Age
              + HPMood
              , data = well_being_df)
 
-#model3 <- lm(PW_Index ~ Age 
-#             + Gender 
-#             + MDT 
-#             + HPMood 
-#             + Neuroticism
-#             + Extraversion
-#             + Openness
-#             + Agreeableness
- #            + Conscientiousness
-#             , data = well_being_df)
+model3 <- lm(PW_Index ~ Age 
+          + Gender 
+          + MDT 
+          + HPMood 
+          + Neuroticism
+          + Extraversion
+          + Openness
+          + Agreeableness
+          + Conscientiousness
+          , data = well_being_df)
 
 model4 <- lm(PW_Index ~ Age
              + Gender
              + MDT
              + HPMood
-             + Neuroticism 
+             + Neuroticism
              + Extraversion
              , data = well_being_df)
 
-#summary(model1)
+summary(model1)
 summary(model2)
-#summary(model3)
+summary(model3)
 summary(model4)
 
 # Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model2, model4)
+ANOVA_Models <- anova(model1, model2, model3, model4)
 ANOVA_Models
 
 model_two <- model2
@@ -728,9 +728,11 @@ apa_table(apa_anova$table
 
 ols_plot_cooksd_chart(model2)
 ols_coll_diag(model2)
-ols_correlations(model2)
 ols_coll_diag(model3)
+ols_coll_diag(model4)
+ols_correlations(model2)
 ols_correlations(model3)
+ols_correlations(model4)
 
 #using glance I can pull specifc data from the object
 model_statistics <- glance(model2)
@@ -766,4 +768,18 @@ rhandsontable(Descriptives, rowHeaders = NULL,
                width = NULL, height = NULL)
 
 ```
+
+
+```{r}
+library(apaTables)
+apa.cor.table(corr_Matrix)
+
+apa.aov.table(model3)
+
+```
+
+
+Notes:
+adding any of the personality traits adds little to the variance in the SWB model. This suggests a couple of 
+things. The N and E are already accounted for in the afective-cognitive model meaning that a persons set-point is already accounted for by asking contrasting past and future cognitions and their core affect. Secondly, personality traits play little in a persons overall SWB as each traits will modulate their set point differently. The correlation matrix shows N and E are negative and positively correlated respectively. This is important as persons setpoint might be lower if they are feeling depressed or neurotic and in contrast, an extraverted person will more likekly correlate higher with the PWI setpoint when they are feeling in a more positive disposition. 
 

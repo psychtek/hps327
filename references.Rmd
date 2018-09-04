@@ -2,9 +2,14 @@
 title: "References"
 author: "Aaron Willcox"
 date: "04/09/2018"
-output: html_document
+output:
+  html_document: default
+  word_document: default
+fontsize: 12pt
+geometry: left=4cm, right=3cm, top=2.5cm, bottom=2.5cm
+csl: apa.csl
+biblio-style: apalike
 bibliography: references.bib
-csl: 
 ---
 
 ```{r setup, include=FALSE}
