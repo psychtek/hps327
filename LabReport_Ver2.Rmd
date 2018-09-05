@@ -23,6 +23,7 @@ library(papaja)
 library(broom)
 library(car)
 library(olsrr)
+library(apaTables)
 ```
 
 **DV:** Personal Wellbeing Index (pwi)  
@@ -530,7 +531,7 @@ model_one <- model2
 modelAssumptions(model2) #use the lmsupport library 
 #model_effect_sizes <- modelEffectSizes(model3) # partial eta squared/effect size/magnitude
 
-ols_plot_cooksd_chart(model2)
+ols_plot_cooksd_chart(model3)
 ols_coll_diag(model2)
 ols_correlations(model2)
 
@@ -564,7 +565,7 @@ apa_table(apa_anova$table
 ```{r Residuals}
 
 
-my_residuals <- residuals(model2)
+my_residuals <- residuals(model3)
 
 hist( x = my_residuals )           # plot a histogram 
 
@@ -577,9 +578,9 @@ qqnorm( y = my_residuals )         # draw a QQ plot
 shapiro.test( x = my_residuals )
  
 # which finds no indication that normality is violated 
-residualPlots(model2)
+residualPlots(model3)
 
-model3_cooksd <- cooks.distance(model2)
+model3_cooksd <- cooks.distance(model3)
 
 plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
 
@@ -595,7 +596,7 @@ text(x=1:length(model3_cooksd)+1
 influential <- as.numeric(names(model3_cooksd)[(model3_cooksd > 4*mean(model3_cooksd, na.rm=T))])  # influential row numbers
 # head(well_being_df[influential, ])  # influential observations.
 
-outlierTest(model2) #get the most extreme outlier and return row number
+outlierTest(model3) #get the most extreme outlier and return row number
 
 # Print which rows are most influencial
 influential
@@ -771,13 +772,12 @@ rhandsontable(Descriptives, rowHeaders = NULL,
 
 
 ```{r}
-library(apaTables)
+
 apa.cor.table(corr_Matrix)
 
 apa.aov.table(model3)
 
 ```
-
 
 Notes:
 adding any of the personality traits adds little to the variance in the SWB model. This suggests a couple of 
