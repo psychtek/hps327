@@ -360,7 +360,7 @@ correlation coefficient of 0.84 (Lau and Cummins, 2005).
 
 omega(select(well_being_df, PWI1, PWI2, PWI3, PWI4, PWI5, PWI6, PWI7))
 
-personality_group <- well_being_df %>% #create an object with personality constructs and reversed scored items
+subset_personality_reversed <- well_being_df %>% #create an object with personality constructs and reversed scored items
   select(num_range("Personality", 1:50)) %>% 
   mutate(Personality6_R = invertItem(Personality6, 1, 5),
          Personality7_R = invertItem(Personality7, 1, 5),
@@ -387,6 +387,8 @@ personality_group <- well_being_df %>% #create an object with personality constr
          Personality48_R = invertItem(Personality48, 1, 5),
          Personality49_R = invertItem(Personality49, 1, 5),
          Personality50_R = invertItem(Personality50, 1, 5))
+
+well_being_df <- full_join(subset_personality_reversed, well_being_df) # full join of reveresed scored items andother variables. 
 
 neo_omega <- select(personality_group
                     , Personality1
