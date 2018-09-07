@@ -639,14 +639,16 @@ model3 <- lm(PW_Index ~ Age
           + Agreeableness
           + Conscientiousness
           , data = well_being_df)
-
-model4 <- lm(PW_Index ~ Age
-             + Gender
-             + MDT
-             + HPMood
-             + Neuroticism
-             + Extraversion
-             , data = well_being_df)
+# Exploratory model
+model4 <- lm(PW_Index ~ Age 
+          + Gender 
+          + MDT 
+          + HPMood 
+          + Extraversion
+          + Openness
+          + Agreeableness
+          + Conscientiousness
+          , data = well_being_df)
 
 summary(model1)
 summary(model2)
@@ -721,13 +723,49 @@ Descriptives2 #print descriptive statistics
 
 ```{r Papaja Table , results="asis"}
 
-apa_lm <- apa_print(model2) #apa_print function takes the lm object and creates format strings to report the results
+apa_lm_1 <- apa_print(model1) #apa_print function takes the lm object and creates format strings to report the results
+
+apa_table(apa_lm$table
+          , caption = "Regression"
+          ) # creates the apa formated table to print to screen
+
+apa_anova <- apa_print(anova(model1))
+apa_table(apa_anova$table
+          , caption = "ANOVA"
+          , note = "Dependant variable: Personal Wellbeing Index")
+
+###
+apa_lm_2 <- apa_print(model2) #apa_print function takes the lm object and creates format strings to report the results
 
 apa_table(apa_lm$table
           , caption = "Regression"
           ) # creates the apa formated table to print to screen
 
 apa_anova <- apa_print(anova(model2))
+apa_table(apa_anova$table
+          , caption = "ANOVA"
+          , note = "Dependant variable: Personal Wellbeing Index")
+
+###
+apa_lm_3 <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
+
+apa_table(apa_lm$table
+          , caption = "Regression"
+          ) # creates the apa formated table to print to screen
+
+apa_anova <- apa_print(anova(model3))
+apa_table(apa_anova$table
+          , caption = "ANOVA"
+          , note = "Dependant variable: Personal Wellbeing Index")
+
+###
+apa_lm_4 <- apa_print(model4) #apa_print function takes the lm object and creates format strings to report the results
+
+apa_table(apa_lm$table
+          , caption = "Regression"
+          ) # creates the apa formated table to print to screen
+
+apa_anova <- apa_print(anova(model4))
 apa_table(apa_anova$table
           , caption = "ANOVA"
           , note = "Dependant variable: Personal Wellbeing Index")
