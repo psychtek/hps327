@@ -360,12 +360,11 @@ correlation coefficient of 0.84 (Lau and Cummins, 2005).
 
 omega(select(well_being_df, PWI1, PWI2, PWI3, PWI4, PWI5, PWI6, PWI7))
 
-subset_personality_reversed <- well_being_df %>% #create an object with personality constructs and reversed scored items
-  select(num_range("Personality", 1:50)) %>% 
-  mutate(Personality6_R = invertItem(Personality6, 1, 5),
-         Personality7_R = invertItem(Personality7, 1, 5),
-         Personality8_R = invertItem(Personality8, 1, 5),
-         Personality9_R = invertItem(Personality9, 1, 5),
+well_being_df <- well_being_df %>% #create an object with personality constructs and reversed scored items
+  mutate(Personality6_R =  invertItem(Personality6, 1, 5),
+         Personality7_R =  invertItem(Personality7, 1, 5),
+         Personality8_R =  invertItem(Personality8, 1, 5),
+         Personality9_R =  invertItem(Personality9, 1, 5),
          Personality10_R = invertItem(Personality10, 1, 5),
          Personality16_R = invertItem(Personality16, 1, 5),
          Personality17_R = invertItem(Personality17, 1, 5),
@@ -388,9 +387,7 @@ subset_personality_reversed <- well_being_df %>% #create an object with personal
          Personality49_R = invertItem(Personality49, 1, 5),
          Personality50_R = invertItem(Personality50, 1, 5))
 
-well_being_df <- full_join(subset_personality_reversed, well_being_df) # full join of reveresed scored items andother variables. 
-
-neo_omega <- select(personality_group
+neo_omega <- select(well_being_df
                     , Personality1
                     , Personality2
                     , Personality3
@@ -402,7 +399,7 @@ neo_omega <- select(personality_group
                     , Personality9_R
                     , Personality10_R)
 
-ext_omega <- select(personality_group
+ext_omega <- select(well_being_df
                     , Personality11
                     , Personality12
                     , Personality13
@@ -415,7 +412,7 @@ ext_omega <- select(personality_group
                     , Personality20_R)
 
 
-opn_omega <- select(personality_group
+opn_omega <- select(well_being_df
                     , Personality21
                     , Personality22
                     , Personality23
@@ -427,7 +424,7 @@ opn_omega <- select(personality_group
                     , Personality29_R
                     , Personality30_R)
 
-agre_omega <- select(personality_group
+agre_omega <- select(well_being_df
                     , Personality31
                     , Personality32
                     , Personality33
@@ -439,7 +436,7 @@ agre_omega <- select(personality_group
                     , Personality39_R
                     , Personality40_R)
 
-conc_omega <- select(personality_group
+conc_omega <- select(well_being_df
                      , Personality41
                      , Personality42
                      , Personality43
@@ -450,7 +447,7 @@ conc_omega <- select(personality_group
                      , Personality48_R
                      , Personality49_R
                      , Personality50_R)
-
+# run intercorrelation checks
 corPlot(neo_omega)
 omega(neo_omega)
 
@@ -476,6 +473,15 @@ omega(select(well_being_df
              , Cognition5
              , Cognition6
              , Cognition7))
+
+omega(select(well_being_df
+             , PWI1
+             , PWI2
+             , PWI3
+             , PWI4
+             , PWI5
+             , PWI6
+             , PWI7))
 
 ```
 
