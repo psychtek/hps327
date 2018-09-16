@@ -4,6 +4,7 @@ author: "Aaron Willcox"
 date: "03/08/2018"
 output:
   html_document: default
+  pdf_document: default
   word_document: default
 ---
 
@@ -22,19 +23,17 @@ library(papaja)
 library(broom)
 library(car)
 library(olsrr)
+library(xtable)
 library(apaTables)
+library(MBESS)
 ```
 
 **DV:** Personal Wellbeing Index (pwi)  
 **IVs:** Affect(affect HPMood), Cogniton(cognition, MDT), Gender(gender), Personality(personality)
 ***
 
-```{r Import}
+```{r Import and Check Data, include=FALSE}
 well_being_df <- read_sav("data/Wellbeing_2018.sav")
-
-```
-
-```{r Check Data}
 nrows <- nrow(well_being_df)
 ncomplete <- sum(complete.cases(well_being_df))
 ncomplete/nrows
@@ -43,11 +42,11 @@ ncomplete/nrows
 which(is.na(well_being_df))
 ```
 
+### Compute Variables
 
 All items for the Personal Wellbeing Index (PWI) are measured along a scale ranging from 0 (No satisfaction at all) to 10 (Completely satisfied)
 *Total scores on the PWI are obtained by obtaining the average score across the 7 items and then multiplying by 10 to stretch the scale to 0 to 100. 
 *As per the PWI manual (http://www.acqol.com.au/uploads/pwi-a/pwi-a-english.pdf ), anyone who scores 0 or 100 is considered unreliable and their data are excluded from analyses involving the PWI (including descriptive statistics such as mean score on the PWI). 
- 
 Then mutate this to a new column called "PW_Index"
 ```{r PWI Score}
 well_being_df <- well_being_df %>% 
@@ -73,6 +72,7 @@ well_being_df <- well_being_df[-1,]
 
 ```
 
+## Personality 
 
 Notes:
 Items are scored on a scale with options 1 = strongly disagree, 2 = disagree, 3 = neither agree nor disagree, 4 = agree, and 5 = strongly agree.
@@ -165,7 +165,7 @@ well_being_df <- well_being_df %>%
      
 ```
 
-Homeostatically Protected Mood (Core Affect)
+## Homeostatically Protected Mood (Core Affect)
 Please indicate how each of the following describes your feelings when you think about your life in general. How ….
 1.	Happy do you generally feel?
 2.	Content do you generally feel?
@@ -186,7 +186,7 @@ well_being_df <- well_being_df %>%
 ```
 
 
-Multiple Discrepancies Theory (MDT) - Cognition 
+## Multiple Discrepancies Theory (MDT) - Cognition 
 Firstly I mutate to a new column labelled "MDT" and averaged.  
 
 1. self_wants 
@@ -214,10 +214,135 @@ well_being_df <- well_being_df %>%
 
 ```
 
+### Model 1
+```{r Regression_Part_1}
+
+model1 <- lm(PW_Index ~ 
+             HPMood
+             , data = well_being_df)
+
+model2 <- lm(PW_Index ~ 
+              HPMood
+             + MDT 
+             , data = well_being_df)
+
+model3 <- lm(PW_Index ~  
+              HPMood 
+             + MDT 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             + Agreeableness
+             + Conscientiousness
+             , data = well_being_df)
+
+
+apa.reg.table(model1, model2, model3)
+
+# Run an ANOVA to check for sig effect. 
+ANOVA_Models <- anova(model1, model2, model3)
+
+modelAssumptions(model3) #use the lmsupport library 
+
+
+```
+
+
+
+## Results Table of the first model for comparison
+```{r, results="asis"}
+#, results="asis"
+apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
+apa_table(apa_lm$table
+          , caption = "Regression"
+          ) # creates the apa formated table to print to screen
+
+apa_anova <- apa_print(anova(model3))
+apa_table(apa_anova$table
+          , caption = "ANOVA"
+          , note = "Dependant variable: Personal Wellbeing Index")
+
+#N^2 or GES = generalised eta squared
+
+```
+
+
+
+### Normality and Residuals
+
+```{r Residuals}
+
+my_residuals <- residuals(model3)
+# shapiro-wilk test: compares scores in sample to to norm dist. if the test 
+# test is non-sig p>.05 tells us the the dist of sample is not sig different from normal
+# If test is sig p<.05 then the distribution in question is significant different from normal. 
+# Warning: large sample sizes may get different results. Always plot!
+shapiro.test( x = my_residuals )
+ 
+# which finds no indication that normality is violated 
+residualPlots(model3)
+
+model3_cooksd <- cooks.distance(model3)
+
+plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance") %>%  # plot cook's distance
+  abline(h = 4*mean(model3_cooksd, na.rm=T), col="red") %>%  # add cutoff line - scores 4 times greater than mean
+  text(x=1:length(model3_cooksd)+1
+       , y=model3_cooksd
+       , labels=ifelse(model3_cooksd>4*mean(model3_cooksd, na.rm=T)
+                       ,names(model3_cooksd),"")
+       , col="red")  # add labels
+
+# find out which rows are influencial
+influential <- as.numeric(names(model3_cooksd)[(model3_cooksd > 4*mean(model3_cooksd, na.rm=T))])  # influential row numbers
+# head(well_being_df[influential, ])  # influential observations.
+
+outlierTest(model3) #get the most extreme outlier and return row number
+
+# Print which rows are most influencial
+influential
+
+# Remove rows
+#well_being_df <- well_being_df[-c(2, 19, 21, 84), ]
+well_being_df <- well_being_df[-c(2, 21, 27, 30, 78, 84, 86, 88, 101, 104), ]
+qqPlot(as.numeric(well_being_df$PW_Index))
+modelAssumptions(model3)
+```
+
+
+
 ### Visualise and Check data 
 
 
-```{r Plots}
+```{r PWI_Plots}
+
+# DV Personal wellbeing index
+boxplot(as.numeric(well_being_df$PW_Index)
+        , horizontal = TRUE
+     , main = "Personal Wellbeing Index"
+     , outline = TRUE
+     , outwez = TRUE) 
+hist(well_being_df$PW_Index)
+plot(well_being_df$PW_Index)
+```
+
+```{r IV_Plots}
+
+ #HPMood - Affect
+boxplot(as.numeric(well_being_df$HPMood)
+        , main = "HPMood"
+        , horizontal = TRUE
+        , outline = TRUE)
+
+plot(well_being_df$HPMood)
+
+#MDT - Cognition
+boxplot(as.numeric(well_being_df$MDT) 
+        , main = "MDT"
+        , horizontal = TRUE)
+
+plot(well_being_df$MDT)
+
+
 # Create an object with the required columns
 boxplot_big5 <- cbind(well_being_df$Neuroticism,
                       well_being_df$Extraversion, 
@@ -231,46 +356,10 @@ boxplot_names_big5 <- c("N", "E", "O", "A", "C")
 # Create a boxplot and use the object boxplot_names_big5 to label each one
 boxplot(boxplot_big5, main = "Big 5 Means", names = boxplot_names_big5, horizontal = FALSE) 
 
-boxplot(as.numeric(well_being_df$MDT) #MDT - Cognition
-        , main = "MDT"
-        , horizontal = TRUE)
-
-plot(well_being_df$MDT)
-
-boxplot(as.numeric(well_being_df$HPMood) #HPMood - Affect
-        , main = "HPMood"
-        , horizontal = TRUE
-        , outline = TRUE)
-
-plot(well_being_df$HPMood)
-
-# DV Personal wellbeing index
-boxplot(as.numeric(well_being_df$PW_Index)
-        , horizontal = TRUE
-     , main = "Personal Wellbeing Index"
-     , outline = TRUE
-     , outwez = TRUE) 
-
-# Positively skewed and almost bimodal
-hist(well_being_df$PW_Index)
-plot(well_being_df$PW_Index)
-
-qqPlot(as.numeric(well_being_df$PW_Index))
 ```
-
-## Descriptives
-```{r Descriptives}
-Descriptives <- describe(well_being_df[c(1,2,71:78)], fast = TRUE) #re-run descriptives
-
-Descriptives #print descriptive statistics
-
-
-
-```
-
 
 ### Intercorrelations
-Check alpha levels (omega) for intercorrelations on each domain. 
+Check alpha levels (omega) for intercorrelations on each domain. Using the MBES package
 
 #### Personal wellbeing index
 The combined survey mean scores from 28 surveys of the Australian population have produced a
@@ -280,11 +369,8 @@ correlations are often moderate at round .30 to .55 and item-total correlations 
 index has also demonstrated good test-retest reliability across 1-2 week interval with an intra-class
 correlation coefficient of 0.84 (Lau and Cummins, 2005).    
 
-#### Personality
 
-```{r Alpha Check, warning=FALSE}
-
-omega(select(well_being_df, PWI1, PWI2, PWI3, PWI4, PWI5, PWI6, PWI7))
+```{r Reliability}
 
 well_being_df <- well_being_df %>% #create an object with personality constructs and reversed scored items
   mutate(Personality6_R =  invertItem(Personality6, 1, 5),
@@ -313,56 +399,56 @@ well_being_df <- well_being_df %>% #create an object with personality constructs
          Personality49_R = invertItem(Personality49, 1, 5),
          Personality50_R = invertItem(Personality50, 1, 5))
 
-neo_omega <- select(well_being_df
-                    , Personality1
-                    , Personality2
-                    , Personality3
-                    , Personality4
-                    , Personality5
-                    , Personality6_R
-                    , Personality7_R
-                    , Personality8_R
-                    , Personality9_R
-                    , Personality10_R)
+neo_reliability <- select(well_being_df
+         , Personality1
+         , Personality2
+         , Personality3
+         , Personality4
+         , Personality5
+         , Personality6_R
+         , Personality7_R
+         , Personality8_R
+         , Personality9_R
+         , Personality10_R)
 
-ext_omega <- select(well_being_df
-                    , Personality11
-                    , Personality12
-                    , Personality13
-                    , Personality14
-                    , Personality15
-                    , Personality16_R
-                    , Personality17_R
-                    , Personality18_R
-                    , Personality19_R
-                    , Personality20_R)
+ext_reliability <- select(well_being_df
+         , Personality11
+         , Personality12
+         , Personality13
+         , Personality14
+         , Personality15
+         , Personality16_R
+         , Personality17_R
+         , Personality18_R
+         , Personality19_R
+         , Personality20_R)
 
 
-opn_omega <- select(well_being_df
-                    , Personality21
-                    , Personality22
-                    , Personality23
-                    , Personality24
-                    , Personality25
-                    , Personality26_R
-                    , Personality27_R
-                    , Personality28_R
-                    , Personality29_R
-                    , Personality30_R)
+opn_reliability <- select(well_being_df
+         , Personality21
+         , Personality22
+         , Personality23
+         , Personality24
+         , Personality25
+         , Personality26_R
+         , Personality27_R
+         , Personality28_R
+         , Personality29_R
+         , Personality30_R)
 
-agre_omega <- select(well_being_df
-                    , Personality31
-                    , Personality32
-                    , Personality33
-                    , Personality34
-                    , Personality35
-                    , Personality36_R
-                    , Personality37_R
-                    , Personality38_R
-                    , Personality39_R
-                    , Personality40_R)
+agre_reliability <- select(well_being_df
+         , Personality31
+         , Personality32
+         , Personality33
+         , Personality34
+         , Personality35
+         , Personality36_R
+         , Personality37_R
+         , Personality38_R
+         , Personality39_R
+         , Personality40_R)
 
-conc_omega <- select(well_being_df
+conc_reliability <- select(well_being_df
                      , Personality41
                      , Personality42
                      , Personality43
@@ -373,25 +459,25 @@ conc_omega <- select(well_being_df
                      , Personality48_R
                      , Personality49_R
                      , Personality50_R)
-# run intercorrelation checks
-corPlot(neo_omega)
-omega(neo_omega)
+#run intercorrelation checks
+#corPlot(neo_omega)
+omega(neo_reliability)
 
-corPlot(ext_omega)
-omega(ext_omega)
+#corPlot(ext_omega)
+omega(ext_reliability)
 
-corPlot(opn_omega)
-omega(opn_omega)
+#corPlot(opn_omega)
+omega(opn_reliability)
 
-corPlot(agre_omega)
-omega(agre_omega)
+#corPlot(agre_omega)
+omega(agre_reliability)
 
-corPlot(conc_omega)
-omega(conc_omega)
+#corPlot(conc_omega)
+omega(conc_reliability)
 
-omega(select(well_being_df, Affect1, Affect2, Affect3))
+HPmood_alpha <- ci.reliability(select(well_being_df, Affect1, Affect2, Affect3))
 
-omega(select(well_being_df
+MDT_alpha <- ci.reliability(select(well_being_df
              , Cognition1
              , Cognition2
              , Cognition3
@@ -400,7 +486,7 @@ omega(select(well_being_df
              , Cognition6
              , Cognition7))
 
-omega(select(well_being_df
+pwi_alpha <- ci.reliability(select(well_being_df
              , PWI1
              , PWI2
              , PWI3
@@ -409,34 +495,37 @@ omega(select(well_being_df
              , PWI6
              , PWI7))
 
+
+
 ```
 
-
+### Testing inline statistics reporting:
+The reliability of HPMood was (`r HPmood_alpha$est`) with a CI of \\[ `r HPmood_alpha$ci.lower` `r HPmood_alpha$ci.upper`.
 
 
 ### Regression
-Step one of the hierarchial regression will use the two strongest correlates followed by the big
-5 then MDT. 
+Run the model hierarchially and then check assumptions
 
-## Modelling 
+#### Modelling 
 
-```{r Regression Part 1}
-
-model1 <- lm(PW_Index ~ Age 
-             + Gender
-             , data = well_being_df) #baseline obtain total SS
+#Good Fit Model
+### Re run models
+With outliers removed that were leveraging the model, re-run the model. 
+```{r Final-model}
 
 
-model2 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood
+model1 <- lm(PW_Index ~ 
+             HPMood
              , data = well_being_df)
 
-model3 <- lm(PW_Index ~ Age 
-             + Gender 
+model2 <- lm(PW_Index ~ 
+              HPMood
              + MDT 
-             + HPMood 
+             , data = well_being_df)
+
+model3 <- lm(PW_Index ~  
+              HPMood 
+             + MDT 
              + Neuroticism
              + Extraversion
              + Openness
@@ -444,168 +533,47 @@ model3 <- lm(PW_Index ~ Age
              + Conscientiousness
              , data = well_being_df)
 
-#Hierachial regression 
-summary(model1) # Model 1: PW_Index_log10 ~ Age + Gender
-summary(model2) # Model 2: PW_Index_log10 ~ Age + Gender + MDT + HPMood
-summary(model3) # Model 3: PW_Index_log10 ~ Age + Gender + MDT + Persoanlity traits
 
-
+apa.reg.table(model1, model2, model3)
 
 # Run an ANOVA to check for sig effect. 
 ANOVA_Models <- anova(model1, model2, model3)
-ANOVA_Models
-
-model_one <- model2
-
-# Model 3 sig at p<.001
-# effect_sizes_model3 <- modelEffectSizes(model3, Digits = 2) #check effect sizes and partials
-
-modelAssumptions(model2) #use the lmsupport library 
-#model_effect_sizes <- modelEffectSizes(model3) # partial eta squared/effect size/magnitude
-
-ols_plot_cooksd_chart(model3)
-ols_coll_diag(model2)
-ols_correlations(model2)
-
-apa_lm <- apa_print(model2) #apa_print function takes the lm object and creates format strings to report the results
 ```
 
-## Results Table
-```{r, results="asis"}
+```{r Cooks}
+#Cooks distance check 
+model_residuals_3 <- residuals(model3)
+shapiro_model <- shapiro.test( x = model_residuals_3 )
 
-apa_table(apa_lm$table
-          , caption = "Regression"
-          ) # creates the apa formated table to print to screen
+model3_residuals_H1 <- cooks.distance(model3)
 
-apa_anova <- apa_print(anova(model3))
-apa_table(apa_anova$table
-          , caption = "ANOVA"
-          , note = "Dependant variable: Personal Wellbeing Index")
+plot(model3_residuals_H1, pch="*", cex=2, main="Influential Obs by Cooks distance") %>%  # plot cook's distance
+  abline(h = 4*mean(model3_residuals_H1, na.rm=T), col="red") %>% # add cutoff line - scores 4 times greater than mean
+  text(x=1:length(model3_residuals_H1)+1
+       , y=model3_residuals_H1
+       , labels=ifelse(model3_residuals_H1>4*mean(model3_residuals_H1, na.rm=T)
+                       ,names(model3_residuals_H1),"")
+       , col="red")  # add labels
 
-#N^2 or GES = generalised eta squared
+Bonferonni_model <- outlierTest(model3) #get the most extreme outlier and return row number
 
-```
-
-
-#### Notes
-
-
-
-### Residuals
-
-```{r Residuals}
-
-
-my_residuals <- residuals(model3)
-
-hist( x = my_residuals )           # plot a histogram 
-
-qqnorm( y = my_residuals )         # draw a QQ plot 
- 
-# shapiro-wilk test: compares scores in sample to to norm dist. if the test 
-# test is non-sig p>.05 tells us the the dist of sample is not sig different from normal
-# If test is sig p<.05 then the distribution in question is significant different from normal. 
-# Warning: large sample sizes may get different results. Always plot!
-shapiro.test( x = my_residuals )
- 
-# which finds no indication that normality is violated 
 residualPlots(model3)
-
-model3_cooksd <- cooks.distance(model3)
-
-plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
-
-abline(h = 4*mean(model3_cooksd, na.rm=T), col="red")  # add cutoff line - scores 4 times greater than mean
-
-text(x=1:length(model3_cooksd)+1
-     , y=model3_cooksd
-     , labels=ifelse(model3_cooksd>4*mean(model3_cooksd, na.rm=T)
-      ,names(model3_cooksd),"")
-     , col="red")  # add labels
-
-# find out which rows are influencial
-influential <- as.numeric(names(model3_cooksd)[(model3_cooksd > 4*mean(model3_cooksd, na.rm=T))])  # influential row numbers
-# head(well_being_df[influential, ])  # influential observations.
-
-outlierTest(model3) #get the most extreme outlier and return row number
-
-# Print which rows are most influencial
-influential
-
-# Remove rows
-well_being_df <- well_being_df[-c(2, 19, 21, 84), ]
+Bonferonni_model
 ```
 
-### Re run models
-```{r Re-model}
+### With outliers removed re-run the correlations and descriptives
+## Descriptives
 
-model1 <- lm(PW_Index ~ Age 
-             + Gender
-             , data = well_being_df) #baseline obtain total SS
+```{r Descriptives}
 
+Descriptives <- describe(well_being_df[c(1,2,71:78)], fast = TRUE) #descriptives
 
-model2 <- lm(PW_Index ~ Age 
-             + Gender 
-             + MDT 
-             + HPMood
-             , data = well_being_df)
-
-model3 <- lm(PW_Index ~ Age 
-          + Gender 
-          + MDT 
-          + HPMood 
-          + Neuroticism
-          + Extraversion
-          + Openness
-          + Agreeableness
-          + Conscientiousness
-          , data = well_being_df)
-
-# Exploratory model
-model4 <- lm(PW_Index ~ Age 
-          + Gender 
-          + MDT 
-          + HPMood 
-          + Extraversion
-          + Openness
-          + Agreeableness
-          + Conscientiousness
-          , data = well_being_df)
-
-summary(model1)
-summary(model2)
-summary(model3)
-summary(model4)
-
-# Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model1, model2, model3, model4)
-ANOVA_Models
-
-model_two <- model2
-
-my_residuals_2 <- residuals(model2)
-shapiro.test( x = my_residuals_2 )
-
-model3_cooksd_new <- cooks.distance(model2)
-
-plot(model3_cooksd_new, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
-
-abline(h = 4*mean(model3_cooksd_new, na.rm=T), col="red")  # add cutoff line - scores 4 times greater than mean
-
-text(x=1:length(model3_cooksd_new)+1
-     , y=model3_cooksd_new
-     , labels=ifelse(model3_cooksd_new>4*mean(model3_cooksd_new, na.rm=T)
-                     ,names(model3_cooksd_new),"")
-     , col="red")  # add labels
-
-
-residualPlots(model2)
+Descriptives #print descriptive statistics
 
 ```
 
-## With outliers removed re-run the correlations and descriptives
 
-```{r CorrelationTable , results="asis"}
+```{r CorrelationTable, results="asis" }
 
 glrstab <- function(x, export=FALSE) {
   
@@ -676,77 +644,94 @@ apa_table(a
 
 Correlations between Neuroticism and HPMood, MDT and PWI were all moderatly negative. This pattern can be shared with in that even directionality of constructs on PWI except for extraversion on mood. The positve correlation highlighted that being extraverted and feeling content, happy and alert taps into a more motivated construct and less domain related wellbeing. 
 
-```{r Means}
 
-Descriptives2 <- describe(well_being_df[c(1,2,71:78)], fast = TRUE) #re-run descriptives
-
-Descriptives2 #print descriptive statistics
-
-```
 
 
 ## Tables
 
-```{r Papaja Table, echo=FALSE, results="asis"}
-# , results="asis"
+```{r Papaja Table, results="asis"}
+
+
+#step 1
 apa_lm_1 <- apa_print(model1) #apa_print function takes the lm object and creates format strings to report the results
 
-apa_table(apa_lm$table
+apa_table(apa_lm_1$table
           , caption = "Regression Model 1"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model1))
-apa_table(apa_anova$table
-          , caption = "ANOVA Model 2"
+apa_anova1 <- apa_print(anova(model1))
+
+apa_table(apa_anova1$table
+          , caption = "ANOVA Model 1"
           , note = "Dependant variable: Personal Wellbeing Index")
 
-###
+#step 2
 apa_lm_2 <- apa_print(model2) #apa_print function takes the lm object and creates format strings to report the results
 
-apa_table(apa_lm$table
+apa_table(apa_lm_2$table
           , caption = "Regression Model 2"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model2))
-apa_table(apa_anova$table
+apa_anova2 <- apa_print(anova(model2))
+apa_table(apa_anova2$table
           , caption = "ANOVA Model 2"
           , note = "Dependant variable: Personal Wellbeing Index")
 
-###
+#step 3
 apa_lm_3 <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
 
-apa_table(apa_lm$table
+apa_table(apa_lm_3$table
           , caption = "Regression Model 3"
           ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model3))
-apa_table(apa_anova$table
+apa_anova3 <- apa_print(anova(model3))
+apa_table(apa_anova3$table
           , caption = "ANOVA Model3"
           , note = "Dependant variable: Personal Wellbeing Index")
 
-###
-apa_lm_4 <- apa_print(model4) #apa_print function takes the lm object and creates format strings to report the results
 
-apa_table(apa_lm$table
-          , caption = "Regression Model 4 Model 4"
-          ) # creates the apa formated table to print to screen
 
-apa_anova <- apa_print(anova(model4))
-apa_table(apa_anova$table
-          , caption = "ANOVA Model 4 Model 4"
-          , note = "Dependant variable: Personal Wellbeing Index")
+#does this look better?
+apa_anova3$table
+
+apa_anova3$full_result$HPMood
+
 ```
 
-```{r moreplots}
+```{r Partials}
+#ols_plot_cooksd_chart(model4)
+model1_tolerance_vif <- ols_coll_diag(model1) #Tolerance and vif values
 
-ols_plot_cooksd_chart(model2)
-ols_coll_diag(model2)
-ols_coll_diag(model3)
-ols_coll_diag(model4)
-ols_correlations(model2)
-ols_correlations(model3)
-ols_correlations(model4)
+model2_tolerance_vif <- ols_coll_diag(model2)
+
+model3_tolerance_vif <- ols_coll_diag(model3)
+
+#model4_tolerance_vif <- ols_coll_diag(model4)
+
+#model1_partials <- ols_correlations(model1) #part and partials
+
+model2_partials <- ols_correlations(model2)
+
+model3_partials <- ols_correlations(model3)
+
+#model4_partials <- ols_correlations(model4)
 ```
+
+```{r tolerance_partials}
+#model1_tolerance_vif$vif_t
+#model1_partials
+
+model2_tolerance_vif$vif_t
+model2_partials
+
+model3_tolerance_vif$vif_t
+model3_partials
+
+#model4_tolerance_vif$vif_t
+#model4_partials
+
+```
+
 
 ### Questions to answer:
 #### 1. How much variance do the Ivs account for, together in the DV:R^2
@@ -754,24 +739,15 @@ ols_correlations(model4)
 #### 3. Which IV contributes the most unique variance to prediction of the DV: Check sr^2
 #### 4. How much improvement in the model occurs when we add an additional IV or group of Ivs: Check R^2 Change
 
-```{r}
-# Using the Broom library I can pull the model estimates from an assigned object 
-# as needed. 
-m1 <- glance(model1)
-m2 <- glance(model2)
-m3 <- glance(model3)
+```{r, results='asis'}
 
+#apa.cor.table(corr_Matrix, filename = "correlation_output.doc")
 
-```
+#apa.aov.table(model1, filename = "anova_model1.doc")
+#apa.aov.table(model2, filename = "anova_model2.doc")
+#apa.aov.table(model3, filename = "anova_model3.doc")
 
-
-```{r, results = "asis"}
-
-apa.cor.table(corr_Matrix)
-
-apa.aov.table(model3)
-
-apa.reg.table(model1, model2, model3)
+model_final <- apa.reg.table(model1, model2, model3)
 
 ```
 
@@ -782,3 +758,13 @@ things. The N and E are already accounted for in the afective-cognitive model me
 
 testing output from data `r apa_lm_1$full_result$modelfit$r2` and seeing if it will print the statistics in with the text.
 Use Andy Field's apaTable to print a table directly to seperate word document
+```{r}
+#write df to file
+#write_sav(well_being_df, path  = "data/Wellbeing_2018_df.sav")
+
+```
+
+```{r, results='asis'}
+apa_print(list(model1, model2, model3))
+```
+
