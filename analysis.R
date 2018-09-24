@@ -97,6 +97,7 @@ pwi_reliability <- ci.reliability(select(well_being_df
                           , PWI5
                           , PWI6
                           , PWI7))
+
 glrstab <- function(x, export=FALSE) {
   
   r <-corr.test(x)$r	#taking just the correlation matrix; no N, or p
@@ -155,7 +156,14 @@ rownames(a) <- c(
 )
 
 colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7")
-
+cor_results <- apa_table(a
+          , escape  = FALSE
+          , format = "html"
+          , caption = "Correlation matrix of the main variables"
+          , note    = "Note. M and SD are used to represent mean and standard deviation, respectively. 
+          Values in square brackets indicate the 95% confidence interval for each correlation. 
+          The confidence interval is a plausible range of population correlations that could have caused 
+          the sample correlation (Cumming, 2014). * indicates p < .05. ** indicates p < .01.")
 
 
 model1 <- lm(PW_Index ~ 
@@ -179,9 +187,7 @@ model3 <- lm(PW_Index ~
 
 model4_explore <- lm(PW_Index ~
                        HPMood
-                     + MDT
-                     + Neuroticism
-                     + Extraversion, data = well_being_df)
+                     + Neuroticism, data = well_being_df)
 
 #apa.reg.table(model1, model2, model3)
 

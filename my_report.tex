@@ -24,7 +24,7 @@
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={Competing Models of SWB},
-            pdfauthor={Aaron L. Willcox~\& Ernst-August Doelle},
+            pdfauthor={Aaron L. Willcox},
             pdfkeywords={keywords},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -65,14 +65,13 @@
 
 
   \title{Competing Models of SWB}
-    \author{Aaron L. Willcox\textsuperscript{1}~\& Ernst-August
-Doelle\textsuperscript{1}}
+    \author{Aaron L. Willcox\textsuperscript{1}}
     \date{}
   
 \shorttitle{Models of SWB}
 \affiliation{
 \vspace{0.5cm}
-\textsuperscript{1} Deakin University\\\textsuperscript{2} Konstanz Business School}
+\textsuperscript{1} Deakin University}
 \keywords{keywords\newline\indent Word count: X}
 \usepackage{csquotes}
 \usepackage{upgreek}
@@ -177,6 +176,101 @@ Weisberg, \& Price, 2018), \emph{carData} (Version 3.0.1; Fox et al.,
 I need to print and omega symbol \(\omega\) and I hope that this worked
 maybe if i try this one or perhaps this one
 
+\section{Method}\label{method}
+
+\textbf{\emph{Subjective Wellbeing}}. Wellbeing was assessed using the
+Personality Wellbeing Index (PWI) to represent \enquote{life as a whole}
+\{Cummins, 2003 \#547\} \{Group, 2013 \#567\}. The scale contains seven
+domains of satisfaction that correspond to represent the overall
+\enquote{How satisfied are you with life as whole?}. The domains are:
+standard of living, health, achieving in life, relationships, safety,
+community-connectedness, and future security. Participants indicated
+their level of satisfaction with each domain using a 11-point Likert
+scale ranging from 0 (No Satisfaction as all) to 10 (Completely
+Satisfied). Composite variables were then computed to new variable and
+labelled as PWI. Cronbachs alpha has been shown to yield small
+reliability estimates therefore, a more reliable coefficient estimate,
+omega will be used \{McNeish, 2017 \#532\}\{Dunn, 2013 \#531\}. Point
+estimates and confidence intervals for the current sample were
+\(\omega\) = 0.74, 95\% CI {[}0.65, 0.83{]}.
+
+\textbf{\emph{Personality}}. Personality was assessed using a 50-item
+pool from the International Personality Item Pool (IPIP;\{Goldberg, 2006
+\#566\} ) which, provides estimates for the Five Factor Model. The five
+factors and reliability estimates were as follows: Neuroticism
+\(\omega\) = 0.86, 95\% CI {[}0.81, 0.90{]}, Extraversion \(\omega\) =
+0.88, 95\% CI {[}0.84, 0.92{]}, Openness \(\omega\) = 0.72, 95\% CI
+{[}0.60, 0.83{]}, Agreeableness \(\omega\) = 0.82, 95\% CI {[}0.76,
+0.87{]} and Conscientiousness \(\omega\) = 0.77, 95\% CI {[}0.70,
+0.83{]}.
+
+\textbf{\emph{Affect}}. The core construct of SWB is that of
+Homeostatically Protected Mood based on Russell's (2003) Core Affect
+\{Cummins, 2010 \#421\} \{Davern, 2007 \#417\}. Participants were asked
+to describe their feelings across three areas of life in general: How
+happy do you feel? How content do you feel? And How alert do you feel?
+Each item was scored on a Likert rated as 0 (Not at all) to 10
+(Extremely). The three items were averaged and a single variable was
+computed reflecting homeostatically protected mood (HPMood). The
+reliability of the item for this sample was \(\omega\) = 0.86, 95\% CI
+{[}0.79, 0.92{]}.
+
+\textbf{\emph{Cognition}}. Items from a revised version of Multiple
+Discrepancies Theory (MDT) was used to evaluate perceived gaps between
+the current self and various standards of comparison \{Michalos, 1985
+\#569\}. This include: What one has and wants (self-wants); what
+relevant others have (self-other); the best one has had in the past
+(self-best); what one expected to have 3 years ago (selfprogress); what
+one expects to have after 5 years (self-future); what one feels they
+deserve (self-deserves), and what one feels they need (self-needs).
+Items were averaged across each of the discrepancies to indicate a gap
+between desired and actual life circumstances. Scores closer to zero
+indicate less than desired circumstances, scores around five reflect
+life circumstances close to the current desired level and, scores close
+to 10 indicate actual circumstances are better than desired. A single
+MDT variable was computed and the reliability of the items was
+\(\omega\) = 0.78, 95\% CI {[}0.72, 0.85{]}.
+
+\section{Results}\label{results-1}
+
+Prior to conducting a hierarchical multiple regression, relevant
+assumptions of the model were tested. Standardized residuals and qqplots
+indicated that normality, linearity and multicollinearity were
+acceptable. However, an examination of Cooks Distance indicated several
+influential cases which were then removed to prevent extreme leveraging
+of the model \{Cook, 1982 \#570\}. Means, standard deviations and
+correlations between variables are presented below in Table 1. The
+wellbeing average was outside of the normative range of scores (M =
+68.80, SD = 10.50) as previous cohort studies shows the average for a
+sample should fall between 73.43 - 76.43 points \{Cummins, 2010 \#421\}.
+Neuroticism (r = -.74, p \textless{}.01), HPMood (r = .75, p
+\textless{}.01) and MDT (r = .60, p \textless{}.01) were all strongly
+correlated with PWI. Extraversion (r= .40, p \textless{}.01),
+Agreeableness (r = .27, p \textless{}.01) and Conscientiousness (r =
+.29, p \textless{}.01) were all moderately correlated with PWI.
+
+A three stage hierarchical multiple regression was then conducted with
+PWI as the dependent variable. HPMood was entered at stage one to
+control for affect. MDT was entered at stage two and the five
+personality traits entered as a group at stage three. Regression
+statistics are presented below with associated change statistics, zero
+order correlations and regression weights.
+
+The hierarchical multiple regression revealed that at stage one, HPMood
+contributed significantly to the model, and accounted for 57\% of the
+variation in subjective wellbeing . Introducing MDT at stage two
+explained 58\% of the variance in SWB however, the R2 change was not
+significant\(t(98) = 1.70\), \(p = .091\). The final step introduced the
+personality traits: Neuroticism, Extraversion, Openness, Agreeableness
+and Conscientiousness and explained an additional 10\% of the variance
+in SWB . The final step accounted for 66\% of the variance in SWB. In
+the final adjusted model two out of the seven predictors were
+statistically significant. Neuroticism had the higher magnitude of
+effect \(b = 2.83\), 95\% CI \([1.27\), \(4.39]\), \(t(93) = 3.61\),
+\(p = .001\) and the strongest unique contribution to the overall model
+explaining 8\% of the variance in SWB. HPMood provided the next
+strongest effect size and uniquely explained 4\% of the variance in SWB.
+
 \begin{table}[tbp]
 \begin{center}
 \begin{threeparttable}
@@ -246,8 +340,12 @@ MDT & 6.02 & 1.24 & .60*** & -.50*** & .32** & .17+ & .13 & .21* &
 \bottomrule
 \end{longtable}
 
-\emph{Note.} p\textless{}.001\emph{\textbf{, p\textless{}.01},
-p\textless{}.05}, p\textless{}.10+
+\emph{Note.} Note. M and SD are used to represent mean and standard
+deviation, respectively. Values in square brackets indicate the 95\%
+confidence interval for each correlation. The confidence interval is a
+plausible range of population correlations that could have caused the
+sample correlation (Cumming, 2014). * indicates p \textless{} .05. **
+indicates p \textless{} .01.
 
 \section{Discussion}\label{discussion}
 
