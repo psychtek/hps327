@@ -189,6 +189,8 @@ model4_explore <- lm(PW_Index ~
                        HPMood
                      + Neuroticism, data = well_being_df)
 
+apa_lm_4 <- apa_print(model4_explore)
+apa_anova4 <- apa_print(anova(model4_explore)) 
 #apa.reg.table(model1, model2, model3)
 
 # Run an ANOVA to check for sig effect. 
@@ -208,7 +210,7 @@ apa_lm_1 <- apa_print(model1) #apa_print function takes the lm object and create
 
 apa_anova1 <- apa_print(anova(model1))
 
-
+model_1_fit <- apa_lm_1$full_result$modelfit
 
 #step 2
 apa_lm_2 <- apa_print(model2) #apa_print function takes the lm object and creates format strings to report the results
@@ -216,7 +218,7 @@ apa_lm_2 <- apa_print(model2) #apa_print function takes the lm object and create
 
 
 apa_anova2 <- apa_print(anova(model2))
-
+model_2_full <- apa_lm_2$full_result$modelfit
 
 #step 3
 apa_lm_3 <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results

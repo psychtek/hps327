@@ -90,18 +90,12 @@ ___Cognition___. Items from a revised version of Multiple Discrepancies Theory (
 
 # Results
 
-Prior to conducting a hierarchical multiple regression, relevant assumptions of the model were tested. Standardized residuals and qqplots indicated that normality, linearity and multicollinearity were acceptable. However, an examination of Cooks Distance indicated several influential cases which were then removed to prevent extreme leveraging of the model {Cook, 1982 #570}.  Means, standard deviations and correlations between variables are presented below in Table 1. The wellbeing average was outside of the normative range of scores (M = 68.80, SD = 10.50) as previous cohort studies shows the average for a sample should fall between 73.43 - 76.43 points {Cummins, 2010 #421}. Neuroticism (r = -.74, p <.01), HPMood (r = .75, p <.01) and MDT (r = .60, p <.01) were all strongly correlated with PWI. Extraversion (r= .40, p <.01), Agreeableness (r = .27, p <.01) and Conscientiousness (r = .29, p <.01) were all moderately correlated with PWI. 
+Prior to conducting a hierarchical multiple regression, relevant assumptions of the model were tested. Standardized residuals and qqplots indicated that normality, linearity and multicollinearity were acceptable. However, an examination of Cooks Distance indicated several influential cases which were then removed to prevent extreme leveraging of the model {Cook, 1982 #570}.  
 
-A three stage hierarchical multiple regression was then conducted with PWI as the dependent variable. HPMood was entered at stage one to control for affect. MDT was entered at stage two and the five personality traits entered as a group at stage three. Regression statistics are presented below with associated change statistics, zero order correlations and regression weights. 
+# Descriptives
 
-The hierarchical multiple regression revealed that at stage one, HPMood contributed significantly to the model,  and accounted for 57% of the variation in subjective wellbeing `r apa_lm_1$full_result$modelfit`  . Introducing MDT at stage two explained 58% of the variance `r apa_lm_2$full_result`  in SWB however, the R2 change was not significant`r apa_lm_2$statistic$MDT`. The final step introduced the personality traits: Neuroticism, Extraversion, Openness, Agreeableness and Conscientiousness and explained an additional 10% of the variance in SWB`r apa_lm_3$full_result$modelfit` . The final step accounted for 66% of the variance in SWB. In the final adjusted model two out of the seven predictors were statistically significant. Neuroticism had the higher magnitude of effect `r apa_lm_3$full_result$HPMood` and the strongest unique contribution to the overall model explaining 8% of the variance in SWB. HPMood  provided the next strongest effect size and uniquely explained 4% of the variance in SWB.
+Means, standard deviations and correlations between variables are presented below in Table 1. The wellbeing average was outside of the normative range of scores (M = 68.80, SD = 10.50) as previous cohort studies shows the average for a sample should fall between 73.43 - 76.43 points {Cummins, 2010 #421}. Neuroticism (r = -.74, p <.01), HPMood (r = .75, p <.01) and MDT (r = .60, p <.01) were all strongly correlated with PWI. Extraversion (r= .40, p <.01), Agreeableness (r = .27, p <.01) and Conscientiousness (r = .29, p <.01) were all moderately correlated with PWI.
 
-
-```{r, results='asis'}
-apa_table(H_regression$table, added_stub_head = "Variables", note = "This is a note section", font_size = "small")
-```
-
-Then on the next page we have here a loverly correlation table for me to check it and see if the covaiates match with the regression model
 ```{r, results='asis'}
 apa_table(a
           , escape  = FALSE
@@ -109,6 +103,22 @@ apa_table(a
           , caption = "Correlation matrix of the main variables"
           , note    = "Note. M and SD are used to represent mean and standard deviation, respectively. Values in square brackets indicate the 95% confidence interval for each correlation. The confidence interval is a plausible range of population correlations that could have caused the sample correlation (Cumming, 2014). * indicates p < .05. ** indicates p < .01.")
 ```
+
+
+# Regression
+
+A three stage hierarchical multiple regression was then conducted with PWI as the dependent variable. HPMood was entered at stage one to control for affect. MDT was entered at stage two and the five personality traits entered as a group at stage three. Regression statistics are presented below with associated change statistics, zero order correlations and regression weights. 
+
+The hierarchical multiple regression revealed that at stage one, HPMood contributed significantly to the model and accounted for 57% of the variation in subjective wellbeing `r {apa_lm_1$full_result$modelfit$r2}`. Introducing MDT at stage two explained 58% of the variance `r {apa_lm_2$full_result$modelfit$r2}` in SWB however, the R2 change was not significant `r {apa_lm_2$statistic$MDT}`. The final step introduced the personality traits: Neuroticism, Extraversion, Openness, Agreeableness and Conscientiousness and explained an additional 10% of the variance in SWB `r {apa_lm_3$full_result$modelfit$r2}`. The final step accounted for 68% of the variance in SWB. In the final adjusted model two out of the seven predictors were statistically significant. Neuroticism had the higher magnitude of effect `r apa_lm_3$full_result$Neuroticism` and the strongest unique contribution to the overall model explaining 8% of the variance in SWB. HPMood `r {apa_lm_3$full_result$HPMood}` provided the next strongest effect size and uniquely explained 4% of the variance in SWB. 
+
+```{r, results='asis'}
+apa_table(H_regression$table, added_stub_head = "Variables", note = "This is a note section", font_size = "small")
+```
+
+
+Further exploratory model was then conducted excluding non-significant coefficients. A multiple regression analysis showed that HPMood and Neuroticism significantly predicted SWB (`r apa_lm_4$full_result$modelfit$r2`) and accounted for 66% of the variance in SWB.  HPMood proved to have the strongest effect (`r apa_lm_4$full_result$HPMood`) accounting for 12% of the unique variance in SWB followed by Neuroticism (`r apa_lm_4$full_result$Neuroticism`) which contributed 9% of the unique variance.
+
+Table 3
 
 
 
