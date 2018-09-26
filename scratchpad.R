@@ -38,7 +38,11 @@ select(well_being_df, Gender, Age) %>%
   group_by(gender) %>%
   summarise_all(funs(mean, n = n(), sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
   
-Gender
+
+select(well_being_df, Gender) %>%
+  mutate(gender = labelled::to_factor(Gender)) %>%
+  group_by(gender) %>%
+  summarise_all(funs(mean, n = n(), sd, min(.,is.na = FALSE), max(.,is.na = FALSE)))
 
 #Whats our overall mean age of responses? 
 select(well_being_df, Age) %>%

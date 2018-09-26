@@ -189,15 +189,17 @@ model4_explore <- lm(PW_Index ~
                        HPMood
                      + Neuroticism, data = well_being_df)
 
-apa_lm_4 <- apa_print(model4_explore)
-apa_anova4 <- apa_print(anova(model4_explore)) 
+apa_lm_4 <- apa_print(model4_explore, standardized = TRUE, est_name = "\\beta")
+
+
+
 #apa.reg.table(model1, model2, model3)
 
 # Run an ANOVA to check for sig effect. 
 ANOVA_Models <- anova(model1, model2, model3)
 
 H_regression <- apa_print(list(Step1 = model1, Step2 = model2, Step3 = model3), boot_samples = 0) #Hierarchical Regression table
-
+Explore_regression <- apa_print(model4_explore)
 Full_regression_output <- apa.reg.table(model1, model2, model3)
 
 # Run an ANOVA to check for sig effect. 
