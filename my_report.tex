@@ -23,7 +23,7 @@
 }{}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={Competing Models of SWB},
+            pdftitle={Competing Components of Subjective Wellbeing},
             pdfauthor={Aaron L. Willcox},
             pdfkeywords={keywords},
             pdfborder={0 0 0},
@@ -64,11 +64,11 @@
 \def\footnote{\protect\rmarkdownfootnote}
 
 
-  \title{Competing Models of SWB}
+  \title{Competing Components of Subjective Wellbeing}
     \author{Aaron L. Willcox\textsuperscript{1}}
     \date{}
   
-\shorttitle{Models of SWB}
+\shorttitle{Competing Components of Subjective Wellbeing}
 \affiliation{
 \vspace{0.5cm}
 \textsuperscript{1} Deakin University}
@@ -98,7 +98,7 @@
 
 Correspondence concerning this article should be addressed to Aaron L.
 Willcox, Postal address. E-mail:
-\href{mailto:my@email.com}{\nolinkurl{my@email.com}}}
+\href{mailto:awillcox@deakin.edu.au}{\nolinkurl{awillcox@deakin.edu.au}}}
 
 \abstract{
 One or two sentences providing a \textbf{basic introduction} to the
@@ -131,29 +131,12 @@ readily comprehensible to a scientist in any discipline.
 
 \section{Introduction}\label{introduction}
 
-Subjective Wellbeing is the overall evaluation of feeling satisfied
-absed on cognitive, emotional domains. However, the contributions as to
-how much of each domain is still under much debate. The Australian Unity
-Wellbeing Index provides a snapshot of the overwellbeing of Australians
-each year. This study has a relateively robust score and has deomstrated
-that, on average, the population PWI average is 75 with a 3.0 percentage
-points difference. What this suggests is that a persons wellbeing has a
-set-point as to where their sense of happiness is and therefore can be
-used to evaluate wellbeing.
-
 \section{Methods}\label{methods}
 
 We report how we determined our sample size, all data exclusions (if
 any), all manipulations, and all measures in the study.
 
-Measures of Employment history were also recorded but were not included
-in the analyis.
-
 \subsection{Participants}\label{participants}
-
-\subsection{Material}\label{material}
-
-\subsection{Procedure}\label{procedure}
 
 \subsection{Data analysis}\label{data-analysis}
 
@@ -170,13 +153,6 @@ Weisberg, \& Price, 2018), \emph{carData} (Version 3.0.1; Fox et al.,
 0.1.0.9842; Aust \& Barth, 2018), \emph{psych} (Version 1.8.4; Revelle,
 2018), and \emph{xtable} (Version 1.8.3; Dahl, Scott, Roosen, Magnusson,
 \& Swinton, 2018) for all our analyses.
-
-\section{Results}\label{results}
-
-I need to print and omega symbol \(\omega\) and I hope that this worked
-maybe if i try this one or perhaps this one
-
-\section{Method}\label{method}
 
 \textbf{\emph{Subjective Wellbeing}}. Wellbeing was assessed using the
 Personality Wellbeing Index (PWI) to represent \enquote{life as a whole}
@@ -231,23 +207,53 @@ to 10 indicate actual circumstances are better than desired. A single
 MDT variable was computed and the reliability of the items was
 \(\omega\) = 0.78, 95\% CI {[}0.72, 0.85{]}.
 
-\section{Results}\label{results-1}
+\section{Results}\label{results}
 
-Prior to conducting a hierarchical multiple regression, relevant
-assumptions of the model were tested. Standardized residuals and qqplots
-indicated that normality, linearity and multicollinearity were
-acceptable. However, an examination of Cooks Distance indicated several
-influential cases which were then removed to prevent extreme leveraging
-of the model \{Cook, 1982 \#570\}. Means, standard deviations and
-correlations between variables are presented below in Table 1. The
-wellbeing average was outside of the normative range of scores (M =
-68.80, SD = 10.50) as previous cohort studies shows the average for a
-sample should fall between 73.43 - 76.43 points \{Cummins, 2010 \#421\}.
-Neuroticism (r = -.74, p \textless{}.01), HPMood (r = .75, p
-\textless{}.01) and MDT (r = .60, p \textless{}.01) were all strongly
-correlated with PWI. Extraversion (r= .40, p \textless{}.01),
-Agreeableness (r = .27, p \textless{}.01) and Conscientiousness (r =
-.29, p \textless{}.01) were all moderately correlated with PWI.
+\subsection{Descriptives}\label{descriptives}
+
+Means, standard deviations and correlations between variables are
+presented below in Table 1. The wellbeing average was outside of the
+normative range of scores (M = 68.80, SD = 10.50) as previous cohort
+studies shows the average for a sample should fall between 73.43 - 76.43
+points \{Cummins, 2010 \#421\}. Neuroticism (r = -.74, p
+\textless{}.01), HPMood (r = .75, p \textless{}.01) and MDT (r = .60, p
+\textless{}.01) were all strongly correlated with PWI. Extraversion (r=
+.40, p \textless{}.01), Agreeableness (r = .27, p \textless{}.01) and
+Conscientiousness (r = .29, p \textless{}.01) were all moderately
+correlated with PWI.
+
+\label{tab:unnamed-chunk-1}
+
+\emph{Correlation matrix of the main variables}
+
+\begin{longtable}[]{@{}llllllllll@{}}
+\toprule
+& \(M\) & \(SD\) & 1 & 2 & 3 & 4 & 5 & 6 & 7\tabularnewline
+\midrule
+\endhead
+PW\_Index & 68.80 & 10.50 & & & & & & &\tabularnewline
+Neuroticism & 27.95 & 6.43 & -.74*** & & & & & &\tabularnewline
+Extraversion & 31.76 & 6.78 & .40*** & -.31** & & & & &\tabularnewline
+Openness & 36.78 & 4.94 & -.03 & .07 & .06 & & & &\tabularnewline
+Agreeableness & 35.06 & 5.39 & .27** & -.28** & .03 & -.06 & &
+&\tabularnewline
+Conscientiousness & 33.96 & 5.05 & .29** & -.33*** & .23* & .10 & .23* &
+&\tabularnewline
+HPMood & 6.85 & 1.34 & .75*** & -.68*** & .34*** & -.04 & .34*** & .31**
+&\tabularnewline
+MDT & 6.02 & 1.24 & .60*** & -.50*** & .32** & .17+ & .13 & .21* &
+.68***\tabularnewline
+\bottomrule
+\end{longtable}
+
+\emph{Note.} Note. M and SD are used to represent mean and standard
+deviation, respectively. Values in square brackets indicate the 95\%
+confidence interval for each correlation. The confidence interval is a
+plausible range of population correlations that could have caused the
+sample correlation (Cumming, 2014). * indicates p \textless{} .05. **
+indicates p \textless{} .01.
+
+\section{Regression}\label{regression}
 
 A three stage hierarchical multiple regression was then conducted with
 PWI as the dependent variable. HPMood was entered at stage one to
@@ -257,24 +263,29 @@ statistics are presented below with associated change statistics, zero
 order correlations and regression weights.
 
 The hierarchical multiple regression revealed that at stage one, HPMood
-contributed significantly to the model, and accounted for 57\% of the
-variation in subjective wellbeing . Introducing MDT at stage two
-explained 58\% of the variance in SWB however, the R2 change was not
-significant\(t(98) = 1.70\), \(p = .091\). The final step introduced the
-personality traits: Neuroticism, Extraversion, Openness, Agreeableness
-and Conscientiousness and explained an additional 10\% of the variance
-in SWB . The final step accounted for 66\% of the variance in SWB. In
-the final adjusted model two out of the seven predictors were
-statistically significant. Neuroticism had the higher magnitude of
-effect \(b = 2.83\), 95\% CI \([1.27\), \(4.39]\), \(t(93) = 3.61\),
-\(p = .001\) and the strongest unique contribution to the overall model
-explaining 8\% of the variance in SWB. HPMood provided the next
-strongest effect size and uniquely explained 4\% of the variance in SWB.
+contributed significantly to the model and accounted for 57\% of the
+variation in subjective wellbeing \(R^2 = .57\), 90\% CI \([0.45\),
+\(0.67]\), \(F(1, 99) = 131.06\), \(p < .001\). Introducing MDT at stage
+two explained 58\% of the variance \(R^2 = .58\), 90\% CI \([0.46\),
+\(0.67]\), \(F(2, 98) = 68.24\), \(p < .001\) in SWB however, the R2
+change was not significant \(t(98) = 1.70\), \(p = .091\). The final
+step introduced the personality traits: Neuroticism, Extraversion,
+Openness, Agreeableness and Conscientiousness and explained an
+additional 10\% of the variance in SWB \(R^2 = .68\), 90\% CI \([0.56\),
+\(0.75]\), \(F(7, 93) = 28.80\), \(p < .001\). The final step accounted
+for 68\% of the variance in SWB. In the final adjusted model two out of
+the seven predictors were statistically significant. Neuroticism had the
+higher magnitude of effect \(b = -0.65\), 95\% CI \([-0.92\),
+\(-0.38]\), \(t(93) = -4.84\), \(p < .001\) and the strongest unique
+contribution to the overall model explaining 8\% of the variance in SWB.
+HPMood \(b = 2.83\), 95\% CI \([1.27\), \(4.39]\), \(t(93) = 3.61\),
+\(p = .001\) provided the next strongest effect size and uniquely
+explained 4\% of the variance in SWB.
 
 \begin{table}[tbp]
 \begin{center}
 \begin{threeparttable}
-\caption{\label{tab:unnamed-chunk-1}}
+\caption{\label{tab:unnamed-chunk-2}}
 \small{
 \begin{tabular}{llll}
 \toprule
@@ -307,47 +318,49 @@ $\Delta \mathrm{BIC}$ &  & 1.66 & -5.25\\
 \end{tabular}
 }
 \begin{tablenotes}[para]
+\normalsize{\textit{Note.} Note. A significant b-weight indicates the beta-weight and semi-partial correlation are also significant. b represents unstandardized regression weights. beta indicates the standardized regression weights. sr2 represents the semi-partial correlation squared. r represents the zero-order correlation. LL and UL indicate the lower and upper limits of a confidence interval, respectively.
+* indicates p < .05. ** indicates p < .01.
+}
+\end{tablenotes}
+\end{threeparttable}
+\end{center}
+\end{table}
+
+Further exploratory model was then conducted excluding non-significant
+coefficients. A multiple regression analysis showed that HPMood and
+Neuroticism significantly predicted SWB (\(R^2 = .66\), 90\% CI
+\([0.56\), \(0.74]\), \(F(2, 98) = 97.02\), \(p < .001\)) and accounted
+for 66\% of the variance in SWB. HPMood proved to have the strongest
+effect (\(\beta = 3.65\), 95\% CI \([2.40\), \(4.90]\),
+\(t(98) = 5.80\), \(p < .001\)) accounting for 12\% of the unique
+variance in SWB followed by Neuroticism (\(\beta = -.69\), 95\% CI
+\([-.95\), \(-.43]\), \(t(98) = -5.26\), \(p < .001\)) which contributed
+9\% of the unique variance.
+
+\begin{table}[tbp]
+\begin{center}
+\begin{threeparttable}
+\caption{\label{tab:unnamed-chunk-3}}
+\small{
+\begin{tabular}{lllll}
+\toprule
+Predictor & \multicolumn{1}{c}{$b$} & \multicolumn{1}{c}{95\% CI} & \multicolumn{1}{c}{$t(98)$} & \multicolumn{1}{c}{$p$}\\
+\midrule
+Intercept & 63.07 & $[48.48$, $77.66]$ & 8.58 & < .001\\
+HPMood & 3.65 & $[2.40$, $4.90]$ & 5.80 & < .001\\
+Neuroticism & -0.69 & $[-0.95$, $-0.43]$ & -5.26 & < .001\\
+\bottomrule
+\addlinespace
+\end{tabular}
+}
+\begin{tablenotes}[para]
 \normalsize{\textit{Note.} This is a note section}
 \end{tablenotes}
 \end{threeparttable}
 \end{center}
 \end{table}
 
-Then on the next page we have here a loverly correlation table for me to
-check it and see if the covaiates match with the regression model
-
-\label{tab:unnamed-chunk-2}
-
-\emph{Correlation matrix of the main variables}
-
-\begin{longtable}[]{@{}llllllllll@{}}
-\toprule
-& \(M\) & \(SD\) & 1 & 2 & 3 & 4 & 5 & 6 & 7\tabularnewline
-\midrule
-\endhead
-PW\_Index & 68.80 & 10.50 & & & & & & &\tabularnewline
-Neuroticism & 27.95 & 6.43 & -.74*** & & & & & &\tabularnewline
-Extraversion & 31.76 & 6.78 & .40*** & -.31** & & & & &\tabularnewline
-Openness & 36.78 & 4.94 & -.03 & .07 & .06 & & & &\tabularnewline
-Agreeableness & 35.06 & 5.39 & .27** & -.28** & .03 & -.06 & &
-&\tabularnewline
-Conscientiousness & 33.96 & 5.05 & .29** & -.33*** & .23* & .10 & .23* &
-&\tabularnewline
-HPMood & 6.85 & 1.34 & .75*** & -.68*** & .34*** & -.04 & .34*** & .31**
-&\tabularnewline
-MDT & 6.02 & 1.24 & .60*** & -.50*** & .32** & .17+ & .13 & .21* &
-.68***\tabularnewline
-\bottomrule
-\end{longtable}
-
-\emph{Note.} Note. M and SD are used to represent mean and standard
-deviation, respectively. Values in square brackets indicate the 95\%
-confidence interval for each correlation. The confidence interval is a
-plausible range of population correlations that could have caused the
-sample correlation (Cumming, 2014). * indicates p \textless{} .05. **
-indicates p \textless{} .01.
-
-\section{Discussion}\label{discussion}
+\subsection{Discussion}\label{discussion}
 
 \newpage
 
