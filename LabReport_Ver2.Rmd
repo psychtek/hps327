@@ -22,13 +22,13 @@ You can see the final [lab report script here](https://github.com/psychtek/hps32
 
 2. Learning to visualise the how a data frame works and the different types of data structures helps understand why some functions may not work. Some objects may need to be changed to numeric or a matrix for the specific function to run. 
 
-3. Use Github and commit often. It will save headaches later on when you need to look back over your code when something goes wrong. Pretty much everything I did is now open to the world to view on github. This is also the core idea of reproducibility, if this was in real collaborative setting, the process can be replicated and adjusted as needed, making for a much stronger scientific  
+3. Use Github and commit often. It will save headaches later on when you need to look back over your code when something goes wrong. Pretty much everything I did is now open to the world to view on github. This is also the core idea of reproducibility, if this was in real collaborative setting, the process can be replicated and adjusted as needed, making for a much stronger scientific  community. 
 
 ## Whats wrong with SPSS? 
 
 Everything. R is Free. 
 
-You can view the project files at over at 
+You can view the project at [OSF](https://osf.io/z2brh/) or at [Github](https://github.com/psychtek/hps327). 
 
 
 ```{r setup, include=FALSE}
