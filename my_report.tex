@@ -23,9 +23,9 @@
 }{}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={Competing Components of Subjective Wellbeing},
+            pdftitle={Affect, Cognition and Personality, Re-Examining the Competing Components of Subjective},
             pdfauthor={Aaron L. Willcox},
-            pdfkeywords={keywords},
+            pdfkeywords={subjective wellbeing, personality, happiness},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -64,7 +64,8 @@
 \def\footnote{\protect\rmarkdownfootnote}
 
 
-  \title{Competing Components of Subjective Wellbeing}
+  \title{Affect, Cognition and Personality, Re-Examining the Competing Components
+of Subjective}
     \author{Aaron L. Willcox\textsuperscript{1}}
     \date{}
   
@@ -72,7 +73,7 @@
 \affiliation{
 \vspace{0.5cm}
 \textsuperscript{1} Deakin University}
-\keywords{keywords\newline\indent Word count: X}
+\keywords{subjective wellbeing, personality, happiness\newline\indent Word count: 2955}
 \usepackage{csquotes}
 \usepackage{upgreek}
 \captionsetup{font=singlespacing,justification=justified}
@@ -93,50 +94,170 @@
 \newcommand{\getlongtablewidth}{\begingroup \ifcsname LT@\roman{LT@tables}\endcsname \global\longtablewidth=0pt \renewcommand{\LT@entry}[2]{\global\advance\longtablewidth by ##2\relax\gdef\LastLTentrywidth{##2}}\@nameuse{LT@\roman{LT@tables}} \fi \endgroup}
 
 
+\usepackage[titles]{tocloft}
+\cftpagenumbersoff{figure}
+\renewcommand{\cftfigpresnum}{\itshape\figurename\enspace}
+\renewcommand{\cftfigaftersnum}{.\space}
+\setlength{\cftfigindent}{0pt}
+\setlength{\cftafterloftitleskip}{0pt}
+\settowidth{\cftfignumwidth}{Figure 10.\qquad}
 
 \authornote{
 
 Correspondence concerning this article should be addressed to Aaron L.
-Willcox, Postal address. E-mail:
+Willcox, . E-mail:
 \href{mailto:awillcox@deakin.edu.au}{\nolinkurl{awillcox@deakin.edu.au}}}
 
 \abstract{
-One or two sentences providing a \textbf{basic introduction} to the
-field, comprehensible to a scientist in any discipline.
-
-Two to three sentences of \textbf{more detailed background},
-comprehensible to scientists in related disciplines.
-
-One sentence clearly stating the \textbf{general problem} being
-addressed by this particular study.
-
-One sentence summarizing the main result (with the words ``\textbf{here
-we show}'' or their equivalent).
-
-Two or three sentences explaining what the \textbf{main result} reveals
-in direct comparison to what was thought to be the case previously, or
-how the main result adds to previous knowledge.
-
-One or two sentences to put the results into a more \textbf{general
-context}.
-
-Two or three sentences to provide a \textbf{broader perspective},
-readily comprehensible to a scientist in any discipline.
+Subjective wellbeing (SWB) is described as the experience and
+perceptions of an individual captured through feelings and thoughts.
+This studied re-rested the components of affect, cognition and
+personality on SWB. The study sampled 101 Australian residents aged
+between 18 and 72 years old (\emph{M} = 35.25, SD = 10.65), recruited
+through undergraduate students, shared via an online survey. Subjective
+wellbeing scores were outside the normative range of 73.34 to 76.43
+points (M = 68.80, SD = 10.50). Hierarchical regression found that at
+step one, affect was the main component of SWB explaining 57\% of the
+variance in SWB. Step two and three showed Cognition and personality
+only weakly predicted SWB, respectively. Change effects of cognition
+were not significant and further regression analysis revealed that
+Neuroticism takes control when the model is in homeostatic defeat with
+affect and neuroticism accounting for 66\% of the variance in SWB.
+Current findings suggest that affect is the main driver of SWB, not
+cognition when the individual is experiencing challenging circumstances.
+Future studies could explore the limitations discussed herein.
 
 
 }
 
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[section]
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[section]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{solution}{Solution}
 \begin{document}
 \maketitle
 
 \section{Introduction}\label{introduction}
 
-\section{Methods}\label{methods}
+Subjective wellbeing (SWB) is the term applied to explain an
+individual's experience and perceptions of how they evaluate their life
+across various domains. It is subjective in that it captures the
+individuals cognitive and affective components in how they think and
+feel in areas such as health, work and relationships. How these
+components relate and merge to form an overall measure of wellbeing can
+help determine what aspects of an individual's lives are driving how
+they feel. Diener, E. Lucas, \& Oishi, 2018 argue that SWB is
+predominately driven by a cognitive component and there is no single
+overarching model of wellbeing. However, R. Cummins (2010) proposed a
+neurophysiological model of SWB analogous to how body temperature is
+regulated.
 
-We report how we determined our sample size, all data exclusions (if
-any), all manipulations, and all measures in the study.
+Regulation of wellbeing should fall within a normative range of 73.43 -
+76.43 points and values outside of this range may indicate problems.
+This suggests that the subjective-ness nature of wellbeing is innate and
+generally positive, in contrast to Diener et al., 2018, external factors
+only play a small role in happiness (Lucas, 2008). Furthermore, the
+individual can adapt to challenging circumstances and return to a state
+of normal functioning (Richardson, Fuller Tyszkiewicz, Tomyn, \&
+Cummins, 2016). However, the extent to what components drive the model
+and which is the strongest, is still under debate.
+
+Current theories suggest that affective factors, such as a person's mood
+and emotions, is the dominant component in the model (Davern, Cummins,
+\& Stokes, 2007). SWB is generally positive and maintained by an
+inherent set-point that is managed through an evolutionary system called
+Homeostatically Protected Mood (HPMood; R. Cummins, Li, Wooden, and
+Stokes (2014)). When this system is disrupted through challenging
+experiences, the set-point is expected to drop below the average and
+experience negative affects rather than positive ones (Capic, Li, \&
+Cummins, 2018). This suggests that an individual is primarily controlled
+by how they feel however, there is considerable variation in how an
+individual adapts to challenges and therefore, SWB levels may change
+(Lucas, 2008).
+
+One explanation of these variations is that of personality. Costa \&
+McCrae's (1980) theory of personality demonstrated how individuals
+differ on SWB set-point scores on stable traits of extraversion and
+neuroticism. Extraverts rated higher on SWB scores than that of
+introverts and, neuroticism scores were lower than that of emotionally
+stable individuals. For example, extraverted individuals tend to create
+better social experiences which can lead to improved wellbeing (Harris
+et al., 2017). In contrast, neuroticism can act as a mediator between
+extraversion and wellbeing leading to lower SWB (Fadda \& Scalas, 2016).
+Personality traits may explain why individuals experience life in
+difference ways and how this influences their wellbeing (Pollock, Noser,
+Holden, \& Zeigler-Hill, 2016).
+
+However, these examples rely on stable personality traits, challenging
+life circumstances may destabilise traits and cognitive appraisals may
+take a salient role. Including a cognitive component may help explain
+how personality traits differ according to evaluations of satisfaction,
+and account for underlying mental structures used. One theory to capture
+these evaluations is that of Multiple discrepancies theory (MDT; A. C.
+Michalos (1985)). The hypothesis is that an individual's overall net
+satisfaction is a function of a perception of ideals between past,
+present and future desires (A. Michalos, 2017). Jovanovic (2011)
+demonstrated that personality doesn't influence the cognitive component
+of wellbeing however, neuroticism does influence the affective
+component. Suggesting that, when personality traits are destabilized the
+affective component takes control.
+
+Each of these components contribute distinct mechanisms in explaining
+SWB. Davern et al. (2007) tested a model by regressing 5 traits of
+personality, with affect and cognition on a broad group of adult
+Australians. Their study demonstrated that the joint contribution of the
+cognitive-affective model explained 90\% of the variance in SWB.
+Furthermore, personality traits were a weaker contributor than that of
+cognition and affect; Extraversion and Agreeableness traits were the
+only significant correlates of SWB. Blore, Stokes, Mellor, Firth, and
+Cummins (2011) replicated this design with only two personality traits
+of Neuroticism and Extraversion. The study demonstrated a purely
+affective model explaining 66\% of the variance in SWB and furthermore,
+cognition and the cognitive-affective model proved to be a poor fit to
+SWB model. Tomyn and Cummins (2011) replicated Davern et al.'s (2007)
+design in a group of Australian High school students and found that
+affect was the better fit then either personality or cognition driven
+model explaining 80\% of the variance in SWB.
+
+While these findings highlight affect as the dominant component, there
+were some reliability issues worth examining. (Blore et al., 2011) and
+Tomyn and Cummins (2011) utilized the Ten Item Personality index (TIPI).
+The TIPI is a short form personality scale designed to perform poorly on
+reliability factor analysis (Gomez, Allemand, \& Grob, 2012).
+Furthermore, the affect scale used in the Blore et al.'s (2011) was
+constructed purely for their study and no validity was reported. While
+Davern et al.'s (2007) study was comprehensive, no internal validity
+measurements were reported and the NEO Five Factory Inventory used in
+the study has known, internal structural issues (Rosellini \& Brown,
+2011).
+
+The present study aimed to firstly, retest the relative components of
+affect, cognition and personality for predicting individual differences
+in subjective wellbeing. Secondly, to address the limitations from Blore
+et al., (2011), Davern et al., (2007) and Tomyn \& Cummins (2011), by
+utilizing a more reliable personality inventory with all five
+personality traits. This study hypothesized that a) mean scores of SWB
+will fall within the normative range; b) affect, cognition and
+personality will predict SWB and; c) affect will have the strongest,
+unique contribution on predicting SWB.
+
+\section{Method}\label{method}
 
 \subsection{Participants}\label{participants}
+
+This sample consisted of 101 participants consisting of men (20.8\%) and
+women (79.2\%) aged between 18 and 72 years old (M = 35.24, SD = 10.65).
+Recruited via undergraduates through Deakin University Australia.
 
 \subsection{Data analysis}\label{data-analysis}
 
@@ -144,7 +265,7 @@ We used R (Version 3.5.1; R Core Team, 2018) and the R-packages
 \emph{apaTables} (Version 2.0.5; Stanley, 2018), \emph{bindrcpp}
 (Version 0.2.2; Müller, 2018), \emph{broom} (Version 0.5.0; Robinson \&
 Hayes, 2018), \emph{car} (Version 3.0.2; Fox \& Weisberg, 2011; Fox,
-Weisberg, \& Price, 2018), \emph{carData} (Version 3.0.1; Fox et al.,
+Weisberg, \& Price, 2018), \emph{carData} (Version 3.0.2; Fox et al.,
 2018), \emph{dplyr} (Version 0.7.6; Wickham, François, Henry, \& Müller,
 2018), \emph{haven} (Version 1.1.2; Wickham \& Miller, 2018),
 \emph{knitr} (Version 1.20; Xie, 2015), \emph{lmSupport} (Version
@@ -156,23 +277,23 @@ Weisberg, \& Price, 2018), \emph{carData} (Version 3.0.1; Fox et al.,
 
 \textbf{\emph{Subjective Wellbeing}}. Wellbeing was assessed using the
 Personality Wellbeing Index (PWI) to represent \enquote{life as a whole}
-\{Cummins, 2003 \#547\} \{Group, 2013 \#567\}. The scale contains seven
-domains of satisfaction that correspond to represent the overall
-\enquote{How satisfied are you with life as whole?}. The domains are:
-standard of living, health, achieving in life, relationships, safety,
+(R. Cummins et al., 2007; Group, 2013). The scale contains seven domains
+of satisfaction that correspond to represent the overall \enquote{How
+satisfied are you with life as whole?}. The domains are: standard of
+living, health, achieving in life, relationships, safety,
 community-connectedness, and future security. Participants indicated
 their level of satisfaction with each domain using a 11-point Likert
-scale ranging from 0 (No Satisfaction as all) to 10 (Completely
-Satisfied). Composite variables were then computed to new variable and
-labelled as PWI. Cronbachs alpha has been shown to yield small
-reliability estimates therefore, a more reliable coefficient estimate,
-omega will be used \{McNeish, 2017 \#532\}\{Dunn, 2013 \#531\}. Point
-estimates and confidence intervals for the current sample were
-\(\omega\) = 0.74, 95\% CI {[}0.65, 0.83{]}.
+scale ranging from 0 (\emph{No Satisfaction as all}) to 10
+(\emph{Completely Satisfied}). Composite variables were then computed to
+new variable and labelled as PWI. Cronbachs alpha has been shown to
+yield small reliability estimates therefore, a more reliable coefficient
+estimate, omega will be used (Dunn, Baguley, \& Brunsden, 2013; McNeish,
+2017). Point estimates and confidence intervals for the current sample
+were \(\omega\) = 0.74, 95\% CI {[}0.65, 0.83{]}.
 
 \textbf{\emph{Personality}}. Personality was assessed using a 50-item
-pool from the International Personality Item Pool (IPIP;\{Goldberg, 2006
-\#566\} ) which, provides estimates for the Five Factor Model. The five
+pool from the International Personality Item Pool (IPIP; Goldberg et al.
+(2006)) which, provides estimates for the Five Factor Model. The five
 factors and reliability estimates were as follows: Neuroticism
 \(\omega\) = 0.86, 95\% CI {[}0.81, 0.90{]}, Extraversion \(\omega\) =
 0.88, 95\% CI {[}0.84, 0.92{]}, Openness \(\omega\) = 0.72, 95\% CI
@@ -181,31 +302,41 @@ factors and reliability estimates were as follows: Neuroticism
 0.83{]}.
 
 \textbf{\emph{Affect}}. The core construct of SWB is that of
-Homeostatically Protected Mood based on Russell's (2003) Core Affect
-\{Cummins, 2010 \#421\} \{Davern, 2007 \#417\}. Participants were asked
-to describe their feelings across three areas of life in general: How
-happy do you feel? How content do you feel? And How alert do you feel?
-Each item was scored on a Likert rated as 0 (Not at all) to 10
-(Extremely). The three items were averaged and a single variable was
-computed reflecting homeostatically protected mood (HPMood). The
+Homeostatically Protected Mood based on Russell's (2003) Core Affect (R.
+Cummins, 2010; Davern et al., 2007). Participants were asked to describe
+their feelings across three areas of life in general: How happy do you
+feel? How content do you feel? And How alert do you feel? Each item was
+scored on a Likert rated as 0 (\emph{Not at all}) to 10
+(\emph{Extremely}). The three items were averaged and a single variable
+was computed reflecting homeostatically protected mood (HPMood). The
 reliability of the item for this sample was \(\omega\) = 0.86, 95\% CI
 {[}0.79, 0.92{]}.
 
 \textbf{\emph{Cognition}}. Items from a revised version of Multiple
 Discrepancies Theory (MDT) was used to evaluate perceived gaps between
-the current self and various standards of comparison \{Michalos, 1985
-\#569\}. This include: What one has and wants (self-wants); what
-relevant others have (self-other); the best one has had in the past
-(self-best); what one expected to have 3 years ago (selfprogress); what
-one expects to have after 5 years (self-future); what one feels they
-deserve (self-deserves), and what one feels they need (self-needs).
-Items were averaged across each of the discrepancies to indicate a gap
-between desired and actual life circumstances. Scores closer to zero
-indicate less than desired circumstances, scores around five reflect
-life circumstances close to the current desired level and, scores close
-to 10 indicate actual circumstances are better than desired. A single
-MDT variable was computed and the reliability of the items was
-\(\omega\) = 0.78, 95\% CI {[}0.72, 0.85{]}.
+the current self and various standards of comparison (A. C. Michalos,
+1985). This include: What one has and wants (\emph{self-wants}); what
+relevant others have (\emph{self-other}); the best one has had in the
+past (\emph{self-best}); what one expected to have 3 years ago
+(\emph{selfprogress}); what one expects to have after 5 years
+(\emph{self-future}); what one feels they deserve
+(\emph{self-deserves}), and what one feels they need
+(\emph{self-needs}). Items were averaged across each of the
+discrepancies to indicate a gap between desired and actual life
+circumstances. Scores closer to zero indicate less than desired
+circumstances, scores around five reflect life circumstances close to
+the current desired level and, scores close to 10 indicate actual
+circumstances are better than desired. A single MDT variable was
+computed and the reliability of the items was \(\omega\) = 0.78, 95\% CI
+{[}0.72, 0.85{]}.
+
+\subsection{Procedure}\label{procedure}
+
+After obtaining ethical approval from Human Ethics Advisory Group of
+Health (HEAG-H), participants were recruited through undergraduates via
+a URL provided by Deakin University. The URL was then distributed
+through email and social media networks. R Studio (Version 3.5.1; R Core
+Team, 2018) was used to clean and analyze the data.
 
 \section{Results}\label{results}
 
@@ -213,18 +344,21 @@ MDT variable was computed and the reliability of the items was
 
 Means, standard deviations and correlations between variables are
 presented below in Table 1. The wellbeing average was outside of the
-normative range of scores (M = 68.80, SD = 10.50) as previous cohort
-studies shows the average for a sample should fall between 73.43 - 76.43
-points \{Cummins, 2010 \#421\}. Neuroticism (r = -.74, p
-\textless{}.01), HPMood (r = .75, p \textless{}.01) and MDT (r = .60, p
-\textless{}.01) were all strongly correlated with PWI. Extraversion (r=
-.40, p \textless{}.01), Agreeableness (r = .27, p \textless{}.01) and
-Conscientiousness (r = .29, p \textless{}.01) were all moderately
-correlated with PWI.
+normative range of scores ( \emph{M} = 68.80, \emph{SD} = 10.50) as
+previous cohort studies shows the average for a sample should fall
+between 73.43 - 76.43 points (R. Cummins, 2010). Neuroticism (\emph{r} =
+-.74, \emph{p} \textless{}.01), HPMood (\emph{r} = .75, \emph{p}
+\textless{}.01) and MDT ( \emph{r} = .60, \emph{p} \textless{}.01) were
+all strongly correlated with PWI. Extraversion ( \emph{r} = .40,
+\emph{p} \textless{}.01), Agreeableness ( \emph{r} = .27, \emph{p}
+\textless{}.01) and Conscientiousness ( \emph{r} = .29, \emph{p}
+\textless{}.01) were all moderately correlated with PWI.
+
+Table 1
 
 \label{tab:unnamed-chunk-1}
 
-\emph{Correlation matrix of the main variables}
+\emph{Correlation matrix of the key variables}
 
 \begin{longtable}[]{@{}llllllllll@{}}
 \toprule
@@ -253,7 +387,7 @@ plausible range of population correlations that could have caused the
 sample correlation (Cumming, 2014). * indicates p \textless{} .05. **
 indicates p \textless{} .01.
 
-\section{Regression}\label{regression}
+\subsection{Hierarchical Regression}\label{hierarchical-regression}
 
 A three stage hierarchical multiple regression was then conducted with
 PWI as the dependent variable. HPMood was entered at stage one to
@@ -281,6 +415,8 @@ contribution to the overall model explaining 8\% of the variance in SWB.
 HPMood \(b = 2.83\), 95\% CI \([1.27\), \(4.39]\), \(t(93) = 3.61\),
 \(p = .001\) provided the next strongest effect size and uniquely
 explained 4\% of the variance in SWB.
+
+Table 2
 
 \begin{table}[tbp]
 \begin{center}
@@ -337,6 +473,8 @@ variance in SWB followed by Neuroticism (\(\beta = -.69\), 95\% CI
 \([-.95\), \(-.43]\), \(t(98) = -5.26\), \(p < .001\)) which contributed
 9\% of the unique variance.
 
+Table 3
+
 \begin{table}[tbp]
 \begin{center}
 \begin{threeparttable}
@@ -362,6 +500,81 @@ Neuroticism & -0.69 & $[-0.95$, $-0.43]$ & -5.26 & < .001\\
 
 \subsection{Discussion}\label{discussion}
 
+Despite the position of Diener et al., (2018) that the cognitive
+component plays the larger role in wellbeing, previous research has
+shown that an individual's subjective wellbeing is driven by affect and
+managed through a neurophysiological process (R. Cummins, 2010). Results
+from similar designs either used unreliable personality measures or no
+reliability measures were reported. This study aimed to re-examine the
+components of affect, cognition and personality on an individual's
+subjective wellbeing and examine the normative range of wellbeing
+scores.
+
+Results from hierarchical regression indicated that affect was the
+dominant component, consistent with that of Davern et al. (2007), Tomyn
+\& Cummins (2011), and Blore et al. (2011), accounting for 57\% of the
+variation in SWB. The cognition component explained an additional 10\%
+of the variance however, the improvement in the model was not
+significant. This would explain the significance of when the personality
+component was entered, accounting for the additional 10\% of the
+variance in SWB. Indicating that the personality trait of neuroticism
+takes control of the structure of wellbeing when homeostasis is
+disrupted, not cognition, inconsistent with Davern et al.'s (2007)s
+hypothesis.
+
+An unexpected result was that of the samples wellbeing score. The
+samples mean score (68.80\%) was outside the normative range and
+therefor, evidence there was instability to the homeostatic process
+(Capic et al., 2018; R. Cummins, 2010). This becomes evident as the
+model is processed through after controlling for affect. Based on these
+results, further exploratory analysis was then conducted with affect and
+neuroticism as the predictor variables. Both affect, and neuroticism
+were significant and explained 66\% of the variance in SWB. Furthermore,
+affect contributed the dominant effect size.
+
+A key explanation for these findings is that when SWB is disrupted, the
+cognitive component drops out and neuroticism becomes the mediating role
+on wellbeing (Fadda \& Scalas, 2016). Inconsistent with Davern et al.,
+(2007) hypothesis that when there is a disruption to homeostatic
+process, cognition will take control and explain more variance in SWB
+than affect. The importance of this is that personality traits of
+Neuroticism, or Extraversion play the key role in determining how an
+individual is likely to cope (Costa \& McCrae, 1980). This is consistent
+with the idea that under challenging circumstances SWB is lower
+(Richardson et al., 2016). Therefore, the individual is more likely to
+rely on emotion rather than cognition when experiencing challenging
+experiences.
+
+Under normal conditions, the cognitive-affective model is the preferred
+structure as demonstrated with Davern et al., (2007). If the sample size
+is reflective of the adult population, the model should operate under
+the homeostasis presumption. However, if the sample is likely to be
+youth or evidence of psychopathology, then a purely affective model
+would explain their SWB, guided by their level of neuroticism. This has
+two implications firstly, the cognitive-affective model is useful in
+guiding public policy, such as broad health interventions and secondly,
+the affective model has clinical applications. Assessing an individual's
+wellbeing and personality could highlight how they are likely to cope
+and therefore, relevant interventions can then be applied.
+
+In light of these findings there were some limitations. Firstly, gender
+distribution was heavily weighted toward females and may have attenuated
+the regression line. To date, gender differences in SWB have yet to be
+fully explored therefore, future designs could implement a hierarchical
+process by accounting for affect and entering gender separately.
+Secondly, both this and previous studies have used a cross sectional
+methodology. A longitudinal approach may highlight the long-term
+stability of homeostasis by addressing the variation in traits.
+
+Overall, present findings suggest that affect explains most of the
+variance in SWB when wellbeing is in a state of challenge. When the
+wellbeing is outside the range of normality, trait neuroticism overrides
+cognition and takes control. Further research is needed in order to
+address the limitations in this study, gender differences have not been
+fully examined and personality variations may influence affect over
+time. Future research could consider exploring the relative gender
+differences in wellbeing and adopt a longitudinal design.
+
 \newpage
 
 \section{References}\label{references}
@@ -374,6 +587,38 @@ Neuroticism & -0.69 & $[-0.95$, $-0.43]$ & -5.26 & < .001\\
 Aust, F., \& Barth, M. (2018). \emph{papaja: Create APA manuscripts with
 R Markdown}. Retrieved from \url{https://github.com/crsh/papaja}
 
+\hypertarget{ref-RN420}{}
+Blore, J. D., Stokes, M. A., Mellor, D., Firth, L., \& Cummins, R. A.
+(2011). Comparing multiple discrepancies theory to affective models of
+subjective wellbeing. \emph{Social Indicators Research}, \emph{100}(1),
+1--16. Journal Article.
+doi:\href{https://doi.org/10.1007/s11205-010-9599-2}{10.1007/s11205-010-9599-2}
+
+\hypertarget{ref-RN382}{}
+Capic, T., Li, N., \& Cummins, R. A. (2018). Confirmation of subjective
+wellbeing set-points: Foundational for subjective social indicators.
+\emph{Social Indicators Research}, \emph{137}(1), 1--28. Journal
+Article.
+doi:\href{https://doi.org/10.1007/s11205-017-1585-5}{10.1007/s11205-017-1585-5}
+
+\hypertarget{ref-RN421}{}
+Cummins, R. (2010). Subjective wellbeing, homeostatically protected mood
+and depression: A synthesis. \emph{Journal of Happiness Studies},
+\emph{11}(1), 1--17. Journal Article.
+doi:\href{https://doi.org/10.1007/s10902-009-9167-0}{10.1007/s10902-009-9167-0}
+
+\hypertarget{ref-RN546}{}
+Cummins, R., Hughes, J., Tomyn, A., Gibson, A., Woerner, J., \& Lai, L.
+(2007). \emph{The wellbeing of australians: Carer health and wellbeing}.
+Book, Geelong, Vic.: Deakin University. Retrieved from
+\url{http://ezproxy.deakin.edu.au/login?url=http://search.ebscohost.com/login.aspx?direct=true\&db=edsafs\&AN=edsafs.a59030\&authtype=sso\&custid=deakin\&site=eds-live\&scope=site}
+
+\hypertarget{ref-RN305}{}
+Cummins, R., Li, N., Wooden, M., \& Stokes, M. (2014). A demonstration
+of set-points for subjective wellbeing. \emph{Journal of Happiness
+Studies}, \emph{15}(1), 183--206. Journal Article.
+doi:\href{https://doi.org/10.1007/s10902-013-9444-9}{10.1007/s10902-013-9444-9}
+
 \hypertarget{ref-R-lmSupport}{}
 Curtin, J. (2018). \emph{LmSupport: Support for linear models}.
 Retrieved from \url{https://CRAN.R-project.org/package=lmSupport}
@@ -382,6 +627,19 @@ Retrieved from \url{https://CRAN.R-project.org/package=lmSupport}
 Dahl, D. B., Scott, D., Roosen, C., Magnusson, A., \& Swinton, J.
 (2018). \emph{Xtable: Export tables to latex or html}. Retrieved from
 \url{https://CRAN.R-project.org/package=xtable}
+
+\hypertarget{ref-RN417}{}
+Davern, M. T., Cummins, R. A., \& Stokes, M. A. (2007). Subjective
+wellbeing as an affective-cognitive construct. \emph{Journal of
+Happiness Studies}, \emph{8}(4), 429--449. Journal Article.
+doi:\href{https://doi.org/10.1007/s10902-007-9066-1}{10.1007/s10902-007-9066-1}
+
+\hypertarget{ref-RN531}{}
+Dunn, T. J., Baguley, T., \& Brunsden, V. (2013). From alpha to omega: A
+practical solution to the pervasive problem of internal consistency
+estimation. \emph{British Journal of Psychology}, \emph{105}(3),
+399--412. Journal Article.
+doi:\href{https://doi.org/10.1111/bjop.12046}{10.1111/bjop.12046}
 
 \hypertarget{ref-R-car}{}
 Fox, J., \& Weisberg, S. (2011). \emph{An R companion to applied
@@ -393,18 +651,80 @@ Fox, J., Weisberg, S., \& Price, B. (2018). \emph{CarData: Companion to
 applied regression data sets}. Retrieved from
 \url{https://CRAN.R-project.org/package=carData}
 
+\hypertarget{ref-RN566}{}
+Goldberg, L. R., Johnson, J. A., Eber, H. W., Hogan, R., Ashton, M. C.,
+Cloninger, C. R., \& Gough, H. G. (2006). The international personality
+item pool and the future of public-domain personality measures.
+\emph{Journal of Research in Personality}, \emph{40}(1), 84--96. Journal
+Article.
+doi:\href{https://doi.org/10.1016/j.jrp.2005.08.007}{10.1016/j.jrp.2005.08.007}
+
+\hypertarget{ref-RN534}{}
+Gomez, V., Allemand, M., \& Grob, A. (2012). Neuroticism, extraversion,
+goals, and subjective well-being: Exploring the relations in young,
+middle-aged, and older adults. \emph{Journal of Research in
+Personality}, \emph{46}(3), 317--325. Journal Article.
+doi:\href{https://doi.org/https://doi.org/10.1016/j.jrp.2012.03.001}{https://doi.org/10.1016/j.jrp.2012.03.001}
+
+\hypertarget{ref-RN567}{}
+Group, I. W. (2013). Personal wellbeing index. \emph{5th Edition.
+Melbourne: Australian}. Journal Article. Retrieved from
+\url{http://www.deakin.edu.au/research/acqol/instruments/wellbeing-index/index.php)}
+
+\hypertarget{ref-RN558}{}
+Harris, K., English, T., Harms, P. D., Gross, J. J., Jackson, J. J., \&
+Back, M. (2017). Why are extraverts more satisfied? Personality, social
+experiences, and subjective well-being in college. \emph{European
+Journal of Personality}, \emph{31}(2), 170--186. Journal Article.
+doi:\href{https://doi.org/10.1002/per.2101}{10.1002/per.2101}
+
 \hypertarget{ref-R-olsrr}{}
 Hebbali, A. (2018). \emph{Olsrr: Tools for building ols regression
 models}. Retrieved from \url{https://CRAN.R-project.org/package=olsrr}
+
+\hypertarget{ref-RN426}{}
+Jovanovic, V. (2011). Personality and subjective well-being: One
+neglected model of personality and two forgotten aspects of subjective
+well-being. \emph{Personality and Individual Differences}, \emph{50}(5),
+631--635. Journal Article.
+doi:\href{https://doi.org/https://doi.org/10.1016/j.paid.2010.12.008}{https://doi.org/10.1016/j.paid.2010.12.008}
 
 \hypertarget{ref-R-MBESS}{}
 Kelley, K. (2018). \emph{MBESS: The mbess r package}. Retrieved from
 \url{https://CRAN.R-project.org/package=MBESS}
 
+\hypertarget{ref-RN549}{}
+Lucas, R. E. (2008). Personality and subjective well-being. In \emph{The
+science of subjective well-being.} (pp. 171--194). Book Section, New
+York, NY, US: Guilford Press.
+
+\hypertarget{ref-RN532}{}
+McNeish, D. (2017). \emph{Thanks coefficient alpha, we'll take it from
+here}. Book.
+doi:\href{https://doi.org/10.1037/met0000144}{10.1037/met0000144}
+
+\hypertarget{ref-RN300}{}
+Michalos, A. (2017). \emph{Multiple discrepancies theory (mdt)} (pp.
+39--95). Book.
+doi:\href{https://doi.org/10.1007/978-3-319-51149-8_3}{10.1007/978-3-319-51149-8\_3}
+
+\hypertarget{ref-RN569}{}
+Michalos, A. C. (1985). Multiple discrepancies theory (mdt).
+\emph{Social Indicators Research}, \emph{16}(4), 347--413. Journal
+Article.
+doi:\href{https://doi.org/10.1007/BF00333288}{10.1007/BF00333288}
+
 \hypertarget{ref-R-bindrcpp}{}
 Müller, K. (2018). \emph{Bindrcpp: An 'rcpp' interface to active
 bindings}. Retrieved from
 \url{https://CRAN.R-project.org/package=bindrcpp}
+
+\hypertarget{ref-RN301}{}
+Pollock, N., Noser, A., Holden, C., \& Zeigler-Hill, V. (2016). Do
+orientations to happiness mediate the associations between personality
+traits and subjective well-being? \emph{Journal of Happiness Studies},
+\emph{17}(2), 713--729. Journal Article.
+doi:\href{https://doi.org/10.1007/s10902-015-9617-9}{10.1007/s10902-015-9617-9}
 
 \hypertarget{ref-R-base}{}
 R Core Team. (2018). \emph{R: A language and environment for statistical
@@ -417,15 +737,37 @@ psychometric, and personality research}. Evanston, Illinois:
 Northwestern University. Retrieved from
 \url{https://CRAN.R-project.org/package=psych}
 
+\hypertarget{ref-RN383}{}
+Richardson, B., Fuller Tyszkiewicz, M., Tomyn, A., \& Cummins, R.
+(2016). The psychometric equivalence of the personal wellbeing index for
+normally functioning and homeostatically defeated australian adults.
+\emph{Journal of Happiness Studies}, \emph{17}(2), 627--641. Journal
+Article.
+doi:\href{https://doi.org/10.1007/s10902-015-9613-0}{10.1007/s10902-015-9613-0}
+
 \hypertarget{ref-R-broom}{}
 Robinson, D., \& Hayes, A. (2018). \emph{Broom: Convert statistical
 analysis objects into tidy tibbles}. Retrieved from
 \url{https://CRAN.R-project.org/package=broom}
 
+\hypertarget{ref-RN572}{}
+Rosellini, A. J., \& Brown, T. A. (2011). The neo five-factor inventory:
+Latent structure and relationships with dimensions of anxiety and
+depressive disorders in a large clinical sample. \emph{Assessment},
+\emph{18}(1), 27--38. Journal Article.
+doi:\href{https://doi.org/10.1177/1073191110382848}{10.1177/1073191110382848}
+
 \hypertarget{ref-R-apaTables}{}
 Stanley, D. (2018). \emph{ApaTables: Create american psychological
 association (apa) style tables}. Retrieved from
 \url{https://CRAN.R-project.org/package=apaTables}
+
+\hypertarget{ref-RN418}{}
+Tomyn, A., \& Cummins, R. (2011). Subjective wellbeing and
+homeostatically protected mood: Theory validation with adolescents.
+\emph{Journal of Happiness Studies}, \emph{12}(5), 897--914. Journal
+Article.
+doi:\href{https://doi.org/10.1007/s10902-010-9235-5}{10.1007/s10902-010-9235-5}
 
 \hypertarget{ref-R-haven}{}
 Wickham, H., \& Miller, E. (2018). \emph{Haven: Import and export
@@ -443,6 +785,12 @@ Boca Raton, Florida: Chapman; Hall/CRC. Retrieved from
 \url{https://yihui.name/knitr/}
 
 \endgroup
+
+\clearpage
+
+\renewcommand{\listfigurename}{Figure captions}
+
+\listoffigures
 
 
 \end{document}

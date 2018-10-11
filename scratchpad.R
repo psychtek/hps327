@@ -243,8 +243,53 @@ well_being_df %>%
       invertItem(Personality10, 1, 5)))
 
   
-  Mirror imaging and brian simulation study 
-  EEG Setup
-  Monitoring Project
-  Interaction with participants proff
-  EEG sterilzation process.
+# apa_lm_4 <- apa_print(model4_explore, standardized = FALSE, est_name = "\\beta")
+
+#step 1
+apa_lm_1 <- apa_print(model1) #apa_print function takes the lm object and creates format strings to report the results
+
+apa_table(apa_lm_1$table
+          , caption = "Regression Model 1"
+) # creates the apa formated table to print to screen
+
+apa_anova1 <- apa_print(anova(model1))
+
+apa_table(apa_anova1$table
+          , caption = "ANOVA Model 1"
+          , note = "Dependant variable: Personal Wellbeing Index")
+
+#step 2
+apa_lm_2 <- apa_print(model2) #apa_print function takes the lm object and creates format strings to report the results
+
+apa_table(apa_lm_2$table
+          , caption = "Regression Model 2"
+) # creates the apa formated table to print to screen
+
+apa_anova2 <- apa_print(anova(model2))
+apa_table(apa_anova2$table
+          , caption = "ANOVA Model 2"
+          , note = "Dependant variable: Personal Wellbeing Index")
+
+#step 3
+apa_lm_3 <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
+
+apa_table(apa_lm_3$table
+          , caption = "Regression Model 3"
+) # creates the apa formated table to print to screen
+
+apa_anova3 <- apa_print(anova(model3))
+apa_table(apa_anova3$table
+          , caption = "ANOVA Model3"
+          , note = "Dependant variable: Personal Wellbeing Index")
+
+apa_lm_4 <- apa_print(model4_explore) #apa_print function takes the lm object and creates format strings to report the results
+
+apa_table(apa_lm_4$table
+          , caption = "Exploratory Model"
+) # creates the apa formated table to print to screen
+
+apa_anova_model4 <- apa_print(anova(model4_explore))
+apa_table(apa_anova_model4$table
+          , caption = "ANOVA Explore Model"
+          , note = "Dependant variable: Personal Wellbeing Index"
+          , format = "markdown")

@@ -8,6 +8,29 @@ output:
   word_document: default
 ---
 
+## Why R? Whats Wrong with SPSS? :
+
+The following are the core notes I took as I went through, cleaned and analysed data from a research capstone project on Subjective Wellbeing. This was my first attempt at both learning R, Github and the idea of reproducible research. I have outlined the process below as I stepped through the analysis. There are many errors and there are certainly many ways to streamline this process. However, I think it is important to view what and how I approached this, as to reflect on what and where i could improve. This could also help others to see and learn who want to attempt this process (Highly suggest undergraduates have a go!). In future posts I aim to share how I setup R Studio, Github and markdown so that if anyone is interested then they can replicate this process. You can also see all my relevant code and documents over [here at Github](https://github.com/psychtek/hps327). 
+
+Once this process was done a script was created with the final dataframe with the added columns that were mutated throughout. This was then the source script used in an APA template in R Studio. You can [check this script out here](https://github.com/psychtek/hps327/blob/master/analysis.R) and the final PDF report printed here. Given the time constraints I used the apaTables packge to print the tables needed to a seperate word document and edited these into the final report. The one presented here is the version that is printed directly from the template with inline code using the apa_print function in papaja. 
+
+Having the source script is handy as it allows you to pull the results into the part of the text and update these as needed depending on your report. Handy! 
+You can see the final [lab report script here](https://github.com/psychtek/hps327/blob/master/my_report.Rmd)  where the _source("analysis.R")_ is called before then writing up the results as interpreted below. You can read my finals thoughts on the data at the end of the script below. 
+
+## What did I learn? 
+1. Learning to undertake R during the term was exciting, engaging and super time consuming. I would only encourge this if you have the time. Doing the analyis this way also gave me a broader understanding of how regression works. Stack exchange and Google are your friends, more often coding problems that you'll come across, someone has experienced them before. 
+
+2. Learning to visualise the how a data frame works and the different types of data structures helps understand why some functions may not work. Some objects may need to be changed to numeric or a matrix for the specific function to run. 
+
+3. Use Github and commit often. It will save headaches later on when you need to look back over your code when something goes wrong. Pretty much everything I did is now open to the world to view on github. This is also the core idea of reproducibility, if this was in real collaborative setting, the process can be replicated and adjusted as needed, making for a much stronger scientific  
+
+## Whats wrong with SPSS? 
+
+Everything. R is Free. 
+
+You can view the project files at over at 
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -26,6 +49,7 @@ library(olsrr)
 library(xtable)
 library(apaTables)
 library(MBESS)
+library(corrplot)
 ```
 
 **DV:** Personal Wellbeing Index (pwi)  
@@ -42,7 +66,7 @@ ncomplete/nrows
 which(is.na(well_being_df))
 ```
 
-### Compute Variables
+## Compute Variables
 
 All items for the Personal Wellbeing Index (PWI) are measured along a scale ranging from 0 (No satisfaction at all) to 10 (Completely satisfied)
 *Total scores on the PWI are obtained by obtaining the average score across the 7 items and then multiplying by 10 to stretch the scale to 0 to 100. 
@@ -75,20 +99,19 @@ well_being_df <- well_being_df[-1,]
 ## Personality 
 
 Notes:
-Items are scored on a scale with options 1 = strongly disagree, 2 = disagree, 3 = neither agree nor disagree, 4 = agree, and 5 = strongly agree.
-Items 1-10 assess neuroticism. Items 6-10 need to be reverse coded so that high scores across all ten items reflect high levels of neuroticism.
+Items are scored on a scale with options 1 = _strongly disagree_, 2 = _disagree_, 3 = _neither agree nor disagree_, 4 = _agree_, and 5 = _strongly agree_.
 
-Items 11-20 assess extraversion. Items 16-20 need to be reverse coded so that high scores across all ten items reflect high levels of extraversion.
++ Items 1-10 assess __neuroticism__. Items 6-10 need to be reverse coded so that high scores across all ten items reflect high levels of neuroticism.
 
-Items 21-30 assess openness to experience. Items 26-30 need to be reverse coded so that high scores across all ten items reflect high levels of openness.
++ Items 11-20 assess __extraversion__. Items 16-20 need to be reverse coded so that high scores across all ten items reflect high levels of extraversion.
 
-Items 31-40 assess agreeableness. Items 36-40 need to be reverse coded so that high scores across all ten items reflect high levels of agreeableness.
++ Items 21-30 assess __openness to experience__. Items 26-30 need to be reverse coded so that high scores across all ten items reflect high levels of openness.
 
-Items 41-50 assess conscientiousness. Items 46-50 need to be reverse coded so that high scores across all ten items reflect high levels of conscientiousness.
-
-Create the total scores for the subscales by averaging items.
++ Items 31-40 assess __agreeableness__. Items 36-40 need to be reverse coded so that high scores across all ten items reflect high levels of agreeableness.
  
-These are summed and mutated to a new column for each peronality trait.
++ Items 41-50 assess __conscientiousness__. Items 46-50 need to be reverse coded so that high scores across all ten items reflect high levels of conscientiousness.
+ 
+Create the total scores for the subscales by averaging items. These are summed and mutated to a new column for each peronality trait.
 
 ```{r Personality}
 
@@ -166,14 +189,18 @@ well_being_df <- well_being_df %>%
 ```
 
 ## Homeostatically Protected Mood (Core Affect)
-Please indicate how each of the following describes your feelings when you think about your life in general. How ….
-1.	Happy do you generally feel?
-2.	Content do you generally feel?
-3.	Alert do you generally feel?
+
+Please indicate how each of the following describes your feelings when you think about your life in general.
+
+1. Happy do you generally feel?
+
+2. Content do you generally feel?
+
+3. Alert do you generally feel?
 
 Notes:
-Each item is scored on an end-defined rating scale with 0 = not at all, and 10 = extremely.
-Items are averaged to provide a single value reflecting homeostatically protected mood (HPMood).
+Each item is scored on an end-defined rating scale with 0 = _not at all_, and 10 = _extremely_.
+Items are averaged to provide a single value reflecting homeostatically protected mood ( __HPMood__ ).
 
 
 ```{r HPMood}
@@ -187,7 +214,9 @@ well_being_df <- well_being_df %>%
 
 
 ## Multiple Discrepancies Theory (MDT) - Cognition 
-Firstly I mutate to a new column labelled "MDT" and averaged.  
+
+Items are averaged to indicate gap between desired and actual life circumstances, such that scores closer to 0 indicate actual circumstances less than desired, scores around 5 reflect life circumstances on par with desired level, and scores closer to 10 indicate actual circumstances are much better than desired.
+Mutate to a new column labelled "MDT" and averaged.  
 
 1. self_wants 
 2. self_other 
@@ -197,7 +226,6 @@ Firstly I mutate to a new column labelled "MDT" and averaged.
 6. self_future
 7. self_past  
 
-Items are averaged to indicate gap between desired and actual life circumstances, such that scores closer to 0 indicate actual circumstances less than desired, scores around 5 reflect life circumstances on par with desired level, and scores closer to 10 indicate actual circumstances are much better than desired.
 
 ```{r MDT}
 # This will create a new variable with the overal MDT cognition mean score
@@ -214,103 +242,15 @@ well_being_df <- well_being_df %>%
 
 ```
 
-### Model 1
-```{r Regression_Part_1}
+## Visualise data
 
-model1 <- lm(PW_Index ~ 
-             HPMood
-             , data = well_being_df)
+```{r Descriptives}
 
-model2 <- lm(PW_Index ~ 
-              HPMood
-             + MDT 
-             , data = well_being_df)
+Descriptives_one <- describe(well_being_df[c(1,2,71:78)], fast = TRUE) #descriptives
 
-model3 <- lm(PW_Index ~  
-              HPMood 
-             + MDT 
-             + Neuroticism
-             + Extraversion
-             + Openness
-             + Agreeableness
-             + Conscientiousness
-             , data = well_being_df)
-
-
-apa.reg.table(model1, model2, model3)
-
-# Run an ANOVA to check for sig effect. 
-ANOVA_Models <- anova(model1, model2, model3)
-
-modelAssumptions(model3) #use the lmsupport library 
-
+Descriptives_one #print descriptive statistics
 
 ```
-
-
-
-## Results Table of the first model for comparison
-```{r, results="asis"}
-#, results="asis"
-apa_lm <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
-apa_table(apa_lm$table
-          , caption = "Regression"
-          ) # creates the apa formated table to print to screen
-
-apa_anova <- apa_print(anova(model3))
-apa_table(apa_anova$table
-          , caption = "ANOVA"
-          , note = "Dependant variable: Personal Wellbeing Index")
-
-#N^2 or GES = generalised eta squared
-
-```
-
-
-
-### Normality and Residuals
-
-```{r Residuals}
-
-my_residuals <- residuals(model3)
-# shapiro-wilk test: compares scores in sample to to norm dist. if the test 
-# test is non-sig p>.05 tells us the the dist of sample is not sig different from normal
-# If test is sig p<.05 then the distribution in question is significant different from normal. 
-# Warning: large sample sizes may get different results. Always plot!
-shapiro.test( x = my_residuals )
- 
-# which finds no indication that normality is violated 
-residualPlots(model3)
-
-model3_cooksd <- cooks.distance(model3)
-
-plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance") %>%  # plot cook's distance
-  abline(h = 4*mean(model3_cooksd, na.rm=T), col="red") %>%  # add cutoff line - scores 4 times greater than mean
-  text(x=1:length(model3_cooksd)+1
-       , y=model3_cooksd
-       , labels=ifelse(model3_cooksd>4*mean(model3_cooksd, na.rm=T)
-                       ,names(model3_cooksd),"")
-       , col="red")  # add labels
-
-# find out which rows are influencial
-influential <- as.numeric(names(model3_cooksd)[(model3_cooksd > 4*mean(model3_cooksd, na.rm=T))])  # influential row numbers
-# head(well_being_df[influential, ])  # influential observations.
-
-outlierTest(model3) #get the most extreme outlier and return row number
-
-# Print which rows are most influencial
-influential
-
-# Remove rows
-#well_being_df <- well_being_df[-c(2, 19, 21, 84), ]
-well_being_df <- well_being_df[-c(2, 21, 27, 30, 78, 84, 86, 88, 101, 104), ]
-qqPlot(as.numeric(well_being_df$PW_Index))
-modelAssumptions(model3)
-```
-
-
-
-### Visualise and Check data 
 
 
 ```{r PWI_Plots}
@@ -358,16 +298,155 @@ boxplot(boxplot_big5, main = "Big 5 Means", names = boxplot_names_big5, horizont
 
 ```
 
-### Intercorrelations
+
+# Correlations
+
+```{r CorrelationTable, results="asis" }
+
+corr_Matrix <- cor(well_being_df[c(71:78)]) #subset relevant columns and use cor() to create a matrix
+corrplot(corr_Matrix, method = "number")
+
+```
+
+
+## Hierarchical Regression Model 1
+
+Controlling for affect based on previous research that affect is the larger component to subjective wellbeing at step 1. MDT was entered at stage two after controlling for affect and the five personality traits entered as a group at stage three.
+```{r Regression_Part_1}
+
+model1 <- lm(PW_Index ~ 
+             HPMood
+             , data = well_being_df)
+
+model2 <- lm(PW_Index ~ 
+              HPMood
+             + MDT 
+             , data = well_being_df)
+
+model3 <- lm(PW_Index ~  
+              HPMood 
+             + MDT 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             + Agreeableness
+             + Conscientiousness
+             , data = well_being_df)
+
+
+model_comparison_1 <- lm(PW_Index ~  
+              HPMood 
+             + MDT 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             + Agreeableness
+             + Conscientiousness
+             , data = well_being_df)
+
+#apa.reg.table(model1, model2, model3) #using apaTables package to present the model an a table. 
+
+# Run an ANOVA to check for effect. 
+ANOVA_Models <- anova(model1, model2, model3)
+ANOVA_Models # print results to screen
+
+```
+
+## Model analysis 
+Results look good however, its good to visualise the model and check for any leveraging. linear regression needs the relationship between the independent and dependent variables to be linear.  It is also important to check for outliers since linear regression is sensitive to outlier effects.
+
+The results are then converted to APA format using the papaja package and then knitted using a APA template. Printed here for analyis: 
+```{r}
+
+summary(model1)
+summary(model2)
+summary(model3)
+anova(model1, model2, model3)
+
+```
+
+
+## Normality and Residuals
+```{r}
+modelAssumptions(model3) #use the lmsupport library as it provides diagnostic graphs and tests to evaluate linear model assumptions of normality.
+model_assump_one <- modelAssumptions(model3)
+```
+
+shapiro-wilk test: compares scores in sample to to norm dist. If the test test is non-sig p>.05 tells us the the dist of sample is not sig different from normal
+If test is sig _p_<.05 then the distribution in question is significant different from normal. 
+
+## Warning: large sample sizes may get different results. Always plot!
+
+```{r Residuals}
+
+my_residuals <- residuals(model3)
+
+shapiro.test( x = my_residuals )  # which finds no indication that normality is violated 
+
+```
+
+## Cooks Distance 
+Cook's distance is a measure of the overall influence of a case on a model. Values greater than one may be cause of concern. 
+
+```{r}
+
+residualPlots(model3)
+
+model3_cooksd <- cooks.distance(model3)
+
+plot(model3_cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance") %>%  # plot cook's distance
+  abline(h = 4*mean(model3_cooksd, na.rm=T), col="red") %>%  # add cutoff line - scores 4 times greater than mean
+  text(x=1:length(model3_cooksd)+1
+       , y=model3_cooksd
+       , labels=ifelse(model3_cooksd>4*mean(model3_cooksd, na.rm=T)
+                       ,names(model3_cooksd),"")
+       , col="red")  # add labels
+
+# find out which rows are influencial
+influential <- as.numeric(names(model3_cooksd)[(model3_cooksd > 4*mean(model3_cooksd, na.rm=T))])  # influential row numbers
+# head(well_being_df[influential, ])  # influential observations.
+
+outlierTest(model3) #get the most extreme outlier and return row number
+
+# Print which rows are most influencial
+influential
+
+# Remove rows
+#well_being_df <- well_being_df[-c(2, 19, 21, 84), ]
+well_being_df <- well_being_df[-c(2, 21, 27, 30, 78, 84, 86, 88, 101, 104), ]
+qqPlot(as.numeric(well_being_df$PW_Index))
+modelAssumptions(model3)
+```
+
+
+## Compare models before and after adjustments 
+```{r}
+model_comparison_2 <- lm(PW_Index ~  
+              HPMood 
+             + MDT 
+             + Neuroticism
+             + Extraversion
+             + Openness
+             + Agreeableness
+             + Conscientiousness
+             , data = well_being_df)
+model_assump_two <- modelAssumptions(model3)
+
+summary(model_comparison_1)
+summary(model_comparison_2)
+model_assump_one 
+model_assump_two
+
+```
+
+
+## Reliability
+
 Check alpha levels (omega) for intercorrelations on each domain. Using the MBES package
 
-#### Personal wellbeing index
-The combined survey mean scores from 28 surveys of the Australian population have produced a
-maximum variation of 3.2 percentage points in subjective wellbeing (see Australian Unity Wellbeing
-Index Report 28.0). Cronbach alpha lies between .70 and .85 in Australia and overseas. Inter-domain
-correlations are often moderate at round .30 to .55 and item-total correlations are at least .50. The
-index has also demonstrated good test-retest reliability across 1-2 week interval with an intra-class
-correlation coefficient of 0.84 (Lau and Cummins, 2005).    
+# Personal wellbeing index
+
+The combined survey mean scores from 28 surveys of the Australian population have produced a maximum variation of 3.2 percentage points in subjective wellbeing (see Australian Unity Wellbeing Index Report 28.0). Cronbach alpha lies between .70 and .85 in Australia and overseas. Inter-domain correlations are often moderate at round .30 to .55 and item-total correlations are at least .50. The index has also demonstrated good test-retest reliability across 1-2 week interval with an intra-class correlation coefficient of 0.84 (Lau and Cummins, 2005).    
 
 
 ```{r Reliability}
@@ -475,9 +554,9 @@ omega(agre_reliability)
 #corPlot(conc_omega)
 omega(conc_reliability)
 
-HPmood_alpha <- ci.reliability(select(well_being_df, Affect1, Affect2, Affect3))
+HPmood_omega <- ci.reliability(select(well_being_df, Affect1, Affect2, Affect3))
 
-MDT_alpha <- ci.reliability(select(well_being_df
+MDT_omega <- ci.reliability(select(well_being_df
              , Cognition1
              , Cognition2
              , Cognition3
@@ -486,7 +565,7 @@ MDT_alpha <- ci.reliability(select(well_being_df
              , Cognition6
              , Cognition7))
 
-pwi_alpha <- ci.reliability(select(well_being_df
+pwi_omega <- ci.reliability(select(well_being_df
              , PWI1
              , PWI2
              , PWI3
@@ -499,17 +578,9 @@ pwi_alpha <- ci.reliability(select(well_being_df
 
 ```
 
-### Testing inline statistics reporting:
-The reliability of HPMood was (`r HPmood_alpha$est`) with a CI of \\[ `r HPmood_alpha$ci.lower` `r HPmood_alpha$ci.upper`.
 
-
-### Regression
-Run the model hierarchially and then check assumptions
-
-#### Modelling 
-
-#Good Fit Model
 ### Re run models
+
 With outliers removed that were leveraging the model, re-run the model. 
 ```{r Final-model}
 
@@ -562,144 +633,33 @@ Bonferonni_model
 ```
 
 ### With outliers removed re-run the correlations and descriptives
-## Descriptives
 
-```{r Descriptives}
+```{r Descriptives2}
 
-Descriptives <- describe(well_being_df[c(1,2,71:78)], fast = TRUE) #descriptives
+Descriptives2 <- describe(well_being_df[c(1,2,71:78)], fast = TRUE) #descriptives
 
-Descriptives #print descriptive statistics
-
-```
-
-
-```{r CorrelationTable, results="asis" }
-
-glrstab <- function(x, export=FALSE) {
-  
-  r <-corr.test(x)$r	#taking just the correlation matrix; no N, or p
-  p <-corr.test(x)$p	#taking the p*s
-  
-  #define notions for significance levels
-  mystars <- ifelse(p < .001, "***"
-                    , ifelse(p < .01, "**"
-                             , ifelse(p < .05, "*"
-                                      , ifelse(p < .10, "+", " "))))
-  
-  #round r, define new matrix Rnew with the correlations from rnd and paste mystars
-  rnd  <- papaja::printnum(r, gt1 = FALSE, digits = 2)  #round, drop leading 0 - Thanks CRSH!								                     
-  Rnew <- matrix(paste(rnd, mystars, sep=""), ncol=ncol(rnd)) 
-  
-  #remove 1.0 correlations from diagonal  and set the strings
-  diag(Rnew) <- ''		
-  Rnew[upper.tri(Rnew)] <- ''								                	
-  
-  rownames(Rnew) <- paste(1:ncol(rnd), colnames(rnd), sep=" ")         #define number and name
-  colnames(Rnew) <- paste(1:ncol(rnd), "", sep="") 			       #define number
-  
-  #fun-part: we trim the top half 
-  Rnew[upper.tri(Rnew)] <- ''			
-  Rnew
-  
-  Rnew <- cbind(round(describe(x)[,3:4],2), Rnew)		     #describe x, M sD - put them in the matrix
-  colnames(Rnew)[1:2] <- c("M","SD")					      		#Beschriftung der neuen Spalten
-  Rnew <- Rnew[,1:(ncol(Rnew)-1)]							        	#delete the last column (ugly)
-  
-  #export to clipboard
-  
-  if (export==TRUE){
-    result<-write.table(Rnew
-                        , "clipboard"
-                        , sep=";"
-                        , row.names=FALSE)
-  }
-  else result <- Rnew
-  return(result)
-  
-}
-
-corr_Matrix <- well_being_df[c(71:78)] #subset relevant columns
-a <- glrstab(corr_Matrix) #the function in action!
-
-rownames(a) <- c(
-  "PW_Index"
-  , "Neuroticism"
-  , "Extraversion"
-  , "Openness"
-  , "Agreeableness"
-  , "Conscientiousness"
-  , "HPMood"
-  , "MDT"
-)
-
-colnames(a)   <- c("$M$", "$SD$", "1", "2", "3", "4", "5", "6", "7")
-
-apa_table(a
-          , escape  = FALSE
-          , format = "html"
-          , caption = "Correlation matrix of the main variables"
-          , note    = "p<.001***, p<.01**, p<.05*, p<.10+")
+Descriptives2 #print descriptive statistics
 
 ```
 
-Correlations between Neuroticism and HPMood, MDT and PWI were all moderatly negative. This pattern can be shared with in that even directionality of constructs on PWI except for extraversion on mood. The positve correlation highlighted that being extraverted and feeling content, happy and alert taps into a more motivated construct and less domain related wellbeing. 
 
+```{r CorrelationTable2, results="asis" }
 
+corr_Matrix2 <- cor(well_being_df[c(71:78)]) #subset relevant columns and use cor() to create a matrix
+corrplot(corr_Matrix2, method = "number")
 
+```
+ 
+## Print Final Model Results
 
-## Tables
-
-```{r Papaja Table, results="asis"}
-
-
-#step 1
-apa_lm_1 <- apa_print(model1) #apa_print function takes the lm object and creates format strings to report the results
-
-apa_table(apa_lm_1$table
-          , caption = "Regression Model 1"
-          ) # creates the apa formated table to print to screen
-
-apa_anova1 <- apa_print(anova(model1))
-
-apa_table(apa_anova1$table
-          , caption = "ANOVA Model 1"
-          , note = "Dependant variable: Personal Wellbeing Index")
-
-#step 2
-apa_lm_2 <- apa_print(model2) #apa_print function takes the lm object and creates format strings to report the results
-
-apa_table(apa_lm_2$table
-          , caption = "Regression Model 2"
-          ) # creates the apa formated table to print to screen
-
-apa_anova2 <- apa_print(anova(model2))
-apa_table(apa_anova2$table
-          , caption = "ANOVA Model 2"
-          , note = "Dependant variable: Personal Wellbeing Index")
-
-#step 3
-apa_lm_3 <- apa_print(model3) #apa_print function takes the lm object and creates format strings to report the results
-
-apa_table(apa_lm_3$table
-          , caption = "Regression Model 3"
-          ) # creates the apa formated table to print to screen
-
-apa_anova3 <- apa_print(anova(model3))
-apa_table(apa_anova3$table
-          , caption = "ANOVA Model3"
-          , note = "Dependant variable: Personal Wellbeing Index")
-
-
-
-#does this look better?
-apa_anova3$table
-
-apa_anova3$full_result$HPMood
-
+```{r Papaja Table}
+summary(model1)
+summary(model2)
+summary(model3)
 ```
 
 ```{r Partials}
-#ols_plot_cooksd_chart(model4)
+
 model1_tolerance_vif <- ols_coll_diag(model1) #Tolerance and vif values
 
 model2_tolerance_vif <- ols_coll_diag(model2)
@@ -732,39 +692,23 @@ model3_partials
 
 ```
 
+## Some thoughts as I worked through the data:
 
-### Questions to answer:
-#### 1. How much variance do the Ivs account for, together in the DV:R^2
-#### 2. What is the relative importance for each of the Ivs in the model: Beta weights
-#### 3. Which IV contributes the most unique variance to prediction of the DV: Check sr^2
-#### 4. How much improvement in the model occurs when we add an additional IV or group of Ivs: Check R^2 Change
+The mean score of the sample was 68.80 with a standard deviation of 10.50 which was outside of the normal range indicated by previous research (studies shows the average for a sample should fall between 73.43 - 76.43 points Cummins, 2010). This can also be indicated by the change in model when MDT is introduced, the change was not significant. suggesting that affect is the prefered component when there is an indication of a shift in subjective wellbeing outside of the normal range. This could have good clinical applications as determining an individuals SWB and personality could highlight distress or challenging experiences. This is also evident in the _b_ weights as when cognition is entered in each step the affect component is reduced. The components of cognition and affect are competing for space in the model and under normal circumstances, a cognitive-affective model would be used. However, in light of the mean score of the sample, we have a purely affective model when there is evidence of challenging experiences of the sample. 
 
-```{r, results='asis'}
+We can also see how removing the outliers in the model increased the R coefficeint and zero order correlations. The final model variance in model one accounted for 53% of the variance in SWB and then the adjusted model after removing outliers using Cook's methodology, increased to 68%. 
 
-#apa.cor.table(corr_Matrix, filename = "correlation_output.doc")
+Its interesting to find that Neuroticism and PWI were strongly negative in the correlation. Which shouldnt be surprising as an increase in wellbeing should mean a decrease in feeling neurotic. The Extraversion was positve which contrasts with the directionality of neuroticism and SWB. HPMood (affect) was also strongly postive on PWI, indicating good fit for affect for use in SWB. This is important as persons setpoint might be lower if they are feeling depressed or neurotic and in contrast, an extraverted person will more likekly correlate higher with the PWI setpoint when they are feeling in a more positive disposition. 
 
-#apa.aov.table(model1, filename = "anova_model1.doc")
-#apa.aov.table(model2, filename = "anova_model2.doc")
-#apa.aov.table(model3, filename = "anova_model3.doc")
+With this in mind further exploratory analysis was conducted to test the affective component with neuroticism. We can see the b of affect is still the strongest unique contributor to SWB and that Neuroticism is significant with a smaller effect size however, the overall model variance is 66%.
+```{r Explore}
 
-model_final <- apa.reg.table(model1, model2, model3)
+model4_explore <- lm(PW_Index ~
+                       HPMood
+                     + Neuroticism, data = well_being_df)
 
-```
-
-Notes:
-adding any of the personality traits adds little to the variance in the SWB model. This suggests a couple of 
-things. The N and E are already accounted for in the afective-cognitive model meaning that a persons set-point is already accounted for by asking contrasting past and future cognitions and their core affect. Secondly, personality traits play little in a persons overall SWB as each traits will modulate their set point differently. The correlation matrix shows N and E are negative and positively correlated respectively. This is important as persons setpoint might be lower if they are feeling depressed or neurotic and in contrast, an extraverted person will more likekly correlate higher with the PWI setpoint when they are feeling in a more positive disposition. 
-
-
-testing output from data `r apa_lm_1$full_result$modelfit$r2` and seeing if it will print the statistics in with the text.
-Use Andy Field's apaTable to print a table directly to seperate word document
-```{r}
-#write df to file
-#write_sav(well_being_df, path  = "data/Wellbeing_2018_df.sav")
+summary(model4_explore)
 
 ```
 
-```{r, results='asis'}
-apa_print(list(model1, model2, model3))
-```
 
