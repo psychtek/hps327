@@ -1,6 +1,5 @@
-Getting errors when modelling from different data types. Needed to convert each variable to a group factor. Created a function to make this happen quicker. 
+#This document was where I dumpmed random stuff and toyed around with code.
 
-```{r}
 #learning to use the sapply function to a list and converting factors to numeric types
 pwi <- sapply(well_being_df[,4:10], as.numeric)
 
@@ -151,10 +150,6 @@ my_residuals <- residuals(model3)
  shapiro.test( x = my_residuals )
 
 
-
-#DATA LOAD
-data <- read.csv('Height_data.csv')
-PWI <- well_being_df$PW_Index
 
 hist(PWI) #histogram
 
